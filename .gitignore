@@ -1,0 +1,30 @@
+
+# Node Modules
+node_modules/
+
+# Build working directories
+input-daemon/bin
+input-daemon/obj
+
+# Generated TypeScript artifacts
+app/www/js/bundle.*
+app/bundle.js
+
+# Visual Studio user preferences etc
+*.docstates
+*.suo
+*.jsproj.user
+.vs/*
+
+# Windows thumbnail cache
+Thumbs.db
+
+# Windows folder config
+Desktop.ini
+
+# Mac OS Stuff
+.DS_Store
+
+# Misc temp files
+*.tmp
+*.bak

@@ -1,0 +1,17 @@
+{
+  "name": "nintendo-vs-frontend",
+  "version": "1.0.0",
+  "description": "A frontend for the Nintendo VS. DualSystem (aka \"Red Tent\") arcade cabinet.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Justin Unterreiner",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/justin-credible/nintendo-vs-frontend"
+  },
+  "dependencies": {
+    "electron-prebuilt": "^0.33.7"
+  }
+}
