@@ -1,0 +1,12 @@
+{
+  "name": "nintendo-vs-frontend",
+  "private": true,
+  "dependencies": {
+    "lodash": "3.10.0"
+  },
+  "install": {
+    "path": "app/www/lib",
+    "sources": {},
+    "ignore": []
+  }
+}

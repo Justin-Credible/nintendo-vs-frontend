@@ -1,14 +1,24 @@
 
-# Node Modules
+# Packages etc
 node_modules/
+bower_components/
 
-# Build working directories
-input-daemon/bin
-input-daemon/obj
-
-# Generated TypeScript artifacts
+# Generated Artifacts
 app/www/js/bundle.*
-app/bundle.js
+app/www/css/main.*
+app/bundle.*
+src/shell/tsd.d.ts
+src/renderer/tsd.d.ts
+src/input-daemon/bin
+src/input-daemon/obj
+
+# TypeScript Definitions
+typings/*
+!typings/shell/custom/
+!typings/renderer/custom/
+
+# Renderer Libraries
+app/www/lib
 
 # Visual Studio user preferences etc
 *.docstates
