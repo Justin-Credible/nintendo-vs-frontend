@@ -5,10 +5,10 @@
         "bower_components": true,
 
         "app/build-vars.json": true,
-        "app/js/bundle.js": true,
-        "app/js/bundle.js.map": true,
-        "app/js/bundle.d.ts": true,
-        "app/js/src": true,
+        "app/bundle.js": true,
+        "app/bundle.js.map": true,
+        "app/bundle.d.ts": true,
+        "app/src": true,
 
         "app/www/js/bundle.js": true,
         "app/www/js/bundle.js.map": true,
@@ -30,5 +30,5 @@
     },
 
     "editor.tabSize": 4,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": "auto"
 }

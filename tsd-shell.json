@@ -5,7 +5,10 @@
   "path": "typings/shell",
   "bundle": "src/shell/tsd.d.ts",
   "installed": {
-    "github-electron/electron-prebuilt.d.ts": {
+    "github-electron/github-electron.d.ts": {
+      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
+    },
+    "node/node.d.ts": {
       "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
     }
   }

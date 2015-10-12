@@ -25,9 +25,16 @@ var bower = require("bower");
 // var XmlDom = require("xmldom").DOMParser;
 // var karma = require("karma").server;
 
+/**
+ * This is the module to be exported from the shell bundle. It will be available in
+ * the node context via require("./Shell"); for use in bootstrapping the application.
+ */
+var bundleExport = "JustinCredible.NintendoVsFrontend.Shell";
 
 var paths = {
     ts: ["./src/**/*.ts"],
+    shell_ts: ["./src/shell/**/*.ts"],
+    renderer_ts: ["./src/renderer/**/*.ts"],
     sassMain: "./styles/main.scss",
 };
 
@@ -110,7 +117,7 @@ gulp.task("watch", function() {
  * Performs linting of the TypeScript source code.
  */
 gulp.task("lint", function (cb) {
-    var filesToLint = paths.ts.concat(paths.tests);
+    var filesToLint = paths.ts;
 
     return gulp.src(filesToLint)
     .pipe(tslint())
@@ -131,6 +138,7 @@ gulp.task("tsd", function (cb) {
  * directory and rebuild the tsd.d.ts typings bundle (for the shell source).
  */
 gulp.task("tsd:shell", function (cb) {
+
     // First reinstall any missing definitions to the typings directory.
     exec("tsd reinstall --config tsd-shell.json", function (err, stdout, stderr) {
         console.log(stdout);
@@ -155,6 +163,7 @@ gulp.task("tsd:shell", function (cb) {
  * directory and rebuild the tsd.d.ts typings bundle (for the renderer source).
  */
 gulp.task("tsd:renderer", function (cb) {
+
     // First reinstall any missing definitions to the typings directory.
     exec("tsd reinstall --config tsd-renderer.json", function (err, stdout, stderr) {
         console.log(stdout);
@@ -211,14 +220,40 @@ gulp.task("ts:vars", function (cb) {
  */
 gulp.task("ts:src", ["ts:src-read-me"], function (cb) {
 
+    runSequence("ts:src-shell", "ts:src-renderer", cb);
+});
+
+/**
+ * Used to copy the entire TypeScript source into the app/src directory
+ * so that it can be used for debugging purposes.
+ * 
+ * This will only copy the files if the build scheme is not set to release.
+ */
+gulp.task("ts:src-shell", function (cb) {
+
     if (!isDebugScheme()) {
         cb();
         return;
     }
 
     return gulp.src(paths.shell_ts)
-        .pipe(gulp.dest("app/src"))
-        .src(paths.renderer_ts)
+        .pipe(gulp.dest("app/src"));
+});
+
+/**
+ * Used to copy the entire TypeScript source into the app/www/js/src directory
+ * so that it can be used for debugging purposes.
+ * 
+ * This will only copy the files if the build scheme is not set to release.
+ */
+gulp.task("ts:src-renderer", function (cb) {
+
+    if (!isDebugScheme()) {
+        cb();
+        return;
+    }
+
+    return gulp.src(paths.renderer_ts)
         .pipe(gulp.dest("app/www/js/src"));
 });
 
@@ -239,7 +274,7 @@ gulp.task("ts:src-read-me", function (cb) {
 
     return string_src("readme.txt", infoMessage)
         .pipe(gulp.dest("app/src"))
-        .pipe(gulp.dest("www/js/src/"));
+        .pipe(gulp.dest("app/www/js/src"));
 });
 
 /**
@@ -256,29 +291,16 @@ gulp.task("ts", ["ts:vars", "ts:src"], function (cb) {
         console.log(stdout1);
         console.log(stderr1);
 
-        exec("tsc -p src/renderer", function (err2, stdout2, stderr2) {
-            console.log(stdout2);
-            console.log(stderr2);
-            cb(err1 || err2);
+        exec("echo '\r\nmodule.exports = " + bundleExport + ";' >> app/bundle.js", function (err2, stdout2, stderr2) {
+
+            exec("tsc -p src/renderer", function (err3, stdout3, stderr3) {
+                console.log(stdout2);
+                console.log(stderr2);
+                cb(err1 || err2 || err3);
+            });
         });
     });
 });
-
-// /**
-//  * Used to perform compilation of the unit TypeScript tests in the tests directory
-//  * and output the JavaScript to tests/tests-bundle.js. Compilation parameters are
-//  * located in tests/tsconfig.json.
-//  * 
-//  * It will also delegate to the ts task to ensure that the application source is
-//  * compiled as well.
-//  */
-// gulp.task("ts:tests", ["ts"], function (cb) {
-//     exec("tsc -p tests", function (err, stdout, stderr) {
-//         console.log(stdout);
-//         console.log(stderr);
-//         cb(err);
-//     });
-// });
 
 /**
  * Used to perform compilation of the SASS styles in the styles directory (using
@@ -385,11 +407,6 @@ gulp.task("clean:tsd", function (cb) {
         // "typings/**",
         // "!typings/custom/**",
 
-        // "tests/tsd.d.ts",
-        // "typings-tests/**/*.d.ts",
-        // "!typings-tests/custom/*.d.ts",
-        // // "typings-tests/**",
-        // // "!typings/custom/**"
     ], cb);
 });
 

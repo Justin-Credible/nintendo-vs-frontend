@@ -5,5 +5,8 @@
   "path": "typings/renderer",
   "bundle": "src/renderer/tsd.d.ts",
   "installed": {
+    "lodash/lodash.d.ts": {
+      "commit": "3fc1377ce29dd9670975cb68615edf1b819fc4a5"
+    }
   }
 }

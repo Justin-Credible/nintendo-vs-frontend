@@ -4,9 +4,12 @@ node_modules/
 bower_components/
 
 # Generated Artifacts
-app/www/js/bundle.*
-app/www/css/main.*
+app/build-vars.json
 app/bundle.*
+app/src
+app/www/js/bundle.*
+app/www/js/src
+app/www/css/main.*
 src/shell/tsd.d.ts
 src/renderer/tsd.d.ts
 src/input-daemon/bin
