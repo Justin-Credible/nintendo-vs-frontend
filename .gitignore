@@ -16,9 +16,10 @@ src/input-daemon/bin
 src/input-daemon/obj
 
 # TypeScript Definitions
-typings/*
-!typings/shell/custom/
-!typings/renderer/custom/
+/typings/shell/*
+/typings/renderer/*
+!/typings/shell/custom/
+!/typings/renderer/custom/
 
 # Renderer Libraries
 app/www/lib
