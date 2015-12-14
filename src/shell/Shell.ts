@@ -4,9 +4,10 @@ import * as electron from "electron";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
-	var mainWindow: GitHubElectron.BrowserWindow;
+	var windowA: GitHubElectron.BrowserWindow;
+	var windowB: GitHubElectron.BrowserWindow;
 
-	var tcpServer: any;
+	var tcpServer: net.Server;
 
 	export function main(): void {
 
@@ -14,6 +15,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 		electron.app.on("ready", app_ready);
 
 		tcpServer = net.createServer(tcpServer_connect);
+		tcpServer.listen(6000, tcpServer_listen);
 	}
 
 	function app_windowAllClosed(): void {
@@ -25,13 +27,30 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
 	function app_ready(): void {
 
-		mainWindow = new electron.BrowserWindow({ width: 800, height: 600 });
-		mainWindow.loadURL("file://" + __dirname + "../../www/index.html");
-		mainWindow.on("closed", mainWindow_closed);
+		windowA = new electron.BrowserWindow({ width: 800, height: 600 });
+		windowA.loadURL("file://" + __dirname + "../../www/index.html");
+		windowA.on("closed", mainWindow_closed);
+
+		windowB = new electron.BrowserWindow({ width: 800, height: 600 });
+		windowB.loadURL("file://" + __dirname + "../../www/index.html");
+		windowB.on("closed", mainWindow_closed);
+
+		// Used to set sending data to each window without running input-daemon.
+		// let i = 0;
+
+		// setTimeout(() => {
+		// 	let client = net.createConnection(6000, "127.0.0.1", function () {
+		// 		setInterval(() => {
+		// 			i++;
+		// 			client.write(i.toString());
+		// 		}, 1000);
+		// 	});
+		// }, 1000);
 	}
 
 	function mainWindow_closed(): void {
-		mainWindow = null;
+		windowA = null;
+		windowB = null;
 	}
 
 	function tcpServer_connect(socket: any): void {
@@ -40,8 +59,16 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 		socket.on("end", socket_end);
 	}
 
+	function tcpServer_listen() {
+		console.log("Bound!");
+	}
+
 	function socket_data(data: any): void {
-		console.log(data.toString("utf-8"));
+		let keyString = data.toString("utf-8");
+
+		console.log(keyString);
+		windowA.emit("key-pressed", keyString);
+		windowB.emit("key-pressed", keyString);
 	}
 
 	function socket_end() {

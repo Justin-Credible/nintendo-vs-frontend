@@ -26,11 +26,6 @@ var bower = require("bower");
 // var XmlDom = require("xmldom").DOMParser;
 // var karma = require("karma").server;
 
-/**
- * This is the module to be exported from the shell bundle. It will be available in
- * the node context via require("./Shell"); for use in bootstrapping the application.
- */
-var bundleExport = "JustinCredible.NintendoVsFrontend.Shell";
 
 var paths = {
     ts: ["./src/**/*.ts"],

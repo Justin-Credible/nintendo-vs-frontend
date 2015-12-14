@@ -5,6 +5,12 @@
   "path": "typings/renderer",
   "bundle": "src/renderer/tsd.d.ts",
   "installed": {
+    "github-electron/github-electron.d.ts": {
+      "commit": "8ea42cd8bb11863ed6f242d67c502288ebc45a7b"
+    },
+    "node/node.d.ts": {
+      "commit": "8ea42cd8bb11863ed6f242d67c502288ebc45a7b"
+    },
     "lodash/lodash.d.ts": {
       "commit": "8ea42cd8bb11863ed6f242d67c502288ebc45a7b"
     }
