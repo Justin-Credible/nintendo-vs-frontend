@@ -1,5 +1,5 @@
 
-module JustinCredible.NintendoVsFrontend.Renderer {
+namespace JustinCredible.NintendoVsFrontend.Renderer {
 
 	export function main(): void {
 

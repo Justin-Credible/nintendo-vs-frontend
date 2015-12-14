@@ -1,34 +1,32 @@
 
-module JustinCredible.NintendoVsFrontend.Shell {
-	var context: DIContext;
+import * as net from "net";
+import * as electron from "electron";
+
+namespace JustinCredible.NintendoVsFrontend.Shell {
 
 	var mainWindow: GitHubElectron.BrowserWindow;
 
 	var tcpServer: any;
 
-	export function inject(diContainer: any): void {
-		context = diContainer;
-	}
-
 	export function main(): void {
 
-		context.app.on("window-all-closed", app_windowAllClosed);
-		context.app.on("ready", app_ready);
+		electron.app.on("window-all-closed", app_windowAllClosed);
+		electron.app.on("ready", app_ready);
 
-		tcpServer = context.net.createServer(tcpServer_connect);
+		tcpServer = net.createServer(tcpServer_connect);
 	}
 
 	function app_windowAllClosed(): void {
 
 		if (process.platform !== "darwin") {
-			context.app.quit();
+			electron.app.quit();
 		}
 	}
 
 	function app_ready(): void {
 
-		mainWindow = new context.BrowserWindow({ width: 800, height: 600 });
-		mainWindow.loadUrl("file://" + __dirname + "/www/index.html");
+		mainWindow = new electron.BrowserWindow({ width: 800, height: 600 });
+		mainWindow.loadURL("file://" + __dirname + "../../www/index.html");
 		mainWindow.on("closed", mainWindow_closed);
 	}
 
@@ -50,3 +48,5 @@ module JustinCredible.NintendoVsFrontend.Shell {
 		console.log("Socket Closed.");
 	}
 }
+
+module.exports =  JustinCredible.NintendoVsFrontend.Shell;

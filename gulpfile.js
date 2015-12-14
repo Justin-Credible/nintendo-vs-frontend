@@ -6,6 +6,7 @@
 var exec = require("child_process").exec;
 var del = require("del");
 var fs = require("fs");
+var stream = require("stream");
 
 // Gulp & Gulp Plugins
 var gulp = require("gulp");
@@ -86,7 +87,7 @@ var tsLintReporter = function(failures, file) {
  * http://stackoverflow.com/a/23398200/4005811
  */
 function string_src(filename, str) {
-    var src = require("stream").Readable({ objectMode: true });
+    var src = new stream.Readable({ objectMode: true });
 
     src._read = function () {
         this.push(new gutil.File({ cwd: "", base: "", path: filename, contents: new Buffer(str) }));
@@ -213,40 +214,12 @@ gulp.task("ts:vars", function (cb) {
 });
 
 /**
- * Used to copy the entire TypeScript source into the app/src and app/www/js/src
- * directories so that they can be used for debugging purposes.
- * 
- * This will only copy the files if the build scheme is not set to release.
- */
-gulp.task("ts:src", ["ts:src-read-me"], function (cb) {
-
-    runSequence("ts:src-shell", "ts:src-renderer", cb);
-});
-
-/**
- * Used to copy the entire TypeScript source into the app/src directory
- * so that it can be used for debugging purposes.
- * 
- * This will only copy the files if the build scheme is not set to release.
- */
-gulp.task("ts:src-shell", function (cb) {
-
-    if (!isDebugScheme()) {
-        cb();
-        return;
-    }
-
-    return gulp.src(paths.shell_ts)
-        .pipe(gulp.dest("app/src"));
-});
-
-/**
  * Used to copy the entire TypeScript source into the app/www/js/src directory
  * so that it can be used for debugging purposes.
  * 
  * This will only copy the files if the build scheme is not set to release.
  */
-gulp.task("ts:src-renderer", function (cb) {
+gulp.task("ts:src", ["ts:src-read-me"], function (cb) {
 
     if (!isDebugScheme()) {
         cb();
@@ -273,7 +246,6 @@ gulp.task("ts:src-read-me", function (cb) {
     var infoMessage = "This directory contains a copy of the TypeScript source files for debug builds; it can be safely deleted and will be regenerated via the gulp ts task.\n\nTo omit this directory create a release build by specifying the scheme:\ngulp ts --scheme release";
 
     return string_src("readme.txt", infoMessage)
-        .pipe(gulp.dest("app/src"))
         .pipe(gulp.dest("app/www/js/src"));
 });
 
@@ -291,13 +263,10 @@ gulp.task("ts", ["ts:vars", "ts:src"], function (cb) {
         console.log(stdout1);
         console.log(stderr1);
 
-        exec("echo '\r\nmodule.exports = " + bundleExport + ";' >> app/bundle.js", function (err2, stdout2, stderr2) {
-
-            exec("tsc -p src/renderer", function (err3, stdout3, stderr3) {
-                console.log(stdout2);
-                console.log(stderr2);
-                cb(err1 || err2 || err3);
-            });
+        exec("tsc -p src/renderer", function (err3, stdout3, stderr3) {
+            console.log(stdout3);
+            console.log(stderr3);
+            cb(err1 || err3);
         });
     });
 });
@@ -371,9 +340,7 @@ gulp.task("clean:libs", function (cb) {
 gulp.task("clean:ts", function (cb) {
     del([
         "app/build-vars.json",
-        "app/bundle.js",
-        "app/bundle.js.map",
-        "app/src",
+        "app/shell",
 
         "app/www/js/bundle.js",
         "app/www/js/bundle.js.map",
