@@ -1,11 +1,13 @@
 
 import * as net from "net";
 import * as electron from "electron";
+import * as _ from "lodash";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
 	var windowA: GitHubElectron.BrowserWindow;
 	var windowB: GitHubElectron.BrowserWindow;
+	var inputTestWindow: GitHubElectron.BrowserWindow;
 
 	var tcpServer: net.Server;
 
@@ -29,28 +31,44 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
 		windowA = new electron.BrowserWindow({ width: 800, height: 600 });
 		windowA.loadURL("file://" + __dirname + "../../www/index.html");
-		windowA.on("closed", mainWindow_closed);
+		windowA.on("closed", _.bind(rendererWindow_closed, null, "A"));
 
 		windowB = new electron.BrowserWindow({ width: 800, height: 600 });
 		windowB.loadURL("file://" + __dirname + "../../www/index.html");
-		windowB.on("closed", mainWindow_closed);
+		windowA.on("closed", _.bind(rendererWindow_closed, null, "B"));
 
-		// Used to set sending data to each window without running input-daemon.
-		// let i = 0;
+		// TODO: Set via config.
+		let utilizeInputTest = true;
 
-		// setTimeout(() => {
-		// 	let client = net.createConnection(6000, "127.0.0.1", function () {
-		// 		setInterval(() => {
-		// 			i++;
-		// 			client.write(i.toString());
-		// 		}, 1000);
-		// 	});
-		// }, 1000);
+		if (utilizeInputTest) {
+
+			inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175 });
+			inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");
+			inputTestWindow.on("closed", _.bind(rendererWindow_closed, null, "input-test"));
+
+			let inputTestSocket = net.createConnection(6000, "127.0.0.1", function () {
+				console.log("input-test: Connected");
+			});
+
+			electron.ipcMain.on("input-test-keypress", (eventName: string, keyCode: number) => {
+				inputTestSocket.write(keyCode.toString(), "utf-8");
+			});
+		}
 	}
 
-	function mainWindow_closed(): void {
-		windowA = null;
-		windowB = null;
+	function rendererWindow_closed(windowId: string): void {
+
+		switch (windowId) {
+			case "A":
+				windowA = null;
+				break;
+			case "B":
+				windowB = null;
+				break;
+			case "input-test":
+				inputTestWindow = null;
+				break;
+		}
 	}
 
 	function tcpServer_connect(socket: any): void {

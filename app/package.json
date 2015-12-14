@@ -1,5 +1,8 @@
 {
-	"name" : "nintendo-vs-frontend",
-	"version" : "0.1.0",
-	"main" : "shell-main.js"
+  "name": "nintendo-vs-frontend",
+  "version": "0.1.0",
+  "main": "shell-main.js",
+  "dependencies": {
+    "lodash": "^3.10.1"
+  }
 }
