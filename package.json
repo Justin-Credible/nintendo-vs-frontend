@@ -1,6 +1,6 @@
 {
   "name": "nintendo-vs-frontend",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A frontend for the Nintendo VS. DualSystem (aka \"Red Tent\") arcade cabinet.",
   "scripts": {
     "test": "gulp lint"
@@ -11,6 +11,7 @@
     "type": "git",
     "url": "https://github.com/justin-credible/nintendo-vs-frontend"
   },
+  "readme": "README.md",
   "dependencies": {
     "bower": "^1.7.1",
     "bower-installer": "^1.2.0",

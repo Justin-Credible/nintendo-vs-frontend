@@ -2,8 +2,11 @@
 import * as net from "net";
 import * as electron from "electron";
 import * as _ from "lodash";
+import * as fs from "fs";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
+
+	var buildVars: BuildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
 
 	var windowA: GitHubElectron.BrowserWindow;
 	var windowB: GitHubElectron.BrowserWindow;
@@ -30,17 +33,14 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 	function app_ready(): void {
 
 		windowA = new electron.BrowserWindow({ width: 800, height: 600 });
-		windowA.loadURL("file://" + __dirname + "../../www/index.html");
+		windowA.loadURL("file://" + __dirname + "../../www/index.html#side-a");
 		windowA.on("closed", _.bind(rendererWindow_closed, null, "A"));
 
 		windowB = new electron.BrowserWindow({ width: 800, height: 600 });
-		windowB.loadURL("file://" + __dirname + "../../www/index.html");
+		windowB.loadURL("file://" + __dirname + "../../www/index.html#side-b");
 		windowA.on("closed", _.bind(rendererWindow_closed, null, "B"));
 
-		// TODO: Set via config.
-		let utilizeInputTest = true;
-
-		if (utilizeInputTest) {
+		if (buildVars.debug) {
 
 			inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175 });
 			inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");

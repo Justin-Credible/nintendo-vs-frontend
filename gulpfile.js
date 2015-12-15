@@ -258,10 +258,10 @@ gulp.task("ts", ["ts:vars", "ts:src"], function (cb) {
         console.log(stdout1);
         console.log(stderr1);
 
-        exec("tsc -p src/renderer", function (err3, stdout3, stderr3) {
-            console.log(stdout3);
-            console.log(stderr3);
-            cb(err1 || err3);
+        exec("tsc -p src/renderer", function (err2, stdout2, stderr2) {
+            console.log(stdout2);
+            console.log(stderr2);
+            cb(err1 || err2);
         });
     });
 });
@@ -285,13 +285,19 @@ gulp.task("sass", function (cb) {
 
 /**
  * Used to download all of the bower dependencies as defined in bower.json and place
- * the consumable pieces in the app/www/lib directory.
+ * the consumable pieces in the app/www/lib directory. Also runs an 'npm install' in
+ * the app directory to download libraries specific to the shell source.
  */
 gulp.task("libs", function(cb) {
-    exec("bower-installer", function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
+    exec("bower-installer", function (err1, stdout1, stderr1) {
+        console.log(stdout1);
+        console.log(stderr1);
+
+        exec("npm install", { cwd: "app" }, function (err2, stdout2, stderr2) {
+            console.log(stdout2);
+            console.log(stderr2);
+            cb(err1 || err2);
+        });
     });
 });
 
