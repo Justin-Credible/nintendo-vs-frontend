@@ -30,5 +30,5 @@
     },
 
     "editor.tabSize": 4,
-    "editor.insertSpaces": "auto"
+    "editor.insertSpaces": true
 }

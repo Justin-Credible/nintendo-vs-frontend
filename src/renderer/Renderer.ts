@@ -1,16 +1,17 @@
 
 namespace JustinCredible.NintendoVsFrontend.Renderer {
 
-	var browser = require("electron").remote.getCurrentWindow();
+    var remote = require("electron").remote
+    var browser = remote.getCurrentWindow();
 
-	export function main(): void {
+    export function main(): void {
 
-		var outputDiv = document.getElementById("output");
+        var outputDiv = document.getElementById("output");
 
-		outputDiv.innerText += " | " + location.hash;
+        outputDiv.innerText += " | " + location.hash;
 
-		browser.addListener("key-pressed", function app_keyPressed(key: string) {
-			outputDiv.innerText = key;
-		});
-	}
+        browser.addListener("key-pressed", function app_keyPressed(key: string) {
+            outputDiv.innerText = key;
+        });
+    }
 }

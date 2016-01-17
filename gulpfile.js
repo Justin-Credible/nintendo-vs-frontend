@@ -77,6 +77,17 @@ var tsLintReporter = function(failures, file) {
 };
 
 /**
+ * A custom reporter for the sass compilation task so we can control the formatting
+ * of the message for our custom problem matcher in Visual Studio Code.
+ */
+var sassReporter = function (failure) {
+    var file = failure.message.split("\n")[0];
+    var message = failure.message.split("\n")[1];
+
+    console.log("[sass] [" + failure.name.toLowerCase() + "] " + file + ":" + message);
+}
+
+/**
  * Helper used to pipe an arbitrary string value into a file.
  * 
  * http://stackoverflow.com/a/23398200/4005811
@@ -278,7 +289,7 @@ gulp.task("sass", function (cb) {
 
     return gulp.src(paths.sassMain)
         .pipe(sourcemaps.init())
-        .pipe(sass(sassConfig).on("error", sass.logError))
+        .pipe(sass(sassConfig).on("error", sassReporter))
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./app/www/css"));
 });

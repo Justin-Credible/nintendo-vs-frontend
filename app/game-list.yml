@@ -1,0 +1,74 @@
+---
+-
+    name: "Crawl"
+    platform: "PC"
+    resource: "C:/Games/Crawl/Crawl.exe"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Tetris VS."
+    platform: "MAME"
+    resource: "tetrisvs"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Ms. Pac-Man"
+    platform: "MAME"
+    resource: "mspacman"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "TMNT"
+    platform: "MAME"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "tmnt2p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "tmnt"
+-
+    name: "TMNT 2: Turtles in Time"
+    platform: "MAME"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "tmnt22p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "tmnt2"
+-
+    name: "The Simpsons"
+    platform: "MAME"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "simpson2p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "simpsons"
+-
+    name: "Battletoads"
+    platform: "MAME"
+    resource: "btoads"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            config: "btoads_2p.cfg"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            config: "btoads_3p.cfg"

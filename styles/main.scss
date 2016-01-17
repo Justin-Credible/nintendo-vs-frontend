@@ -1,6 +1,104 @@
 
+@import "common/fonts.scss";
 @import "common/colors.scss";
+@import "common/global.scss";
 
 body {
-    background: $background-color;
+    background-image: url("../img/header.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-color: $background-color;
+    font-family: "Press Start K";
+    color: white;
+}
+
+.title {
+    font-size: 32pt;
+    padding-top: 10px;
+    padding-left: 10px;
+    margin-bottom: 215px;
+}
+
+#output {
+    display: inline-block;
+    font-size: 10px;
+}
+
+/** Game List Container **/
+
+.container {
+
+    // background-color: green;
+
+    /** Game List Container - Left **/
+
+    .game-info {
+        // background-color: red;
+        display: inline-block;
+        width: 30%;
+        font-size: 20pt;
+
+        .game-poster {
+            margin: 10px;
+            background-image: url("../img/game-place-holder.png");
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center center;
+            height: 600px;
+            // background-color: teal;
+        }
+
+        .player-count {
+            text-align: center;
+        }
+
+        .screen-count {
+            text-align: center;
+        }
+    }
+
+    /** Game List Container - Right **/
+
+    .game-list {
+        // background-color: yellow;
+        width: 65%;
+        padding: 10px;
+        float: right;
+        font-size: 20pt;
+
+        div {
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+    }
+}
+
+/** Pager **/
+
+.pager {
+    // border: 1px solid mediumpurple;
+    text-align: center;
+    font-size: 20px;
+}
+
+/** Footer **/
+
+.player-prompts {
+    // border: 1px solid hotpink;
+
+    .player1 {
+        // border: 1px solid skyblue;
+        display: inline-block;
+        width: 49%;
+        text-align: center;
+        font-size: 20px;
+    }
+
+    .player2 {
+        // border: 1px solid orange;
+        display: inline-block;
+        width: 49%;
+        text-align: center;
+        font-size: 20px;
+    }
 }

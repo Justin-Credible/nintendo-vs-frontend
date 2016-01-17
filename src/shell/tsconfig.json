@@ -1,11 +1,11 @@
 {
-	"compilerOptions": {
-		"target": "ES5",
-		"outDir": "../../app/shell",
-		"sourceMap": true,
-		"declaration": true,
-		"removeComments": true,
-		"sourceRoot": "",
-		"module": "commonjs"
-	}
+    "compilerOptions": {
+        "target": "es5",
+        "outDir": "../../app/shell",
+        "sourceMap": true,
+        "declaration": true,
+        "removeComments": true,
+        "sourceRoot": "",
+        "module": "commonjs"
+    }
 }
