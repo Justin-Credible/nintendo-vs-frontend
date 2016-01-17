@@ -8,7 +8,7 @@ import * as yaml from "js-yaml";
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
     var buildVars: Interfaces.BuildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
-    var gameList: Interfaces.GameDescriptor[] = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"))
+    var gameList: Interfaces.GameDescriptor[] = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
 
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
