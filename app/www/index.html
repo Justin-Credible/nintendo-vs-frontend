@@ -1,72 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="JustinCredible.NintendoVsFrontend.Renderer.Application">
     <head>
         <title>Nintendo VS Frontend</title>
-        <link rel="stylesheet" href="css/main.css">
+
+        <link rel="stylesheet" href="css/bundle.css">
+
+        <script type="text/javascript" src="lib/lodash/lodash.js"></script>
+        <script type="text/javascript" src="lib/angular/angular.js"></script>
+
+        <script type="text/javascript" src="js/build-vars.js"></script>
+        <script type="text/javascript" src="js/templates.js"></script>
+        <script type="text/javascript" src="js/bundle.js"></script>
+        <script type="text/javascript" src="js/renderer-boot1.js"></script>
     </head>
     <body>
-        <div class="title">
-            Nintendo VS
-
-            <div id="output">[keyboard keycodes here]</div>
-        </div>
-
-        <div class="container">
-
-            <div class="game-info">
-
-                <div class="game-poster">
-                </div>
-
-                <div class="player-count">
-                    1-4 Players
-                </div>
-
-                <div class="screen-count">
-                    1-2 Screens
-                </div>
-
-            </div>
-
-            <div class="game-list">
-
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-                <div>TMNT</div>
-                <div>Super Mario Bros.</div>
-
-            </div>
-
-        </div>
-
-        <div class="pager">
-            pager
-        </div>
-
-        <div class="player-prompts">
-            <div class="player1">
-                P1
-            </div>
-            <div class="player2">
-                P2
-            </div>
-        </div>
-
-        <script type="text/javascript" src="lib/angular/angular.js"></script>
-        <script type="text/javascript" src="js/bundle.js"></script>
-        <script type="text/javascript" src="js/renderer-main.js"></script>
+        <ng-include src="'Views/Menu/Menu.html'"></ng-include>
     </body>
 </html>

@@ -1,0 +1,14 @@
+
+body, div {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-image: url("../img/header.png");
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    background-color: $background-color;
+    font-family: "Press Start K";
+    color: white;
+}

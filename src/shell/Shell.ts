@@ -7,8 +7,8 @@ import * as yaml from "js-yaml";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
-    var buildVars: CustomTypes.BuildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
-    var gameList: CustomTypes.GameDescriptor[] = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"))
+    var buildVars: Interfaces.BuildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
+    var gameList: Interfaces.GameDescriptor[] = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"))
 
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
@@ -46,7 +46,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let optionsA = _.clone(windowOptions);
         let optionsB = _.clone(windowOptions);
 
-        let displays: CustomTypes.ElectronDisplay[] = electron.screen.getAllDisplays();
+        let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
 
         // Determine if we have two 1280x1024 screens available.
         let screensAre1280x1024 = displays.length === 2

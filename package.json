@@ -18,6 +18,8 @@
     "del": "^2.2.0",
     "electron-prebuilt": "^0.36.0",
     "gulp": "^3.9.0",
+    "gulp-angular-templatecache": "^1.8.0",
+    "gulp-rename": "1.2.2",
     "gulp-sass": "^2.1.1",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tslint": "^4.2.1",

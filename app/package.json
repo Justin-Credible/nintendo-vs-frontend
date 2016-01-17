@@ -9,7 +9,7 @@
     "url": "https://github.com/justin-credible/nintendo-vs-frontend"
   },
   "readme": "README.md",
-  "main": "shell-main.js",
+  "main": "shell-boot.js",
   "dependencies": {
     "electron-prebuilt": "^0.36.0",
     "js-yaml": "^3.4.6",

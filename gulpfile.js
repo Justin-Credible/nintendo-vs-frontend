@@ -11,11 +11,12 @@ var stream = require("stream");
 // Gulp & Gulp Plugins
 var gulp = require("gulp");
 var gutil = require("gulp-util");
-//var rename = require("gulp-rename");
+var rename = require("gulp-rename");
 var ts = require("gulp-typescript");
 var tslint = require("gulp-tslint");
 var sass = require("gulp-sass");
 var sourcemaps = require("gulp-sourcemaps");
+var templateCache = require("gulp-angular-templatecache");
 
 // Other Modules
 var runSequence = require("run-sequence");
@@ -29,9 +30,10 @@ var bower = require("bower");
 
 var paths = {
     ts: ["./src/**/*.ts"],
+    templates: ["./src/renderer/**/*.html"],
     shell_ts: ["./src/shell/**/*.ts"],
     renderer_ts: ["./src/renderer/**/*.ts"],
-    sassMain: "./styles/main.scss",
+    sassIndex: "./src/renderer/Styles/Index.scss",
 };
 
 /**
@@ -198,6 +200,8 @@ gulp.task("tsd:renderer", function (cb) {
  */
 gulp.task("ts:vars", function (cb) {
 
+    var packageInfo = JSON.parse(fs.readFileSync("app/package.json", "utf8"));
+
     exec("git rev-parse --short HEAD", function (err, stdout, stderr) {
 
         var commitShortSha = err ? "unknown" : stdout.replace("\n", "");
@@ -206,14 +210,21 @@ gulp.task("ts:vars", function (cb) {
         var buildVars = {
             commitShortSha: commitShortSha,
             debug: isDebugScheme(),
-            buildTimestamp: (new Date()).toUTCString()
+            buildTimestamp: (new Date()).toUTCString(),
+            version: packageInfo.version
         }
 
         // Serialize to JSON.
         var buildVarsJson = JSON.stringify(buildVars);
 
-        // Write the file out to disk.
-        fs.writeFileSync("app/build-vars.json", buildVarsJson, { encoding: 'utf8' });
+        // Write the file out to disk for the shell.
+        fs.writeFileSync("app/build-vars.json", buildVarsJson, { encoding: "utf8" });
+
+        // Generate a JavaScript version for the renderer.
+        var buildVarsJs = "window.buildVars = " + buildVarsJson;
+
+        // Write the file out to disk for the renderer.
+        fs.writeFileSync("app/www/js/build-vars.js", buildVarsJs, { encoding: "utf8" });
 
         cb();
     });
@@ -278,18 +289,34 @@ gulp.task("ts", ["ts:vars", "ts:src"], function (cb) {
 });
 
 /**
+ * Used to concatenate all of the HTML templates into a single JavaScript module.
+ */
+gulp.task("templates", function() {
+    return gulp.src(paths.templates)
+        .pipe(templateCache({
+            "filename": "templates.js",
+            "root": "",
+            "module": "templates",
+            standalone: true
+        }))
+        .pipe(gulp.dest("./app/www/js"));
+});
+
+/**
  * Used to perform compilation of the SASS styles in the styles directory (using
- * Main.scss as the root file) and output the CSS to app/www/css/main.css.
+ * Index.scss as the root file) and output the CSS to app/www/css/bundle.css.
  */
 gulp.task("sass", function (cb) {
 
     var sassConfig = {
-        outputStyle: isDebugScheme() ? "nested" : "compressed"
+        outputStyle: isDebugScheme() ? "nested" : "compressed",
+        errLogToConsole: false
     };
 
-    return gulp.src(paths.sassMain)
+    return gulp.src(paths.sassIndex)
         .pipe(sourcemaps.init())
         .pipe(sass(sassConfig).on("error", sassReporter))
+        .pipe(rename("bundle.css"))
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./app/www/css"));
 });
@@ -317,7 +344,7 @@ gulp.task("libs", function(cb) {
  * that don"t need to be committed to source control by delegating to several of the clean
  * sub-tasks.
  */
-gulp.task("clean", ["clean:node", "clean:bower", "clean:libs", "clean:ts", "clean:tsd", "clean:sass"]);
+gulp.task("clean", ["clean:node", "clean:bower", "clean:libs", "clean:ts", "clean:tsd", "clean:templates", "clean:sass"]);
 
 /**
  * Removes the node_modules directory.
@@ -354,6 +381,7 @@ gulp.task("clean:ts", function (cb) {
         "app/build-vars.json",
         "app/shell",
 
+        "app/www/js/build-vars.js",
         "app/www/js/bundle.js",
         "app/www/js/bundle.js.map",
         "app/www/js/src"
@@ -390,11 +418,22 @@ gulp.task("clean:tsd", function (cb) {
 });
 
 /**
+ * Removes the generated templates JavaScript from the templates target.
+ */
+gulp.task("clean:templates", function (cb) {
+    del([
+        "www/js/templates.js"
+    ]).then(function () {
+        cb();
+    });
+});
+
+/**
  * Removes the generated css from the SASS target.
  */
 gulp.task("clean:sass", function (cb) {
     del([
-        "app/www/css/main.css",
-        "app/www/css/main.css.map"
+        "app/www/css/bundle.css",
+        "app/www/css/bundle.css.map"
     ], cb);
 });
