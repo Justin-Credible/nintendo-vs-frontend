@@ -1,0 +1,38 @@
+---
+bindings:
+    player1:
+        up: 65 #A
+        down: 83 #S
+        left: 68 #D
+        right: 70 #F
+        a: 74 #J
+        b: 75 #K
+        start: 76 #L
+        coin: 186 #;
+    player2:
+        up: 81 #Q
+        down: 87 #W
+        left: 69 #E
+        right: 82 #R
+        a: 85 #U
+        b: 73 #I
+        start: 79 #O
+        coin: 80 #P
+    player3:
+        up: 49 #1
+        down: 50 #2
+        left: 51 #3
+        right: 52 #4
+        a: 55 #7
+        b: 56 #8
+        start: 57 #9
+        coin: 48 #0
+    player4:
+        up: 90 #Z
+        down: 88 #X
+        left: 67 #C
+        right: 86 #V
+        a: 77 #M
+        b: 188 #,
+        start: 190 #.
+        coin: 191 #/

@@ -12,12 +12,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         public static get $inject(): string[] {
             return [
-                "buildVars"
+                "buildVars",
+                "gameList",
             ];
         }
 
         constructor(
-            private _buildVars_: Interfaces.BuildVars) {
+            private _buildVars_: Interfaces.BuildVars,
+            private _gameList_: Interfaces.GameDescriptor[]) {
         }
 
         //#endregion
@@ -29,6 +31,13 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
          */
         public get buildVars(): Interfaces.BuildVars {
             return this._buildVars_;
+        }
+
+        /**
+         * Used to get the list of games as defined in game-list.yml.
+         */
+        public gameList(): Interfaces.GameDescriptor[] {
+            return this._gameList_;
         }
 
         /**

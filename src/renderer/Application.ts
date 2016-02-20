@@ -12,6 +12,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
                 "$rootScope",
                 "$window",
                 "$location",
+                "electronRemote",
                 Services.Utilities.ID,
                 Services.Logger.ID
             ];
@@ -21,6 +22,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             private $rootScope: ng.IRootScopeService,
             private $window: ng.IWindowService,
             private $location: ng.ILocationService,
+            private electronRemote: GitHubElectron.Remote,
             private Utilities: Services.Utilities,
             private Logger: Services.Logger) {
         }
@@ -50,10 +52,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             // Set the default error handler for all uncaught exceptions.
             this.$window.onerror = _.bind(this.window_onerror, this);
 
-            // Subscribe to device events.
-            // document.addEventListener("menubutton", _.bind(this.device_menuButton, this));
-            // document.addEventListener("pause", _.bind(this.device_pause, this));
-            // document.addEventListener("resume", _.bind(this.device_resume, this, false));
+            // Subscribe to browser events.
+            this.electronRemote.getCurrentWindow().addListener("player-input", _.bind(this.window_playerInput, this));
 
             // Subscribe to Angular events.
             this.$rootScope.$on("$locationChangeStart", _.bind(this.angular_locationChangeStart, this));
@@ -62,9 +62,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             // this.registerDialogs(this._ngModule);
         }
 
-        //#endregoin
+        //#endregion
 
         //#region Event Handlers
+
+        public window_playerInput(input: Interfaces.PlayerInput): void {
+            var outputDiv = document.getElementById("output");
+
+            outputDiv.innerText = "Player: " + input.player + " / Input: " + input.input;
+        }
 
         /**
          * Fired when Angular's route/location (eg URL hash) is changing.

@@ -4,19 +4,31 @@ import * as electron from "electron";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+import * as BindingHelper from "./BindingHelper";
+import * as Enums from "./Enums";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
-    var buildVars: Interfaces.BuildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
-    var gameList: Interfaces.GameDescriptor[] = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
+    var buildVars: Interfaces.BuildVars;
+    var gameList: Interfaces.GameDescriptor[];
+    var config: Interfaces.Config;
+
+    var bindingTable: Interfaces.NumberDictionary<Interfaces.PlayerInput>;
+    var bindingSideTable: Interfaces.NumberDictionary<string>;
+    var sideABindings: number[] = [];
+    var sideBBindings: number[] = [];
+
+    var tcpServer: net.Server;
 
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
     var inputTestWindow: GitHubElectron.BrowserWindow;
 
-    var tcpServer: net.Server;
-
     export function main(): void {
+
+        readConfig();
+        bindingTable = BindingHelper.getBindingTable(config);
+        bindingSideTable = BindingHelper.getBindingSideTable(config);
 
         electron.app.on("window-all-closed", app_windowAllClosed);
         electron.app.on("ready", app_ready);
@@ -25,16 +37,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         tcpServer.listen(6000, tcpServer_listen);
     }
 
-    function app_windowAllClosed(): void {
+    //#region Helper Methods
 
-        if (process.platform !== "darwin") {
-            electron.app.quit();
-        }
+    function readConfig(): void {
+        buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
+        gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
+        config = yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yml", "utf8"));
     }
 
-    function app_ready(): void {
-
-        global["game-list"] = gameList;
+    function buildWindows(): void {
 
         let windowOptions: GitHubElectron.BrowserWindowOptions = {
             frame: false,
@@ -95,6 +106,33 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
     }
 
+    //#endregion
+
+    //#region Electron Application Events
+
+    function app_windowAllClosed(): void {
+
+        if (process.platform !== "darwin") {
+            electron.app.quit();
+        }
+    }
+
+    function app_ready(): void {
+
+        /* tslint:disable:no-string-literal */
+
+        global["gameList"] = gameList;
+        global["buildVars"] = buildVars;
+
+        /* tslint:enable:no-string-literal */
+
+        buildWindows();
+    }
+
+    //#endregion
+
+    //#region Renderer Window Events
+
     function rendererWindow_closed(windowId: string): void {
 
         switch (windowId) {
@@ -110,6 +148,10 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
     }
 
+    //#endregion
+
+    //#region TCP/Socket Events
+
     function tcpServer_connect(socket: any): void {
         console.log("Client Connected.");
         socket.on("data", socket_data);
@@ -120,17 +162,30 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         console.log("Bound!");
     }
 
-    function socket_data(data: any): void {
+    function socket_data(data: Buffer): void {
         let keyString = data.toString("utf-8");
 
         console.log(keyString);
-        windowA.emit("key-pressed", keyString);
-        windowB.emit("key-pressed", keyString);
+
+        let key = parseInt(keyString, 10);
+
+        let input = bindingTable[key];
+
+        if (input) {
+            if (bindingSideTable[key] === "A") {
+                windowA.emit("player-input", input);
+            }
+            else if (bindingSideTable[key] === "B") {
+                windowB.emit("player-input", input);
+            }
+        }
     }
 
     function socket_end() {
         console.log("Socket Closed.");
     }
+
+    //#endregion
 }
 
 module.exports =  JustinCredible.NintendoVsFrontend.Shell;

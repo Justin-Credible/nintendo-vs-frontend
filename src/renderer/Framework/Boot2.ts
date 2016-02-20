@@ -18,33 +18,18 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
      */
     var remote = require("electron").remote;
 
-    /**
-     * This electron browser instance.
-     */
-    var browser = remote.getCurrentWindow();
-
     //#endregion
 
     export function boot(): void {
-
-        // var outputDiv = document.getElementById("output");
-
-        // outputDiv.innerText += " | " + location.hash;
-
-        // browser.addListener("key-pressed", function app_keyPressed(key: string) {
-        //     outputDiv.innerText = key;
-        // });
 
         // Define the top level Angular module for the application.
         // Here we also specify the Angular modules this module depends upon.
         ngModule = angular.module("JustinCredible.NintendoVsFrontend.Renderer.Application", ["templates"]);
 
-        /* tslint:disable:no-string-literal */
-
         // Define our constants.
-        ngModule.constant("buildVars", window["buildVars"]);
-
-        /* tslint:enable:no-string-literal */
+        ngModule.constant("buildVars", remote.getGlobal("buildVars"));
+        ngModule.constant("gameList", remote.getGlobal("gameList"));
+        ngModule.constant("electronRemote", require("electron").remote);
 
         // Register the services, directives, filters, and controllers with Angular.
         BootHelper.registerServices(ngModule);

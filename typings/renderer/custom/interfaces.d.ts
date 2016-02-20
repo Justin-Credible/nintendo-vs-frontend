@@ -31,4 +31,32 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
          */
         commitShortSha: string;
     }
+
+    /**
+     * Represents input for a player.
+     */
+    interface PlayerInput {
+        player: number;
+        input: number;
+    }
+
+    /**
+     * Describes the root level game nodes from game-list.yml.
+     */
+    interface GameDescriptor {
+        name: string;
+        platform: string;
+        resource: string;
+        specs: GameSpecification[];
+    }
+
+    /**
+     * Describes a specification for a game.
+     */
+    interface GameSpecification {
+        type: string;
+        players: string;
+        resource: string;
+        config: string;
+    }
 }

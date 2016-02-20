@@ -7,7 +7,6 @@
         "app/build-vars.json": true,
         "app/shell": true,
 
-        "app/www/js/build-vars.js": true,
         "app/www/js/templates.js": true,
         "app/www/js/bundle.js": true,
         "app/www/js/bundle.js.map": true,

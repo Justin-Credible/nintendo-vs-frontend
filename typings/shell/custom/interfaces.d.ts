@@ -1,6 +1,10 @@
 
 declare namespace Interfaces {
 
+    interface Dictionary<T> { [key: string]: T; }
+
+    interface NumberDictionary<T> { [key: number]: T; }
+
     /**
      * Variables emitted at build time which contain useful application information.
      * Corresponds to the contents of the generated build-vars.json file.
@@ -8,7 +12,7 @@ declare namespace Interfaces {
     interface BuildVars {
 
         /**
-         * True if the application was build in debug configuration, false if it was
+         * True if the application was build in debug configuration; false if it was
          * build a release or distribution configuration.
          */
         debug: boolean;
@@ -37,30 +41,60 @@ declare namespace Interfaces {
      * electron.screen.getAllDisplays()
      */
     interface ElectronDisplay {
-        id: number,
+        id: number;
         bounds: {
-            x: number,
-            y: number,
-            width: number,
+            x: number;
+            y: number;
+            width: number;
             height: number
-        },
+        };
         workArea: {
-            x: number,
-            y: number,
-            width: number,
+            x: number;
+            y: number;
+            width: number;
             height: number
-        },
+        };
         size: {
-            width: number,
+            width: number;
             height: number
-        },
+        };
         workAreaSize: {
-            width: number,
+            width: number;
             height: number
-        },
-        scaleFactor: number,
-        rotation: number,
-        touchSupport: string
+        };
+        scaleFactor: number;
+        rotation: number;
+        touchSupport: string;
+    }
+
+    interface Config {
+        bindings: Bindings;
+    }
+
+    interface Bindings {
+        player1: PlayerBindings;
+        player2: PlayerBindings;
+        player3: PlayerBindings;
+        player4: PlayerBindings;
+    }
+
+    interface PlayerBindings {
+        up: number;
+        down: number;
+        left: number;
+        right: number;
+        a: number;
+        b: number;
+        start: number;
+        coin: number;
+    }
+
+    /**
+     * Represents input for a player.
+     */
+    interface PlayerInput {
+        player: number;
+        input: number;
     }
 
     /**

@@ -19,20 +19,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.MenuViewModel);
 
-            this.viewModel.title = "Nintendo VS HELLO WORLD";
+            this.viewModel.title = "Nintendo VS";
         }
 
         //#endregion
 
         //#region BaseController Events
 
-        // protected view_beforeEnter(event?: ng.IAngularEvent, eventArgs?: Ionic.IViewEventArguments): void {
-        //     super.view_beforeEnter(event, eventArgs);
-
-        //     // Set the category number into the view model using the value as provided
-        //     // in the view route (via the $stateParameters).
-        //     this.viewModel.categoryNumber = this.$stateParams.categoryNumber;
-        // }
+        protected view_loaded(): void {
+            super.view_loaded();
+        }
 
         //#endregion
     }

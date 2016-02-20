@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>Input-Daemon Simulator</title>
-	</head>
-	<body>
-		<p>This is a simulator for the Input-Daemon service.</p>
-		<p>Any keys pressed while this window is focused will be sent to each renderer window.</p>
+    <head>
+        <title>Input-Daemon Simulator</title>
+    </head>
+    <body>
+        <p>This is a simulator for the Input-Daemon service.</p>
+        <p>Any keys pressed while this window is focused will be sent to each renderer window.</p>
 
-		<script type="text/javascript">
-			var ipcRenderer = require("electron").ipcRenderer;
+        <script type="text/javascript">
+            var ipcRenderer = require("electron").ipcRenderer;
 
-			document.addEventListener("keydown", function (event) {
-				ipcRenderer.send("input-test-keypress", event.keyCode);
-			});
-		</script>
-	</body>
+            document.addEventListener("keydown", function (event) {
+                ipcRenderer.send("input-test-keypress", event.keyCode);
+            });
+        </script>
+    </body>
 </html>

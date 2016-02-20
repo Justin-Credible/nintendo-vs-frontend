@@ -6,7 +6,6 @@ bower_components/
 # Generated Artifacts
 app/build-vars.json
 app/shell
-app/www/js/build-vars.js
 app/www/js/templates.js
 app/www/js/bundle.*
 app/www/js/src

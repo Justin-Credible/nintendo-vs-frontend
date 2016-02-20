@@ -220,12 +220,6 @@ gulp.task("ts:vars", function (cb) {
         // Write the file out to disk for the shell.
         fs.writeFileSync("app/build-vars.json", buildVarsJson, { encoding: "utf8" });
 
-        // Generate a JavaScript version for the renderer.
-        var buildVarsJs = "window.buildVars = " + buildVarsJson;
-
-        // Write the file out to disk for the renderer.
-        fs.writeFileSync("app/www/js/build-vars.js", buildVarsJs, { encoding: "utf8" });
-
         cb();
     });
 });
@@ -381,7 +375,6 @@ gulp.task("clean:ts", function (cb) {
         "app/build-vars.json",
         "app/shell",
 
-        "app/www/js/build-vars.js",
         "app/www/js/bundle.js",
         "app/www/js/bundle.js.map",
         "app/www/js/src"
