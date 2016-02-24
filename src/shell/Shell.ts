@@ -1,5 +1,6 @@
 
 import * as net from "net";
+import { exec } from "child_process";
 import * as electron from "electron";
 import * as _ from "lodash";
 import * as fs from "fs";
@@ -26,16 +27,18 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     export function main(): void {
 
+        // Read in configuration values.
         readConfig();
         bindingTable = BindingHelper.getBindingTable(config);
         bindingSideTable = BindingHelper.getBindingSideTable(config);
 
+        // Wire up the event handlers for Electron.
         electron.app.on("window-all-closed", app_windowAllClosed);
         electron.app.on("ready", app_ready);
         electron.ipcMain.on("renderer_log", renderer_log);
 
-        tcpServer = net.createServer(tcpServer_connect);
-        tcpServer.listen(6000, tcpServer_listen);
+        // Create the local TCP server for the input daemon.
+        createTcpServer();
     }
 
     //#region Helper Methods
@@ -44,6 +47,36 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
         gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
         config = yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yml", "utf8"));
+    }
+
+    function isInputDaemonAvailable(): boolean {
+        // The input daemon process is only available on Windows.
+        return process.platform === "win32" && fs.existsSync(__dirname + "/../input-daemon.exe");
+    }
+
+    function launchInputDaemon(): void {
+
+        let command = "start /MIN " + __dirname + "/../input-daemon.exe";
+
+        console.log("Attempting to start input daemon with command:\n    " + command);
+
+        if (!isInputDaemonAvailable()) {
+            console.log("Unable to start input daemon; executable missing or platform is not win32.");
+            return;
+        }
+
+        exec(command, function (error, stdout, stderr) {
+
+            if (error) {
+                console.log("Error launching input daemon.", error);
+            }
+            else if (stdout || stderr) {
+                console.log("Input daemon terminated unexpectedly.", stdout, stderr);
+            }
+
+            console.log("Attempting to restart input daemon in 2 seconds...");
+            setTimeout(() => { launchInputDaemon(); }, 2000);
+        });
     }
 
     function buildWindows(): void {
@@ -91,7 +124,9 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         windowB.loadURL("file://" + __dirname + "../../www/index.html#side-b");
         windowA.on("closed", _.bind(rendererWindow_closed, null, "B"));
 
-        if (buildVars.debug) {
+        // If this is a debug build AND the input daemon is not available, show the
+        // input test window which emulates the functionality of the daemon for testing.
+        if (buildVars.debug && !isInputDaemonAvailable()) {
 
             inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175 });
             inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");
@@ -172,16 +207,24 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     //#endregion
 
-    //#region TCP/Socket Events
+    //#region TCP/Sockets
 
-    function tcpServer_connect(socket: any): void {
-        console.log("Client Connected.");
-        socket.on("data", socket_data);
-        socket.on("end", socket_end);
+    function createTcpServer(): void {
+        console.log("Starting TCP server at 127.0.0.1:6000...");
+        tcpServer = net.createServer(tcpServer_connect);
+        tcpServer.listen(6000, tcpServer_listen);
     }
 
     function tcpServer_listen() {
-        console.log("Bound!");
+        console.log("TCP server started at 127.0.0.1:6000");
+        launchInputDaemon();
+    }
+
+    function tcpServer_connect(socket: net.Socket): void {
+        console.log("Client connected via TCP.");
+        socket.on("data", socket_data);
+        socket.on("end", socket_end);
+        socket.on("error", socket_error);
     }
 
     function socket_data(data: Buffer): void {
@@ -194,7 +237,6 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let input = bindingTable[key];
 
         if (input) {
-            console.log("input is", input);
             if (bindingSideTable[key] === "A") {
                 windowA.emit("player-input", input);
             }
@@ -205,7 +247,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
     }
 
     function socket_end() {
-        console.log("Socket Closed.");
+        console.log("TCP connection closed.");
+    }
+
+    function socket_error(error: any) {
+        console.error("TCP connection error.", error);
     }
 
     //#endregion
