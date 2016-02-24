@@ -4,6 +4,7 @@ node_modules/
 bower_components/
 
 # Generated Artifacts
+build/*
 app/build-vars.json
 app/shell
 app/www/js/templates.js

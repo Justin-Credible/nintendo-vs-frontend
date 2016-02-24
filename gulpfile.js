@@ -21,6 +21,7 @@ var templateCache = require("gulp-angular-templatecache");
 // Other Modules
 var runSequence = require("run-sequence");
 var bower = require("bower");
+var packager = require("electron-packager")
 // var sh = require("shelljs")
 // var async = require("async");
 // var xpath = require("xpath");
@@ -334,11 +335,35 @@ gulp.task("libs", function(cb) {
 });
 
 /**
+ * Uses electron-packager to package up the contents of the app directory with the Electron
+ * runtime and place the output in the build directory. This currently assumes building for
+ * the Windows platform and must be run on a Windows machine to properly edit the icon.
+ */
+gulp.task("package", function (cb) {
+
+    var packageInfo = JSON.parse(fs.readFileSync("app/package.json", "utf8"));
+
+    var options = {
+        dir: "app",
+        platform: "win32",
+        arch: "x64",
+        icon: "assets/icon.ico",
+        name: packageInfo.name,
+        "build-version": packageInfo.version,
+        version: packageInfo.dependencies["electron-prebuilt"],
+        out: "build",
+        overwrite: true
+    };
+
+    packager(options, cb);
+});
+
+/**
  * Used to perform a file clean-up of the project. This removes all files and directories
  * that don"t need to be committed to source control by delegating to several of the clean
  * sub-tasks.
  */
-gulp.task("clean", ["clean:node", "clean:bower", "clean:libs", "clean:ts", "clean:tsd", "clean:templates", "clean:sass"]);
+gulp.task("clean", ["clean:node", "clean:bower", "clean:libs", "clean:ts", "clean:tsd", "clean:templates", "clean:sass", "clean:package"]);
 
 /**
  * Removes the node_modules directory.
@@ -428,5 +453,14 @@ gulp.task("clean:sass", function (cb) {
     del([
         "app/www/css/bundle.css",
         "app/www/css/bundle.css.map"
+    ], cb);
+});
+
+/**
+ * Removes the generated build directory from the package target.
+ */
+gulp.task("clean:package", function (cb) {
+    del([
+        "build"
     ], cb);
 });
