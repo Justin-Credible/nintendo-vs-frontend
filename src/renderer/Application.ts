@@ -68,8 +68,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
 
         public window_playerInput(input: Interfaces.PlayerInput): void {
             var outputDiv = document.getElementById("output");
-
             outputDiv.innerText = "Player: " + input.player + " / Input: " + input.input;
+
+            this.$rootScope.$broadcast(Constants.PlayerInputEvent, input);
         }
 
         /**

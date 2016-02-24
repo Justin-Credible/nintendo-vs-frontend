@@ -36,7 +36,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         /**
          * Used to get the list of games as defined in game-list.yml.
          */
-        public gameList(): Interfaces.GameDescriptor[] {
+        public get gameList(): Interfaces.GameDescriptor[] {
             return this._gameList_;
         }
 

@@ -86,7 +86,7 @@ var sassReporter = function (failure) {
     var file = failure.message.split("\n")[0];
     var message = failure.message.split("\n")[1];
 
-    console.log("[sass] [" + failure.name.toLowerCase() + "] " + file + ":" + message);
+    console.log("[sass] [" + failure.name.toLowerCase() + "] [" + file + "] [" + failure.line + ":" + failure.column + "] - " + message);
 }
 
 /**

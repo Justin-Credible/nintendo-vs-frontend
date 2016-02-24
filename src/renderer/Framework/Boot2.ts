@@ -30,6 +30,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
         ngModule.constant("buildVars", remote.getGlobal("buildVars"));
         ngModule.constant("gameList", remote.getGlobal("gameList"));
         ngModule.constant("electronRemote", require("electron").remote);
+        ngModule.constant("electronIpcRenderer", require("electron").ipcRenderer);
 
         // Register the services, directives, filters, and controllers with Angular.
         BootHelper.registerServices(ngModule);

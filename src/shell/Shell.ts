@@ -32,6 +32,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         electron.app.on("window-all-closed", app_windowAllClosed);
         electron.app.on("ready", app_ready);
+        electron.ipcMain.on("renderer_log", renderer_log);
 
         tcpServer = net.createServer(tcpServer_connect);
         tcpServer.listen(6000, tcpServer_listen);
@@ -129,6 +130,27 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         buildWindows();
     }
 
+    function renderer_log(event: any, level: string, message: string): void {
+
+        switch (level) {
+            case "debug":
+                console.log("[DEBUG] " + message);
+                break;
+            case "info":
+                console.log("[INFO] " + message);
+                break;
+            case "warn":
+                console.warn("[WARN] " + message);
+                break;
+            case "error":
+                console.error("[ERROR] " + message);
+                break;
+            default:
+                console.log("[UNKNOWN] " + message);
+                break;
+        }
+    }
+
     //#endregion
 
     //#region Renderer Window Events
@@ -172,6 +194,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let input = bindingTable[key];
 
         if (input) {
+            console.log("input is", input);
             if (bindingSideTable[key] === "A") {
                 windowA.emit("player-input", input);
             }
