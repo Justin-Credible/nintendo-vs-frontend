@@ -13,22 +13,27 @@ namespace Input_Daemon
 {
     class Program
     {
+        static TcpClient tcpClient;
         static StreamWriter writer;
 
         static void Main(string[] args)
         {
             _hookID = SetHook(_proc);
 
-            TcpClient tcpClient = new TcpClient();
-            tcpClient.Connect("127.0.0.1", 6000);
+            try {
+                tcpClient = new TcpClient();
+                tcpClient.Connect("127.0.0.1", 6000);
 
-            NetworkStream clientStream = tcpClient.GetStream();
+                NetworkStream clientStream = tcpClient.GetStream();
 
-            writer = new StreamWriter(clientStream,
-                                                   Encoding.ASCII);
-
-            writer.Write("Hello world!");
-            writer.Flush();
+                writer = new StreamWriter(clientStream, Encoding.ASCII);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error connecting to local TCP server.", ex);
+                Application.Exit();
+                return;
+            }
 
             Application.Run();
             tcpClient.Close();
@@ -59,10 +64,23 @@ namespace Input_Daemon
             if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                //Console.WriteLine((Keys)vkCode);
-                Console.WriteLine(vkCode);
-                writer.Write(vkCode);
-                writer.Flush();
+
+                try {
+                    //Console.WriteLine((Keys)vkCode);
+                    Console.WriteLine(vkCode);
+                    writer.Write(vkCode);
+                    writer.Flush();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error writing key to TCP socket.", ex);
+
+                    if (!tcpClient.Connected)
+                    {
+                        Console.WriteLine("TCP socket is no longer connected; exiting daemon.");
+                        Application.Exit();
+                    }
+                }
             }
             return CallNextHookEx(_hookID, nCode, wParam, lParam);
         }
