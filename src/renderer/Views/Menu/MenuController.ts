@@ -51,8 +51,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private app_playerInput(event: ng.IAngularEvent, input: Interfaces.PlayerInput): void {
 
-            this.Logger.debug(MenuController.ID, "app_playerInput", "test!!", input);
-
             // If one player is already in control and the other provides
             // input, then ignore it as they are in the "Please Wait" state.
             if (this.viewModel.activePlayer != null
