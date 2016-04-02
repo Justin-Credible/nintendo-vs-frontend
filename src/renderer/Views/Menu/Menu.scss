@@ -12,6 +12,8 @@
 
     .container {
 
+        height: 700px;
+
         // background-color: green;
 
         /** Game List Container - Left **/
@@ -28,7 +30,7 @@
                 background-repeat: no-repeat;
                 background-size: contain;
                 background-position: center center;
-                height: 600px;
+                height: 550px;
                 // background-color: teal;
             }
 
@@ -53,10 +55,15 @@
             div {
                 padding-top: 5px;
                 padding-bottom: 5px;
+                padding-left: 45px;
             }
 
             .selected-game {
-                border: solid 1px red;
+                background-image: url("../img/cursor.png");
+                background-repeat: no-repeat;
+                background-position-y: center;
+                background-position-x: 0;
+                color: $nintendo-red;
             }
         }
     }
@@ -66,7 +73,7 @@
     .pager {
         // border: 1px solid mediumpurple;
         text-align: center;
-        font-size: 20px;
+        font-size: 20pt;
     }
 
     /** Footer **/
@@ -79,7 +86,7 @@
             display: inline-block;
             width: 49%;
             text-align: center;
-            font-size: 20px;
+            font-size: 20pt;
         }
 
         .player2 {

@@ -13,6 +13,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 "$rootScope",
                 "$timeout",
                 Services.Logger.ID,
+                Services.SFX.ID,
                 Services.Utilities.ID
             ];
         }
@@ -22,6 +23,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private $rootScope: ng.IRootScopeService,
             private $timeout: ng.ITimeoutService,
             private Logger: Services.Logger,
+            private SFX: Services.SFX,
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.MenuViewModel);
 
@@ -132,6 +134,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: SFX Needed: Can't navigate up.");
                     }
                     else {
+                        this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex - 1];
                     }
 
@@ -145,6 +148,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: SFX Needed: Can't navigate down.");
                     }
                     else {
+                        this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex + 1];
                     }
                 }

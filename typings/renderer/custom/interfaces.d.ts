@@ -33,6 +33,13 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
     }
 
     /**
+     * Describes a dictionary of string to type-T (POJO, associative array).
+     */
+    interface Dictionary<T> {
+        [index: string]: T;
+    }
+
+    /**
      * Represents input for a player.
      */
     interface PlayerInput {
