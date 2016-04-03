@@ -485,5 +485,47 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         }
 
         //#endregion
+
+        //#region Paging
+
+        public getPageAtIndex(items: any[], pageIndex: number, pageSize: number): any[] {
+
+            if (!items || items.length === 0) {
+                return items;
+            }
+
+            let startItemIndex = pageIndex * pageSize;
+            let endItemIndex = (pageSize * (pageIndex + 1));// - 1;
+
+            console.debug("pageIndex: " + pageIndex);
+            console.debug("pageSize: " + pageSize);
+            console.debug("startItemIndex: " + startItemIndex);
+            console.debug("slice return value: " + items.slice(startItemIndex, pageSize));
+
+            return items.slice(startItemIndex, endItemIndex);
+        }
+
+        public getPageIndexForItemIndex(itemIndex: number, pageSize: number): number {
+
+            if (itemIndex == null || pageSize == null) {
+                return 0;
+            }
+
+            if (itemIndex < pageSize) {
+                return 0;
+            }
+
+            let pageIndex = 0;
+            let itemsCount = 0;
+
+            while (itemsCount <= itemIndex) {
+                pageIndex++;
+                itemsCount += pageSize;
+            }
+
+            return pageIndex - 1;
+        }
+
+        //#endregion
     }
 }

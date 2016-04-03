@@ -7,7 +7,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.ViewModels {
         public player2Prompt: string;
 
         public games: Interfaces.GameDescriptor[];
-        public selectedGame: Interfaces.GameDescriptor;
+        public gamesForPage: Interfaces.GameDescriptor[];
+
         public activePlayer: Enums.Player;
+        public selectedGame: Interfaces.GameDescriptor;
+        public currentPageIndex: number;
     }
 }

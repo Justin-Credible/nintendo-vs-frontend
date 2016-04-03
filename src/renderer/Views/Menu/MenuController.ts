@@ -26,10 +26,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private SFX: Services.SFX,
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.MenuViewModel);
-
-            this.viewModel.title = "Nintendo VS";
-            this.viewModel.player1Prompt = "Please Wait";
-            this.viewModel.player2Prompt = "Please Wait";
         }
 
         //#endregion
@@ -43,8 +39,80 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
+            this.viewModel.title = "Nintendo VS";
+            this.viewModel.player1Prompt = "Please Wait";
+            this.viewModel.player2Prompt = "Please Wait";
+
             this.viewModel.games = this.Utilities.gameList;
+            this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.Utilities.gameList, 0, Constants.PAGE_SIZE);
+            this.Logger.debug(MenuController.ID, "view_loaded", "gamesForPage", this.viewModel.gamesForPage);
+            this.viewModel.currentPageIndex = 0;
             this.viewModel.selectedGame = this.viewModel.games[0];
+        }
+
+        //#endregion
+
+        //#region Controller Helper Properties
+
+        protected get playerCountDisplay(): string {
+
+            if (!this.viewModel.selectedGame) {
+                return "";
+            }
+
+            if (this.viewModel.selectedGame.specs.length === 1) {
+                return this.viewModel.selectedGame.specs[0].players + " Players";
+            }
+            else if (this.viewModel.selectedGame.specs.length > 1) {
+                let lastSpecIndex = this.viewModel.selectedGame.specs.length - 1;
+                return this.viewModel.selectedGame.specs[lastSpecIndex].players + " Players";
+            }
+            else {
+                return "[Error 1]";
+            }
+        }
+
+        protected get screenCountDisplay(): string {
+
+            if (!this.viewModel.selectedGame) {
+                return "";
+            }
+            
+            if (this.viewModel.selectedGame.specs.length === 1) {
+                if (this.viewModel.selectedGame.specs[0].type === "single-screen") {
+                    return "1 Screen";
+                }
+                else if (this.viewModel.selectedGame.specs[0].type === "dual-screen") {
+                    return "2 Screen";
+                }
+                else {
+                    return "[Error 1]";
+                }
+            }
+            else if (this.viewModel.selectedGame.specs.length > 1) {
+                let types = _.pluck(this.viewModel.selectedGame.specs, "type");
+
+                if (types.indexOf("single-screen") > -1 && types.indexOf("dual-screen") > -1) {
+                    return "1-2 Screens";
+                }
+                else {
+                    return "[Error 2]";
+                }
+            }
+            else {
+                return "[Error 3]";
+            }
+        }
+
+        protected get pagerDisplay(): string {
+
+            if (this.viewModel.currentPageIndex == null || this.viewModel.games == null) {
+                return;
+            }
+
+            return this.Utilities.format("Page {0} of {1}",
+                        this.viewModel.currentPageIndex + 1,
+                        Math.ceil(this.viewModel.games.length / Constants.PAGE_SIZE));
         }
 
         //#endregion
@@ -136,6 +204,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     else {
                         this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex - 1];
+                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex - 1, Constants.PAGE_SIZE)
+                        this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, this.viewModel.currentPageIndex, Constants.PAGE_SIZE);
                     }
 
                 }
@@ -150,6 +220,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     else {
                         this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex + 1];
+                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex + 1, Constants.PAGE_SIZE)
+                        this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, this.viewModel.currentPageIndex, Constants.PAGE_SIZE);
                     }
                 }
                 break;

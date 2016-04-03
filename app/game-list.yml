@@ -70,5 +70,5 @@
             config: "btoads_2p.cfg"
         -
             type: "dual-screen"
-            players: "1-4"
+            players: "1-3"
             config: "btoads_3p.cfg"
