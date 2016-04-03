@@ -26,11 +26,11 @@
 
             .game-poster {
                 margin: 10px;
-                background-image: url("../img/game-place-holder.png");
                 background-repeat: no-repeat;
                 background-size: contain;
                 background-position: center center;
                 height: 550px;
+                transition: background-image 0.2s ease-in-out;
                 // background-color: teal;
             }
 

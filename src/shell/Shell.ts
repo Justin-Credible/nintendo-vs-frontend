@@ -1,10 +1,12 @@
 
 import * as net from "net";
 import { exec } from "child_process";
+import * as path from "path";
 import * as electron from "electron";
 import * as _ from "lodash";
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+import * as Utilities from "./Utilities";
 import * as BindingHelper from "./BindingHelper";
 import * as Enums from "./Enums";
 
@@ -155,11 +157,19 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     function app_ready(): void {
 
-        /* tslint:disable:no-string-literal */
+        gameList.forEach((game: Interfaces.GameDescriptor) => {
 
+            // TODO: If no resource, examine child specs.
+            // TODO: If platform === "PC", grab binary filename, remove EXE and use for image filename.
+            if (game.resource) {
+                let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, game.resource + ".png");
+                game._hasImage = fs.existsSync(imagePath);
+            }
+        })
+
+        /* tslint:disable:no-string-literal */
         global["gameList"] = gameList;
         global["buildVars"] = buildVars;
-
         /* tslint:enable:no-string-literal */
 
         buildWindows();
@@ -229,8 +239,6 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     function socket_data(data: Buffer): void {
         let keyString = data.toString("utf-8");
-
-        console.log(keyString);
 
         let key = parseInt(keyString, 10);
 

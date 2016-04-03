@@ -495,12 +495,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             }
 
             let startItemIndex = pageIndex * pageSize;
-            let endItemIndex = (pageSize * (pageIndex + 1));// - 1;
-
-            console.debug("pageIndex: " + pageIndex);
-            console.debug("pageSize: " + pageSize);
-            console.debug("startItemIndex: " + startItemIndex);
-            console.debug("slice return value: " + items.slice(startItemIndex, pageSize));
+            let endItemIndex = (pageSize * (pageIndex + 1));
 
             return items.slice(startItemIndex, endItemIndex);
         }

@@ -40,8 +40,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
             this.viewModel.title = "Nintendo VS";
-            this.viewModel.player1Prompt = "Please Wait";
-            this.viewModel.player2Prompt = "Please Wait";
+            this.viewModel.player1Prompt = "Press Start";
+            this.viewModel.player2Prompt = "Press Start";
 
             this.viewModel.games = this.Utilities.gameList;
             this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.Utilities.gameList, 0, Constants.PAGE_SIZE);
@@ -53,6 +53,21 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#endregion
 
         //#region Controller Helper Properties
+
+        protected get posterImageUrl(): string {
+
+            if (!this.viewModel.selectedGame) {
+                return "url('img/game-place-holder.png')";
+            }
+
+            if (!this.viewModel.selectedGame._hasImage) {
+                return "url('img/game-place-holder.png')";
+            }
+
+            return this.Utilities.format("url('img/games/{0}/{1}.png')",
+                this.viewModel.selectedGame.platform,
+                this.viewModel.selectedGame.resource);
+        }
 
         protected get playerCountDisplay(): string {
 
@@ -138,8 +153,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                 if (input.player === Enums.Player.One) {
                     this.viewModel.player1Prompt = "Choose a Game";
+                    this.viewModel.player2Prompt = "Please Wait";
                 }
                 else if (input.player === Enums.Player.Two) {
+                    this.viewModel.player1Prompt = "Please Wait";
                     this.viewModel.player2Prompt = "Choose a Game";
                 }
 

@@ -55,6 +55,7 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         platform: string;
         resource: string;
         specs: GameSpecification[];
+        _hasImage?: boolean;
     }
 
     /**
