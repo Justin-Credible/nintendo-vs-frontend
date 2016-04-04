@@ -9,9 +9,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
      * 
      * T - The parameter type for the model.
      */
-    export class BaseController<T> {
-        public scope: ng.IScope;
-        public viewModel: T;
+    export abstract class BaseController<T> {
+        protected scope: ng.IScope;
+        protected viewModel: T;
 
         constructor(scope: ng.IScope, ModelType: { new (): T; }) {
 

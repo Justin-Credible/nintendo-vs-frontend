@@ -24,7 +24,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
 
         // Define the top level Angular module for the application.
         // Here we also specify the Angular modules this module depends upon.
-        ngModule = angular.module("JustinCredible.NintendoVsFrontend.Renderer.Application", ["templates"]);
+        ngModule = angular.module("JustinCredible.NintendoVsFrontend.Renderer.Application", ["templates", "ngDialog"]);
 
         // Define our constants.
         ngModule.constant("buildVars", remote.getGlobal("buildVars"));

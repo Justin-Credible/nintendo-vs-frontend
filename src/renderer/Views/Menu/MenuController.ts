@@ -14,6 +14,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 "$timeout",
                 Services.Logger.ID,
                 Services.SFX.ID,
+                Services.UIHelper.ID,
                 Services.Utilities.ID
             ];
         }
@@ -24,6 +25,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private $timeout: ng.ITimeoutService,
             private Logger: Services.Logger,
             private SFX: Services.SFX,
+            private UIHelper: Services.UIHelper,
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.MenuViewModel);
         }

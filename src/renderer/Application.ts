@@ -57,9 +57,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
 
             // Subscribe to Angular events.
             this.$rootScope.$on("$locationChangeStart", _.bind(this.angular_locationChangeStart, this));
-
-            // Register all of the dialogs with the UiHelper.
-            // this.registerDialogs(this._ngModule);
         }
 
         //#endregion
@@ -137,33 +134,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
                 // If logging failed there is no use trying to log the failure.
             }
         }
-
-        //#endregion
-
-        //#region Private Helpers
-
-        // /**
-        //  * Used to register each of the Controller classes that extend BaseDialog as dialogs
-        //  * with the UiHelper.
-        //  * 
-        //  * @params ngModule The root Angular module to use for registration.
-        //  */
-        // private registerDialogs(ngModule: ng.IModule): void {
-
-        //     // Loop over each of the controllers, and for any controller that dervies from BaseController
-        //     // register it as a dialog using its ID with the UiHelper.
-        //     _.each(Controllers, (Controller: any) => {
-
-        //         // Don't try to register the BaseDialogController since it is abstract.
-        //         if (Controller === Controllers.BaseDialogController) {
-        //             return; // Continue
-        //         }
-
-        //         if (this.Utilities.derivesFrom(Controller, Controllers.BaseDialogController)) {
-        //             this.UiHelper.registerDialog(Controller.ID, Controller.TemplatePath);
-        //         }
-        //     });
-        // }
 
         //#endregion
     }

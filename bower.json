@@ -3,11 +3,15 @@
   "private": true,
   "dependencies": {
     "lodash": "3.10.0",
-    "angular": "angularjs#~1.4.8"
+    "angular": "1.4.8",
+    "ng-dialog": "0.5.9"
   },
   "install": {
     "path": "app/www/lib",
     "sources": {},
     "ignore": []
+  },
+  "resolutions": {
+      "angular": "1.4.8"
   }
 }

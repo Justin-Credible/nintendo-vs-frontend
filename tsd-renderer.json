@@ -15,10 +15,13 @@
       "commit": "8ea42cd8bb11863ed6f242d67c502288ebc45a7b"
     },
     "angularjs/angular.d.ts": {
-      "commit": "70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e"
+      "commit": "d969b903d1fce89a5e43828ec68458b4f852db4d"
     },
     "jquery/jquery.d.ts": {
-      "commit": "70bf7e2bfeb0d5b1b651ef3219bcc65c8eec117e"
+      "commit": "d969b903d1fce89a5e43828ec68458b4f852db4d"
+    },
+    "ng-dialog/ng-dialog.d.ts": {
+      "commit": "d969b903d1fce89a5e43828ec68458b4f852db4d"
     }
   }
 }
