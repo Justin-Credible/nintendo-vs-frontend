@@ -12,19 +12,22 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         public static get $inject(): string[] {
             return [
+                "$q",
                 "ngDialog",
                 Utilities.ID,
             ];
         }
 
         constructor(
+            private $q: ng.IQService,
             private ngDialog: angular.dialog.IDialogService,
             private Utilities: Services.Utilities) {
         }
 
         //#endregion
 
-        public showDialog(DialogController: Function, data?: any): ng.dialog.IDialogOpenResult {
+        public showDialog(DialogController: Function, data?: any): ng.IPromise<any> {
+            let q = this.$q.defer<any>();
 
             if (!this.Utilities.derivesFrom(DialogController, Controllers.BaseDialogController)) {
                 throw new Error("The DialogController passed was not a class instance extending BaseDialogController.");
@@ -39,10 +42,19 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             let options: ng.dialog.IDialogOpenOptions = {
                 template: templatePath,
                 controller: DialogController,
-                data: data
+                data: data,
+                showClose: false,
+                closeByEscape: false,
+                closeByNavigation: false,
+                closeByDocument: false,
+                className: "ngdialog-theme-nintendo"
             };
 
-            return this.ngDialog.open(options);
+            this.ngDialog.open(options).closePromise.then((result: ng.dialog.IDialogClosePromise) => {
+                q.resolve(result.value);
+            });
+
+            return q.promise;
         }
     }
 }

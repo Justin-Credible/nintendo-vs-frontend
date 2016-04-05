@@ -1,7 +1,7 @@
 
 namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
-    export class LaunchDialogController extends BaseDialogController<ViewModels.EmptyViewModel, ViewModels.EmptyViewModel, ViewModels.EmptyViewModel> {
+    export class LaunchDialogController extends BaseDialogController<ViewModels.EmptyViewModel, ViewModels.EmptyViewModel, Models.LaunchDialogResultModel> {
 
         //#region Injection
 

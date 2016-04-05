@@ -32,12 +32,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#endregion
 
+        private _allowPlayerInput: boolean;
         private _playerInputTimer: ng.IPromise<void>;
 
         //#region BaseController Overrides
 
         protected view_loaded(): void {
             super.view_loaded();
+
+            this._allowPlayerInput = true;
 
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
@@ -138,6 +141,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private app_playerInput(event: ng.IAngularEvent, input: Interfaces.PlayerInput): void {
 
+            if (!this._allowPlayerInput) {
+                return;
+            }
+
             // If one player is already in control and the other provides
             // input, then ignore it as they are in the "Please Wait" state.
             if (this.viewModel.activePlayer != null
@@ -162,13 +169,13 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     this.viewModel.player2Prompt = "Choose a Game";
                 }
 
-                this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+                this.startPlayerInputTimer();
             }
             else {
                 // If there was already an active player, just refresh
                 // the timer, unless the player pressed back to cancel.
 
-                this.$timeout.cancel(this._playerInputTimer);
+                this.stopPlayerInputTimer();
 
                 if (input.input === Enums.Input.Back) {
                     this.viewModel.activePlayer = null;
@@ -178,7 +185,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     return;
                 }
                 else {
-                    this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+                    this.startPlayerInputTimer();
                 }
             }
 
@@ -247,8 +254,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                 case Enums.Input.OK: {
 
-                    // TODO: Show menu about game information.
-                    this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: Player chose game.", this.viewModel.selectedGame);
+                    this.preventPlayerInput();
+                    this.stopPlayerInputTimer();
+
+                    this.showLaunchDialog(this.viewModel.selectedGame);
                 }
                 break;
             }
@@ -262,6 +271,46 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.viewModel.selectedGame = null;
             this.viewModel.player1Prompt = "Press Start";
             this.viewModel.player2Prompt = "Press Start";
+        }
+
+        //#endregion
+
+        //#region Private Helpers
+
+        private startPlayerInputTimer(): void {
+            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+        }
+
+        private stopPlayerInputTimer(): void {
+            if (this._playerInputTimer) {
+                this.$timeout.cancel(this._playerInputTimer);
+            }
+        }
+
+        private preventPlayerInput(): void {
+            this._allowPlayerInput = false;
+        }
+
+        private allowPlayerInput(): void {
+            this._allowPlayerInput = true;
+        }
+
+        private showLaunchDialog(game: Interfaces.GameDescriptor): void {
+
+            this.UIHelper.showDialog(LaunchDialogController)
+                .then((result: Models.LaunchDialogResultModel) => {
+
+                console.debug("!", result);
+
+                if (result.action === Constants.DialogResults.OK) {
+                    // TODO: Validate spec, show loading dialog, and launch!
+                    this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: Player chose game.", this.viewModel.selectedGame);
+                }
+                else {
+                    this.allowPlayerInput();
+                    this.startPlayerInputTimer();
+                }
+            });
         }
 
         //#endregion
