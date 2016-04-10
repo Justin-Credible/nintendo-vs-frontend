@@ -239,7 +239,7 @@ gulp.task("ts:src", ["ts:src-read-me"], function (cb) {
     }
 
     return gulp.src(paths.renderer_ts)
-        .pipe(gulp.dest("app/www/js/src"));
+        .pipe(gulp.dest("app/www/js/src/renderer"));
 });
 
 /**
@@ -402,6 +402,7 @@ gulp.task("clean:ts", function (cb) {
 
         "app/www/js/bundle.js",
         "app/www/js/bundle.js.map",
+        "app/www/js/bundle.d.ts",
         "app/www/js/src"
     ], cb);
 });

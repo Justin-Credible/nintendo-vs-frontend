@@ -50,7 +50,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this.viewModel.games = this.Utilities.gameList;
             this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.Utilities.gameList, 0, Constants.PAGE_SIZE);
-            this.Logger.debug(MenuController.ID, "view_loaded", "gamesForPage", this.viewModel.gamesForPage);
             this.viewModel.currentPageIndex = 0;
             this.viewModel.selectedGame = this.viewModel.games[0];
         }
@@ -297,10 +296,12 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private showLaunchDialog(game: Interfaces.GameDescriptor): void {
 
-            this.UIHelper.showDialog(LaunchDialogController)
-                .then((result: Models.LaunchDialogResultModel) => {
+            let data = new Models.LaunchDialogModel();
+            data.activePlayer = this.viewModel.activePlayer;
+            data.game = this.viewModel.selectedGame;
 
-                console.debug("!", result);
+            this.UIHelper.showDialog(LaunchDialogController, data)
+                .then((result: Models.LaunchDialogResultModel) => {
 
                 if (result.action === Constants.DialogResults.OK) {
                     // TODO: Validate spec, show loading dialog, and launch!

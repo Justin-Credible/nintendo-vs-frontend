@@ -15,13 +15,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 "$q",
                 "ngDialog",
                 Utilities.ID,
+                SFX.ID,
             ];
         }
 
         constructor(
             private $q: ng.IQService,
             private ngDialog: angular.dialog.IDialogService,
-            private Utilities: Services.Utilities) {
+            private Utilities: Services.Utilities,
+            private SFX: Services.SFX) {
         }
 
         //#endregion
@@ -49,6 +51,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 closeByDocument: false,
                 className: "ngdialog-theme-nintendo"
             };
+
+            this.SFX.playReady();
 
             this.ngDialog.open(options).closePromise.then((result: ng.dialog.IDialogClosePromise) => {
                 q.resolve(result.value);

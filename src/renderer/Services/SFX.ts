@@ -78,6 +78,22 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             this.playAudio("sfx/ff7-cursor.wav");
         }
 
+        public playReady(): void {
+            this.playAudio("sfx/ff7-ready.wav");
+        }
+
+        public playCancel(): void {
+            this.playAudio("sfx/ff7-cancel.wav");
+        }
+
+        public playError(): void {
+            this.playAudio("sfx/ff7-error.wav");
+        }
+
+        public playOk(): void {
+            this.playAudio("sfx/ff7-ok.wav");
+        }
+
         //#endregion
     }
 }

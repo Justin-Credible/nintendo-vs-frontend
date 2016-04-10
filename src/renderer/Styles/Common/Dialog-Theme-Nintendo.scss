@@ -55,8 +55,8 @@
 }
 
 .ngdialog.ngdialog-theme-nintendo {
-  padding-bottom: 160px;
-  padding-top: 160px;
+//   padding-bottom: 160px;
+//   padding-top: 160px;
 }
 
 .ngdialog.ngdialog-theme-nintendo.ngdialog-closing .ngdialog-content {
@@ -71,6 +71,7 @@
   max-width: 100%;
   position: relative;
   width: 450px;
+  top: 400px;
 
     // Final Fantasy VII UI, taken from: http://codepen.io/terrancerobb/pen/bnuqe
 
@@ -82,7 +83,7 @@
                 0 -2px #9c9a9c,
                 -2px 0 #7b757b,
                 0 2px #424542;
-    padding: 5px 10px;
+    padding: 30px 40px;
 
     background: #04009d;
     background: -moz-linear-gradient(top,  #04009d 0%, #06004d 100%);

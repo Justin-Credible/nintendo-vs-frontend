@@ -1,0 +1,29 @@
+
+.view-launch-dialog {
+
+    .title {
+        font-size: 20pt;
+        padding-top: 10px;
+    }
+
+    .specs {
+        padding-top: 10px;
+
+        .cancel {
+            padding-top: 10px;
+        }
+
+        .menu-item {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 45px;
+        }
+
+        .selected-item {
+            background-image: url("../img/cursor.png");
+            background-repeat: no-repeat;
+            background-position-y: center;
+            background-position-x: 0;
+        }
+    }
+}

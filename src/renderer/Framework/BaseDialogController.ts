@@ -52,11 +52,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
          * @param result The return result value for this dialog.
          */
         protected close(result?: R): void {
-            this.scope["confirm"](result);
-        }
-
-        protected cancel(): void {
-            this.scope.closeThisDialog();
+            this.scope.closeThisDialog(result);
         }
 
         //#endregion
