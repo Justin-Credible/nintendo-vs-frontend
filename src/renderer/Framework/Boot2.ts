@@ -32,6 +32,18 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
         ngModule.constant("electronRemote", require("electron").remote);
         ngModule.constant("electronIpcRenderer", require("electron").ipcRenderer);
 
+        // The hash indicates if this is the Side A or Side B instance.
+        if (location.hash === "#side-a") {
+            ngModule.constant("side", "A");
+        }
+        else if (location.hash === "#side-b") {
+            ngModule.constant("side", "B");
+        }
+        else {
+            console.warn("Could not detect which side this renderer instance is supposed to be.", location.hash);
+            ngModule.constant("side", "X");
+        }
+
         // Register the services, directives, filters, and controllers with Angular.
         BootHelper.registerServices(ngModule);
         // BootHelper.registerDirectives(ngModule);

@@ -1,4 +1,17 @@
 ---
+borderlessgaming:
+    executable: "C:/Program Files (x86)/Borderless Gaming/BorderlessGaming.exe"
+    delay: 3000
+
+mame:
+    executable: "C:/Emulators/MAME/mame64.exe"
+    workingDir: "C:/Emulators/MAME"
+    args:
+    screens:
+        a: \\.\DISPLAY1
+        b: \\.\DISPLAY2
+    customConfigRoot: "C:/Emulators/mame-configs"
+
 bindings:
     player1:
         up: 65 #A

@@ -12,20 +12,30 @@ import * as Enums from "./Enums";
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
+    // Runtime Configuration
     var buildVars: Interfaces.BuildVars;
     var gameList: Interfaces.GameDescriptor[];
     var config: Interfaces.Config;
 
+    // Controller Bindings
     var bindingTable: Interfaces.NumberDictionary<Interfaces.PlayerInput>;
     var bindingSideTable: Interfaces.NumberDictionary<string>;
     var sideABindings: number[] = [];
     var sideBBindings: number[] = [];
 
+    // TCP Server for Input Daemon Communication
     var tcpServer: net.Server;
 
+    // Windows
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
     var inputTestWindow: GitHubElectron.BrowserWindow;
+
+    // Emulator Status
+    var sideAGame: Interfaces.GameDescriptor;
+    var sideASpec: Interfaces.GameSpecification;
+    var sideBGame: Interfaces.GameDescriptor;
+    var sideBSpec: Interfaces.GameSpecification;
 
     export function main(): void {
 
@@ -35,9 +45,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         bindingSideTable = BindingHelper.getBindingSideTable(config);
 
         // Wire up the event handlers for Electron.
+        electron.app.on("exit", app_exit);
         electron.app.on("window-all-closed", app_windowAllClosed);
         electron.app.on("ready", app_ready);
+
+        // Wire up the IPC events for the renderers.
         electron.ipcMain.on("renderer_log", renderer_log);
+        electron.ipcMain.on("renderer_isGameRunning", renderer_isGameRunning);
+        electron.ipcMain.on("renderer_canLaunchSpec", renderer_canLaunchSpec);
+        electron.ipcMain.on("renderer_launchGame", renderer_launchGame);
 
         // Create the local TCP server for the input daemon.
         createTcpServer();
@@ -49,6 +65,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
         gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
         config = yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yml", "utf8"));
+
+        // TODO: Validate config and throw exception if not valid.
     }
 
     function isInputDaemonAvailable(): boolean {
@@ -67,7 +85,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             return;
         }
 
-        exec(command, function (error, stdout, stderr) {
+        exec(command, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
             if (error) {
                 console.log("Error launching input daemon.", error);
@@ -78,6 +96,28 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             console.log("Attempting to restart input daemon in 2 seconds...");
             setTimeout(() => { launchInputDaemon(); }, 2000);
+        });
+    }
+
+    function launchBorderlessGaming(): void {
+
+        exec("taskkill /IM BorderlessGaming.exe");
+
+        let command = "start /b /min \"\" \"" + config.borderlessgaming.executable + "\"";
+
+        console.log("Attempting to start Borderless Gaming with command:\n    " + command);
+
+        exec(command, (error: Error, stdout: Buffer, stderr: Buffer) => {
+
+            if (error) {
+                console.log("Error launching Borderless Gaming.", error);
+            }
+            else if (stdout || stderr) {
+                console.log("Borderless Gaming terminated unexpectedly.", stdout, stderr);
+            }
+
+            console.log("Attempting to restart Borderless Gaming in 2 seconds...");
+            setTimeout(() => { launchBorderlessGaming(); }, 2000);
         });
     }
 
@@ -148,6 +188,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     //#region Electron Application Events
 
+    function app_exit(): void {
+
+        exec("taskkill /IM BorderlessGaming.exe");
+    }
+
     function app_windowAllClosed(): void {
 
         if (process.platform !== "darwin") {
@@ -172,8 +217,17 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         global["buildVars"] = buildVars;
         /* tslint:enable:no-string-literal */
 
-        buildWindows();
+        // Ensure the Borderless Gaming app is running.
+        launchBorderlessGaming();
+
+        // Wait to ensure that Borderless Gaming launches and it's window is on the desktop.
+        // We want to make sure that our renderer windows are on top of the window.
+        setTimeout(() => { buildWindows(); }, config.borderlessgaming.delay || 500);
     }
+
+    //#endregion
+
+    //#region Renderer IPC Events
 
     function renderer_log(event: any, level: string, message: string): void {
 
@@ -194,6 +248,201 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 console.log("[UNKNOWN] " + message);
                 break;
         }
+    }
+
+    function renderer_isGameRunning(event: any, side: string): void {
+
+        let isGameRunning = false;
+
+        switch (side) {
+            case "A":
+                isGameRunning = sideAGame != null;
+                break;
+            case "B":
+                isGameRunning = sideBGame != null;
+                break;
+        }
+
+        event.returnValue = isGameRunning.toString();
+    }
+
+    function renderer_canLaunchSpec(event: any, side: string, specToCheckJson: string): void {
+
+        let specToCheck: Interfaces.GameSpecification;
+
+        try {
+            specToCheck = JSON.parse(specToCheckJson);
+        }
+        catch (exception) {
+            console.error("Unable to parse game specification JSON.", side, specToCheckJson, exception);
+        }
+
+        event.returnValue = Utilities.canLaunchSpec(sideASpec, sideBSpec, side, specToCheck).toString();
+    }
+
+    function renderer_launchGame(event: any, side: string, gameJson: string, specJson: string): void {
+
+        let game: Interfaces.GameDescriptor;
+        let spec: Interfaces.GameSpecification;
+
+        try {
+            game = JSON.parse(gameJson);
+            spec = JSON.parse(specJson);
+        }
+        catch (exception) {
+            console.error("Unable to parse game descriptor or specification JSON.", side, gameJson, specJson, exception);
+            return;
+        }
+
+        if (side == null || game == null || spec == null ) {
+            console.error("A side, game, and spec are required to launch a game.", side, game, spec);
+            return;
+        }
+
+        if (side !== "A" && side !== "B") {
+            console.error("Unsupported side when launching game.", side, game, spec);
+            return;
+        }
+
+        if (spec.type !== "single-screen" && spec.type !== "dual-screen") {
+            console.error("Unsupported spec type when launching game.", side, game, spec);
+            return;
+        }
+
+        if (game.platform !== "MAME" && game.platform !== "PC") {
+            console.error("Unsupported platform type when launching game.", side, game, spec);
+            return;
+        }
+
+        let canLaunchSpec = Utilities.canLaunchSpec(sideASpec, sideBSpec, side, spec);
+
+        // Sanity check - The renderer should have already checked this.
+        if (!canLaunchSpec) {
+            console.warn("The given specification can not be launched at this time because it conflicts with another active spec.");
+            return;
+        }
+
+        let executable: string = null;
+        let workingDir: string = null;
+        let args: string[] = [];
+        let startMinimized = false;
+
+        if (game.platform === "MAME") {
+            executable = config.mame.executable;
+            workingDir = config.mame.workingDir;
+
+            if (spec.resource) {
+                args.push(spec.resource);
+            }
+            else {
+                args.push(game.resource);
+            }
+
+            if (config.mame.args && config.mame.args.length > 0) {
+                args = args.concat(config.mame.args);
+            }
+
+            if (spec.type === "dual-screen") {
+                args.push("-numscreens 2");
+            }
+            else if (spec.type === "single-screen") {
+
+                startMinimized = true;
+
+                args.push("-global_inputs");
+                args.push("-window");
+
+                if (side === "A") {
+                    args.push(Utilities.format("-screen {0}", config.mame.screens.a));
+                }
+                else if (side === "B") {
+                    args.push(Utilities.format("-screen {0}", config.mame.screens.b));
+                }
+            }
+
+            // TODO: Handle two instances of the same game at once (nvram conflicts??)
+            // TODO: Honor specific config file from spec.
+            // TODO: Launch with start /b /min if single screen?
+            // TODO: Ensure borderless gaming is running?
+        }
+        else if (game.platform === "PC") {
+            executable = game.resource;
+        }
+
+        if (!fs.existsSync(executable)) {
+            console.error("Unable to locate executable when launching game.", executable);
+            return;
+        }
+
+        if (!fs.existsSync(executable)) {
+            console.error("Unable to locate working directory when launching game.", workingDir);
+            return;
+        }
+
+        if (spec.type === "dual-screen") {
+            sideAGame = game;
+            sideASpec = spec;
+
+            sideBGame = game;
+            sideBSpec = spec;
+        }
+        else if (spec.type === "single-screen" && side === "A") {
+            sideAGame = game;
+            sideASpec = spec;
+        }
+        else if (spec.type === "single-screen" && side === "B") {
+            sideBGame = game;
+            sideBSpec = spec;
+        }
+
+        // If there are spaces in the executable path, wrap it in quotes.
+        if (executable.indexOf(" ")) {
+            executable = "\"" + executable + "\"";
+        }
+
+        let execOptions = {
+            cwd: workingDir
+        };
+
+        let command = executable + " " + args.join(" ");
+
+        // If the start minimized flag was set, we'll use the built-in start command
+        // to launch the process so we can take advantage of the /min switch.
+        if (startMinimized) {
+            command = "start /b /min \"\" " + command;
+        }
+
+        console.log("Launching game...", workingDir, command);
+
+        exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
+
+            if (error) {
+                console.error("Process terminated with error.", exec, args, error);
+            }
+
+            if (stderr) {
+                console.error("Process terminated with stderr output.", exec, args, stderr.toString());
+            }
+
+            if (spec.type === "dual-screen") {
+                sideAGame = null;
+                sideASpec = null;
+
+                sideBGame = null;
+                sideBSpec = null;
+            }
+            else if (spec.type === "single-screen" && side === "A") {
+                sideAGame = null;
+                sideASpec = null;
+            }
+            else if (spec.type === "single-screen" && side === "B") {
+                sideBGame = null;
+                sideBSpec = null;
+            }
+        });
+
+        // TODO: Broadcast events to each renderer that game X has launched.
+        // TODO: When mame terminates, broadcast event to each renderer that game is not running.
     }
 
     //#endregion
@@ -245,10 +494,10 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let input = bindingTable[key];
 
         if (input) {
-            if (bindingSideTable[key] === "A") {
+            if (bindingSideTable[key] === "A" && !sideAGame) {
                 windowA.emit("player-input", input);
             }
-            else if (bindingSideTable[key] === "B") {
+            else if (bindingSideTable[key] === "B" && !sideBGame) {
                 windowB.emit("player-input", input);
             }
         }

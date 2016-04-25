@@ -52,8 +52,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 className: "ngdialog-theme-nintendo"
             };
 
-            this.SFX.playReady();
-
             this.ngDialog.open(options).closePromise.then((result: ng.dialog.IDialogClosePromise) => {
                 q.resolve(result.value);
             });

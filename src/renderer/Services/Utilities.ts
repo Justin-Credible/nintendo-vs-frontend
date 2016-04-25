@@ -14,12 +14,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             return [
                 "buildVars",
                 "gameList",
+                "side",
             ];
         }
 
         constructor(
             private _buildVars_: Interfaces.BuildVars,
-            private _gameList_: Interfaces.GameDescriptor[]) {
+            private _gameList_: Interfaces.GameDescriptor[],
+            private _side_: string) {
         }
 
         //#endregion
@@ -47,6 +49,27 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
          */
         public get isDebugMode(): boolean {
             return this.buildVars.debug;
+        }
+
+        /**
+         * Indicates which Side this renderer instance is for ("A" or "B").
+         */
+        public get side(): string {
+            return this._side_;
+        }
+
+        /**
+         * Indicates if this renderer instance is for Side "A".
+         */
+        public get isSideA(): boolean {
+            return this._side_ === "A";
+        }
+
+        /**
+         * Indicates if this renderer instance is for Side "B".
+         */
+        public get isSideB(): boolean {
+            return this._side_ === "B";
         }
 
         //#endregion

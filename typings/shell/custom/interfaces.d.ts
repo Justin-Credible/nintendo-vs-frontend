@@ -68,7 +68,25 @@ declare namespace Interfaces {
     }
 
     interface Config {
+        borderlessgaming: BorderlessGamingConfig;
+        mame: MameConfig;
         bindings: Bindings;
+    }
+
+    interface BorderlessGamingConfig {
+        executable: string;
+        delay: number;
+    }
+
+    interface MameConfig {
+        executable: string;
+        workingDir: string;
+        args: string[];
+        screens: {
+            a: string;
+            b: string;
+        };
+        customConfigRoot: string;
     }
 
     interface Bindings {

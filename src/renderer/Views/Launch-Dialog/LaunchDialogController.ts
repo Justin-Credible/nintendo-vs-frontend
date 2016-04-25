@@ -16,6 +16,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 Services.Logger.ID,
                 Services.SFX.ID,
                 Services.UIHelper.ID,
+                Services.LaunchHelper.ID,
                 Services.Utilities.ID
             ];
         }
@@ -27,6 +28,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private Logger: Services.Logger,
             private SFX: Services.SFX,
             private UIHelper: Services.UIHelper,
+            private LaunchHelper: Services.LaunchHelper,
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.EmptyViewModel);
         }
@@ -78,7 +80,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             return this.Utilities.format("{0} players, {1}", spec.players, screenDisplay);
         }
 
-        //#endregoin
+        //#endregion
 
         //#region Events
 
@@ -128,13 +130,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             }
             else if (input.input === Enums.Input.OK) {
 
-                // TODO: Validate spec is playable.
-                let playable = false;
+                let selectedSpec = this.viewModel.specs[this.viewModel.selectedOptionIndex];
+
+                let playable = this.LaunchHelper.canLaunchSpec(selectedSpec);
 
                 if (playable) {
                     let result = new Models.LaunchDialogResultModel();
                     result.action = Constants.DialogResults.OK;
-                    result.spec = this.viewModel.specs[this.viewModel.selectedOptionIndex];
+                    result.spec = selectedSpec;
 
                     this.SFX.playOk();
                     this.close(result);

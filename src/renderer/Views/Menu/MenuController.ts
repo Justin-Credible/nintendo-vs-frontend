@@ -15,6 +15,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 Services.Logger.ID,
                 Services.SFX.ID,
                 Services.UIHelper.ID,
+                Services.LaunchHelper.ID,
                 Services.Utilities.ID
             ];
         }
@@ -26,6 +27,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private Logger: Services.Logger,
             private SFX: Services.SFX,
             private UIHelper: Services.UIHelper,
+            private LaunchHelper: Services.LaunchHelper,
             private Utilities: Services.Utilities) {
             super($scope, ViewModels.MenuViewModel);
         }
@@ -223,8 +225,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 case Enums.Input.Up: {
 
                     if (selectedGameIndex === 0) {
-                        // TODO: Can't go up sound effect.
-                        this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: SFX Needed: Can't navigate up.");
+                        this.SFX.playCancel();
                     }
                     else {
                         this.SFX.playCursorMove();
@@ -239,8 +240,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 case Enums.Input.Down: {
 
                     if (selectedGameIndex === (this.viewModel.games.length - 1)) {
-                        // TODO: Can't go down sound effect.
-                        this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: SFX Needed: Can't navigate down.");
+                        this.SFX.playCancel();
                     }
                     else {
                         this.SFX.playCursorMove();
@@ -304,8 +304,20 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 .then((result: Models.LaunchDialogResultModel) => {
 
                 if (result.action === Constants.DialogResults.OK) {
-                    // TODO: Validate spec, show loading dialog, and launch!
-                    this.Logger.debug(MenuController.ID, "app_playerInput", "TODO: Player chose game.", this.viewModel.selectedGame);
+
+                    let playable = this.LaunchHelper.canLaunchSpec(result.spec);
+
+                    if (playable) {
+                        this.preventPlayerInput();
+                        this.stopPlayerInputTimer();
+
+                        this.UIHelper.showDialog(PleaseWaitDialogController);
+
+                        this.LaunchHelper.launchGame(this.viewModel.selectedGame, result.spec);
+                    }
+                    else {
+                        this.SFX.playError();
+                    }
                 }
                 else {
                     this.allowPlayerInput();
