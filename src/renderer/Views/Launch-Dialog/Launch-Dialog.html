@@ -8,7 +8,7 @@
     <div class="specs">
 
         <div ng-repeat="spec in viewModel.specs"
-            ng-class="{ 'selected-item': spec === viewModel.selectedSpec }"
+            ng-class="{ 'selected-item': spec === viewModel.selectedSpec, 'disabled-item': controller.isSpecDisabled(spec) }"
             class="menu-item">
             {{controller.getSpecDisplayName(spec)}}
         </div>

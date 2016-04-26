@@ -52,8 +52,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             // Set the default error handler for all uncaught exceptions.
             this.$window.onerror = _.bind(this.window_onerror, this);
 
-            // Subscribe to browser events.
+            // Subscribe to events that are emitted from the shell process.
             this.electronRemote.getCurrentWindow().addListener("player-input", _.bind(this.window_playerInput, this));
+            this.electronRemote.getCurrentWindow().addListener("game-launched", _.bind(this.window_gameLaunched, this));
+            this.electronRemote.getCurrentWindow().addListener("game-terminated", _.bind(this.window_gameTerminated, this));
 
             // Subscribe to Angular events.
             this.$rootScope.$on("$locationChangeStart", _.bind(this.angular_locationChangeStart, this));
@@ -65,6 +67,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
 
         public window_playerInput(input: Interfaces.PlayerInput): void {
             this.$rootScope.$broadcast(Constants.PlayerInputEvent, input);
+        }
+
+        public window_gameLaunched(side: string): void {
+            this.$rootScope.$broadcast(Constants.GameLaunchedEvent, side);
+        }
+
+        public window_gameTerminated(side: string): void {
+            this.$rootScope.$broadcast(Constants.GameTerminatedEvent, side);
         }
 
         /**

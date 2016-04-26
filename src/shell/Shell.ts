@@ -362,8 +362,6 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             // TODO: Handle two instances of the same game at once (nvram conflicts??)
             // TODO: Honor specific config file from spec.
-            // TODO: Launch with start /b /min if single screen?
-            // TODO: Ensure borderless gaming is running?
         }
         else if (game.platform === "PC") {
             executable = game.resource;
@@ -414,6 +412,9 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         console.log("Launching game...", workingDir, command);
 
+        windowA.emit("game-launched", side);
+        windowB.emit("game-launched", side);
+
         exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
             if (error) {
@@ -439,10 +440,10 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 sideBGame = null;
                 sideBSpec = null;
             }
-        });
 
-        // TODO: Broadcast events to each renderer that game X has launched.
-        // TODO: When mame terminates, broadcast event to each renderer that game is not running.
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
+        });
     }
 
     //#endregion

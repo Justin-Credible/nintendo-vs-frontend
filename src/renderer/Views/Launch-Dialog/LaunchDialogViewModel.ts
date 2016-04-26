@@ -8,5 +8,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.ViewModels {
         public selectedOptionIndex: number;
         public selectedSpec: Interfaces.GameSpecification;
         public maxOptionIndex: number;
+        public disabledSpecs: Interfaces.GameSpecification[];
     }
 }

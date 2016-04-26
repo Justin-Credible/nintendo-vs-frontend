@@ -28,8 +28,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         //#endregion
 
-        public showDialog(DialogController: Function, data?: any): ng.IPromise<any> {
-            let q = this.$q.defer<any>();
+        public showAndGetDialogInstance(DialogController: Function, data?: any): angular.dialog.IDialogOpenResult {
 
             if (!this.Utilities.derivesFrom(DialogController, Controllers.BaseDialogController)) {
                 throw new Error("The DialogController passed was not a class instance extending BaseDialogController.");
@@ -52,11 +51,38 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 className: "ngdialog-theme-nintendo"
             };
 
-            this.ngDialog.open(options).closePromise.then((result: ng.dialog.IDialogClosePromise) => {
+            return this.ngDialog.open(options);
+        }
+
+        public showDialog(DialogController: Function, data?: any): ng.IPromise<any> {
+            let q = this.$q.defer<any>();
+
+            let instance = this.showAndGetDialogInstance(DialogController, data);
+            
+            instance.closePromise.then((result: ng.dialog.IDialogClosePromise) => {
                 q.resolve(result.value);
             });
 
             return q.promise;
+        }
+
+        private _pleaseWaitDialog: angular.dialog.IDialogOpenResult;
+
+        public showPleaseWait(): void {
+
+            if (this._pleaseWaitDialog) {
+                return;
+            }
+
+            this._pleaseWaitDialog = this.showAndGetDialogInstance(Controllers.PleaseWaitDialogController);
+        }
+
+        public hidePleaseWait(): void {
+
+            if (this._pleaseWaitDialog) {
+                this._pleaseWaitDialog.close();
+                this._pleaseWaitDialog = null;
+            }
         }
     }
 }

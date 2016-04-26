@@ -35,12 +35,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#endregion
 
+        private _cancelGameLaunchedListener: () => void;
+        private _cancelGameTerminatedListener: () => void;
         private _cancelPlayerInputListener: () => void;
 
         //#region BaseDialogController Events
 
         protected dialog_opened(): void {
 
+            this._cancelGameLaunchedListener = this.$rootScope.$on(Constants.GameLaunchedEvent, _.bind(this.app_gameLaunched, this));
+            this._cancelGameTerminatedListener = this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
             this._cancelPlayerInputListener = this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
             this.viewModel.game = this.getData().game;
@@ -52,10 +56,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             // (currently just "cancel"). Then minus one to get the max index.
             this.viewModel.maxOptionIndex = (this.viewModel.specs.length + 1) - 1;
 
+            this.viewModel.disabledSpecs = [];
+            this.refreshDisabledSpecs();
+
             this.SFX.playReady();
         }
 
         protected dialog_closing(): void {
+            this._cancelGameLaunchedListener();
+            this._cancelGameTerminatedListener();
             this._cancelPlayerInputListener();
         }
 
@@ -80,9 +89,34 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             return this.Utilities.format("{0} players, {1}", spec.players, screenDisplay);
         }
 
+        protected isSpecDisabled(spec: Interfaces.GameSpecification): boolean {
+
+            if (!this.viewModel.disabledSpecs || this.viewModel.disabledSpecs.length === 0) {
+                return false;
+            }
+
+            return this.viewModel.disabledSpecs.indexOf(spec) !== -1;
+        }
+
         //#endregion
 
         //#region Events
+
+        private app_gameLaunched(event: ng.IAngularEvent, side: string): void {
+
+            if (side !== this.Utilities.side) {
+                this.refreshDisabledSpecs();
+                this.scope.$apply();
+            }
+        }
+
+        private app_gameTerminated(event: ng.IAngularEvent, side: string): void {
+
+            if (side !== this.Utilities.side) {
+                this.refreshDisabledSpecs();
+                this.scope.$apply();
+            }
+        }
 
         private app_playerInput(event: ng.IAngularEvent, input: Interfaces.PlayerInput): void {
 
@@ -148,6 +182,25 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             }
 
             this.scope.$apply();
+        }
+
+        //#endregion
+
+        //#region Private Methods
+
+        private refreshDisabledSpecs(): void {
+
+            this.viewModel.disabledSpecs = [];
+
+            if (!this.viewModel.specs || this.viewModel.specs.length === 0) {
+                return;
+            }
+
+            this.viewModel.specs.forEach((spec: Interfaces.GameSpecification) => {
+                if (!this.LaunchHelper.canLaunchSpec(spec)) {
+                    this.viewModel.disabledSpecs.push(spec);
+                }
+            });
         }
 
         //#endregion

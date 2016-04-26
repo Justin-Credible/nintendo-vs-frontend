@@ -44,6 +44,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this._allowPlayerInput = true;
 
+            this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
             this.viewModel.title = "Nintendo VS";
@@ -139,6 +140,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#endregion
 
         //#region Events
+
+        private app_gameTerminated(event: ng.IAngularEvent, side: string): void {
+
+            if (side === this.Utilities.side) {
+                this.allowPlayerInput();
+                this.startPlayerInputTimer();
+                this.UIHelper.hidePleaseWait();
+            }
+        }
 
         private app_playerInput(event: ng.IAngularEvent, input: Interfaces.PlayerInput): void {
 
@@ -311,7 +321,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.preventPlayerInput();
                         this.stopPlayerInputTimer();
 
-                        this.UIHelper.showDialog(PleaseWaitDialogController);
+                        this.UIHelper.showPleaseWait();
 
                         this.LaunchHelper.launchGame(this.viewModel.selectedGame, result.spec);
                     }
