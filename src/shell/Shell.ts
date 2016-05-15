@@ -360,8 +360,9 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 }
             }
 
+            args.push(Utilities.format('-cfg_directory "{0}/side-{1}"', config.mame.customConfigRoot, side));
+
             // TODO: Handle two instances of the same game at once (nvram conflicts??)
-            // TODO: Honor specific config file from spec.
         }
         else if (game.platform === "PC") {
             executable = game.resource;

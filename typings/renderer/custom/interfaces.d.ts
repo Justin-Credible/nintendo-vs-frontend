@@ -65,6 +65,5 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         type: string;
         players: string;
         resource: string;
-        config: string;
     }
 }

@@ -133,6 +133,5 @@ declare namespace Interfaces {
         type: string;
         players: string;
         resource: string;
-        config: string;
     }
 }
