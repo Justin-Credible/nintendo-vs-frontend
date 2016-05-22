@@ -352,7 +352,10 @@ gulp.task("package", function (cb) {
         "build-version": packageInfo.version,
         version: packageInfo.dependencies["electron-prebuilt"],
         out: "build",
-        overwrite: true
+        overwrite: true,
+        "version-string": {
+            FileDescription: packageInfo.name
+        }
     };
 
     packager(options, cb);
