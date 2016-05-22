@@ -24,12 +24,18 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#region BaseDialogController Events
 
         protected dialog_opened(): void {
+            /* tslint:disable:no-empty */
+            /* tslint:enable:no-empty */
         }
 
         protected dialog_closing(): void {
+            /* tslint:disable:no-empty */
+            /* tslint:enable:no-empty */
         }
 
         protected dialog_closed(): void {
+            /* tslint:disable:no-empty */
+            /* tslint:enable:no-empty */
         }
 
         //#endregion

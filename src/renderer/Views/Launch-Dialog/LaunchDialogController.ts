@@ -35,9 +35,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#endregion
 
-        private _cancelGameLaunchedListener: () => void;
-        private _cancelGameTerminatedListener: () => void;
-        private _cancelPlayerInputListener: () => void;
+        private _cancelGameLaunchedListener: Function;
+        private _cancelGameTerminatedListener: Function;
+        private _cancelPlayerInputListener: Function;
 
         //#region BaseDialogController Events
 
@@ -69,6 +69,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         protected dialog_closed(): void {
+            /* tslint:disable:no-empty */
+            /* tslint:enable:no-empty */
         }
 
         //#endregion

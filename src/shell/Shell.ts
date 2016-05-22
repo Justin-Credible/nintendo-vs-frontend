@@ -210,7 +210,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, game.resource + ".png");
                 game._hasImage = fs.existsSync(imagePath);
             }
-        })
+        });
 
         /* tslint:disable:no-string-literal */
         global["gameList"] = gameList;
@@ -360,7 +360,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 }
             }
 
-            args.push(Utilities.format('-cfg_directory "{0}/side-{1}"', config.mame.customConfigRoot, side));
+            args.push(`-cfg_directory "${config.mame.customConfigRoot}/side-${side}"`);
 
             // TODO: Handle two instances of the same game at once (nvram conflicts??)
         }

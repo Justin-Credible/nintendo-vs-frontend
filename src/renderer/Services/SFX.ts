@@ -15,6 +15,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         }
 
         constructor() {
+            /* tslint:disable:no-empty */
+            /* tslint:enable:no-empty */
         }
 
         private _audioInstances: Interfaces.Dictionary<HTMLAudioElement> = {};
@@ -34,7 +36,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             instance.autoplay = false;
 
             this._audioInstances[href] = instance;
-            
+
             return instance;
         }
 

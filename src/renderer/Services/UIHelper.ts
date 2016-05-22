@@ -34,7 +34,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 throw new Error("The DialogController passed was not a class instance extending BaseDialogController.");
             }
 
+            /* tslint:disable:no-string-literal */
             let templatePath = DialogController["TemplatePath"];
+            /* tslint:enable:no-string-literal */
 
             if (typeof(templatePath) !== "string") {
                 throw new Error("The DialogController passed did not have a string TemplatePath static property.");
@@ -58,7 +60,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             let q = this.$q.defer<any>();
 
             let instance = this.showAndGetDialogInstance(DialogController, data);
-            
+
             instance.closePromise.then((result: ng.dialog.IDialogClosePromise) => {
                 q.resolve(result.value);
             });
