@@ -47,6 +47,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
+            this.viewModel.version = `${this.Utilities.buildVars.version} (${this.Utilities.buildVars.commitShortSha})`;
             this.viewModel.title = "Nintendo VS";
             this.viewModel.player1Prompt = "Press Start";
             this.viewModel.player2Prompt = "Press Start";
@@ -99,7 +100,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             if (!this.viewModel.selectedGame) {
                 return "";
             }
-            
+
             if (this.viewModel.selectedGame.specs.length === 1) {
                 if (this.viewModel.selectedGame.specs[0].type === "single-screen") {
                     return "1 Screen";
@@ -171,6 +172,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                 this.viewModel.activePlayer = input.player;
 
+                this.viewModel.selectedGame = this.viewModel.games[0];
+
                 if (input.player === Enums.Player.One) {
                     this.viewModel.player1Prompt = "Choose a Game";
                     this.viewModel.player2Prompt = "Please Wait";
@@ -240,7 +243,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     else {
                         this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex - 1];
-                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex - 1, Constants.PAGE_SIZE)
+                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex - 1, Constants.PAGE_SIZE);
                         this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, this.viewModel.currentPageIndex, Constants.PAGE_SIZE);
                     }
 
@@ -255,7 +258,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     else {
                         this.SFX.playCursorMove();
                         this.viewModel.selectedGame = this.viewModel.games[selectedGameIndex + 1];
-                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex + 1, Constants.PAGE_SIZE)
+                        this.viewModel.currentPageIndex = this.Utilities.getPageIndexForItemIndex(selectedGameIndex + 1, Constants.PAGE_SIZE);
                         this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, this.viewModel.currentPageIndex, Constants.PAGE_SIZE);
                     }
                 }
