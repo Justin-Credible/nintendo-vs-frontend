@@ -1,24 +1,40 @@
 ---
+# -
+#     name: "Crawl"
+#     platform: "PC"
+#     resource: "C:/Games/Crawl/Crawl.exe"
+#     specs:
+#         -
+#             type: "dual-screen"
+#             players: "1-4"
 -
-    name: "Crawl"
-    platform: "PC"
-    resource: "C:/Games/Crawl/Crawl.exe"
-    specs:
-        -
-            type: "dual-screen"
-            players: "1-4"
--
-    name: "Tetris VS."
+    name: "Gauntlet"
     platform: "MAME"
-    resource: "tetrisvs"
     specs:
         -
             type: "single-screen"
             players: "1-2"
+            resource: "gaunt22p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "gaunt2"
 -
-    name: "Ms. Pac-Man"
+    name: "Gauntlet II"
     platform: "MAME"
-    resource: "mspacman"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "gauntlet2p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "gauntlet"
+-
+    name: "Tetris VS."
+    platform: "MAME"
+    resource: "tetrisvs"
     specs:
         -
             type: "single-screen"
@@ -67,3 +83,15 @@
         -
             type: "dual-screen"
             players: "1-3"
+-
+    name: "X-Men"
+    platform: "MAME"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "xmen2pu"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "xmen"

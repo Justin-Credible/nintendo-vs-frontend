@@ -14,38 +14,38 @@ mame:
 
 bindings:
     player1:
-        up: 65 #A
+        up: 84 #T
+        down: 72 #H
+        left: 71 #G
+        right: 89 #Y
+        a: 78 #N
+        b: 66 #B
+        start: 219 #[
+        coin: 222 #'
+    player2:
+        up: 85 #U
+        down: 75 #K
+        left: 74 #J
+        right: 73 #I
+        a: 188 #,
+        b: 77 #M
+        start: 221 #]
+        coin: 191 #/
+    player3:
+        up: 81 #Q
         down: 83 #S
+        left: 65 #A
+        right: 87 #W
+        a: 88 #X
+        b: 90 #Z
+        start: 79 #O
+        coin: 190 #.
+    player4:
+        up: 69 #E
+        down: 70 #F
         left: 68 #D
-        right: 70 #F
-        a: 74 #J
-        b: 75 #K
+        right: 82 #R
+        a: 86 #V
+        b: 67 #C
         start: 76 #L
         coin: 186 #;
-    player2:
-        up: 81 #Q
-        down: 87 #W
-        left: 69 #E
-        right: 82 #R
-        a: 85 #U
-        b: 73 #I
-        start: 79 #O
-        coin: 80 #P
-    player3:
-        up: 49 #1
-        down: 50 #2
-        left: 51 #3
-        right: 52 #4
-        a: 55 #7
-        b: 56 #8
-        start: 57 #9
-        coin: 48 #0
-    player4:
-        up: 90 #Z
-        down: 88 #X
-        left: 67 #C
-        right: 86 #V
-        a: 77 #M
-        b: 188 #,
-        start: 190 #.
-        coin: 191 #/
