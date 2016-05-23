@@ -5,7 +5,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Constants {
     export const GameLaunchedEvent = "app.game-launched-event";
     export const GameTerminatedEvent = "app.game-terminated-event";
 
-    export const PAGE_SIZE = 18;
+    export const PAGE_SIZE = 16;
 }
 
 namespace JustinCredible.NintendoVsFrontend.Renderer.Constants.DialogResults {
