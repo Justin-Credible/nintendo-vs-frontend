@@ -1,4 +1,68 @@
 ---
+-
+    name: "10-Yard Fight VS"
+    platform: "MAME"
+    resource: "vs10yard"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Balloon Fight VS"
+    platform: "MAME"
+    resource: "balonfgt"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-2"
+-
+    name: "Baseball VS"
+    platform: "MAME"
+    resource: "vsbball"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-2"
+-
+    name: "RBI Baseball VS"
+    platform: "MAME"
+    resource: "rbibb"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Battle City VS"
+    platform: "MAME"
+    resource: "btlecity"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Battletoads"
+    platform: "MAME"
+    resource: "btoads"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-3"
+-
+    name: "Castlevania VS"
+    platform: "MAME"
+    resource: "cstlevna"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Clu Clu Land VS"
+    platform: "MAME"
+    resource: "cluclu"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
 # -
 #     name: "Crawl"
 #     platform: "PC"
@@ -7,6 +71,30 @@
 #         -
 #             type: "dual-screen"
 #             players: "1-4"
+-
+    name: "Dr. Mario VS"
+    platform: "MAME"
+    resource: "drmario"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Excitebike VS"
+    platform: "MAME"
+    resource: "excitebk"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Freedom Force VS"
+    platform: "MAME"
+    resource: "vsfdf"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
 -
     name: "Gauntlet"
     platform: "MAME"
@@ -32,9 +120,157 @@
             players: "1-4"
             resource: "gauntlet"
 -
-    name: "Tetris VS."
+    name: "Gradius VS"
     platform: "MAME"
-    resource: "tetrisvs"
+    resource: "vsgradus"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Gong Fight VS"
+    platform: "MAME"
+    resource: "vsgongf"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "The Goonies VS"
+    platform: "MAME"
+    resource: "goonies"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Gumshoe VS"
+    platform: "MAME"
+    resource: "vsgshoe"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Ice Climber VS"
+    platform: "MAME"
+    resource: "iceclimb"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Mach Rider VS (Endurance)"
+    platform: "MAME"
+    resource: "machridr"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Mach Rider VS (Fighting)"
+    platform: "MAME"
+    resource: "machridra"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Pinball VS"
+    platform: "MAME"
+    resource: "vspinbal"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Platoon VS"
+    platform: "MAME"
+    resource: "platoon"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Star Luster VS"
+    platform: "MAME"
+    resource: "starlstr"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "The Simpsons"
+    platform: "MAME"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+            resource: "simpsons2p"
+        -
+            type: "dual-screen"
+            players: "1-4"
+            resource: "simpsons"
+-
+    name: "Slalom VS"
+    platform: "MAME"
+    resource: "vsslalom"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Soccer VS"
+    platform: "MAME"
+    resource: "vssoccer"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Super Mario Bros. VS"
+    platform: "MAME"
+    resource: "suprmrio"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Super SkyKid VS"
+    platform: "MAME"
+    resource: "vsskykid"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Super Xevious"
+    platform: "MAME"
+    resource: "supxevs"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "Tennis VS"
+    platform: "MAME"
+    resource: "vstennis"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-4"
+-
+    name: "Tetris VS"
+    platform: "MAME"
+    resource: "vstetris"
+    specs:
+        -
+            type: "single-screen"
+            players: "1-2"
+-
+    name: "TKO Boxing VS"
+    platform: "MAME"
+    resource: "tkoboxng"
     specs:
         -
             type: "single-screen"
@@ -64,25 +300,29 @@
             players: "1-4"
             resource: "tmnt2"
 -
-    name: "The Simpsons"
+    name: "Top Gun VS"
     platform: "MAME"
+    resource: "topgun"
     specs:
         -
             type: "single-screen"
             players: "1-2"
-            resource: "simpsons2p"
-        -
-            type: "dual-screen"
-            players: "1-4"
-            resource: "simpsons"
 -
-    name: "Battletoads"
+    name: "Wrecking Crew VS"
     platform: "MAME"
-    resource: "btoads"
+    resource: "wrecking"
     specs:
         -
             type: "dual-screen"
-            players: "1-3"
+            players: "1-2"
+# -
+#     name: "World Cup"
+#     platform: "NES"
+#     resource: "worldcup"
+#     specs:
+#         -
+#             type: "dual-screen"
+#             players: "1-4"
 -
     name: "X-Men"
     platform: "MAME"
