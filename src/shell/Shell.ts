@@ -338,6 +338,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         /* tslint:disable:no-string-literal */
         global["gameList"] = gameList;
         global["buildVars"] = buildVars;
+        global["menuConfig"] = config.menu;
         /* tslint:enable:no-string-literal */
 
         // Ensure the Borderless Gaming app is running.

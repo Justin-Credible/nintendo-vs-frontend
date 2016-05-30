@@ -14,6 +14,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             return [
                 "buildVars",
                 "gameList",
+                "menuConfig",
                 "side",
             ];
         }
@@ -21,6 +22,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         constructor(
             private _buildVars_: Interfaces.BuildVars,
             private _gameList_: Interfaces.GameDescriptor[],
+            private _menuConfig_: Interfaces.MenuConfig,
             private _side_: string) {
         }
 
@@ -40,6 +42,13 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
          */
         public get gameList(): Interfaces.GameDescriptor[] {
             return this._gameList_;
+        }
+
+        /**
+         * Used to get the configuration for the menu as defined in config.yml.
+         */
+        public get menuConfig(): Interfaces.MenuConfig {
+            return this._menuConfig_;
         }
 
         /**

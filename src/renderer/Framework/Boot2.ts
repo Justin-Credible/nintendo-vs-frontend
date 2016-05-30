@@ -29,6 +29,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
         // Define our constants.
         ngModule.constant("buildVars", remote.getGlobal("buildVars"));
         ngModule.constant("gameList", remote.getGlobal("gameList"));
+        ngModule.constant("menuConfig", remote.getGlobal("menuConfig"));
         ngModule.constant("electronRemote", require("electron").remote);
         ngModule.constant("electronIpcRenderer", require("electron").ipcRenderer);
 

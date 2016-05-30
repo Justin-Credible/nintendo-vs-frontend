@@ -71,6 +71,7 @@ declare namespace Interfaces {
         borderlessgaming: BorderlessGamingConfig;
         utilityBinaries: UtilityBinaries;
         mame: MameConfig;
+        menu: MenuConfig;
         bindings: Bindings;
     }
 
@@ -93,6 +94,11 @@ declare namespace Interfaces {
             b: string;
         };
         customConfigRoot: string;
+    }
+
+    interface MenuConfig {
+        keyInputMinDelay: number;
+        keyInputMaxDelay: number;
     }
 
     interface Bindings {

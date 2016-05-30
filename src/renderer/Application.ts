@@ -52,15 +52,19 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             // Set the default error handler for all uncaught exceptions.
             this.$window.onerror = _.bind(this.window_onerror, this);
 
-            // We include a 50ms delay on the player input event for joysticks
+            // We include a short delay on the player input event for joysticks
             // with trigger happy microswitches. This helps prevent the event
             // from firing multiple times when the user only had a single input.
 
             let player_input = _.bind(this.window_playerInput, this);
 
-            player_input = _.debounce(player_input, 150, {
+            let menuConfig = this.Utilities.menuConfig;
+            let minDelay = menuConfig.keyInputMinDelay == null ? 100 : menuConfig.keyInputMinDelay;
+            let maxDelay = menuConfig.keyInputMaxDelay == null ? 150 : menuConfig.keyInputMaxDelay;
+
+            player_input = _.debounce(player_input, minDelay, {
                 trailing: true,
-                maxWait: 175
+                maxWait: maxDelay
             });
 
             // Subscribe to events that are emitted from the shell process.

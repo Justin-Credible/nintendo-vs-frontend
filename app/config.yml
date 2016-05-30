@@ -16,6 +16,10 @@ mame:
         b: \\.\DISPLAY2
     customConfigRoot: "C:/Emulators/mame-configs"
 
+menu:
+    keyInputMinDelay: 150
+    keyInputMaxDelay: 175
+
 bindings:
     player1:
         up: 84 #T

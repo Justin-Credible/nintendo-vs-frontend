@@ -66,4 +66,12 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         players: string;
         resource: string;
     }
+
+    /**
+     * Configuration specific to the menu.
+     */
+    interface MenuConfig {
+        keyInputMinDelay: number;
+        keyInputMaxDelay: number;
+    }
 }
