@@ -69,6 +69,7 @@ declare namespace Interfaces {
 
     interface Config {
         borderlessgaming: BorderlessGamingConfig;
+        utilityBinaries: UtilityBinaries;
         mame: MameConfig;
         bindings: Bindings;
     }
@@ -76,6 +77,11 @@ declare namespace Interfaces {
     interface BorderlessGamingConfig {
         executable: string;
         delay: number;
+    }
+
+    interface UtilityBinaries {
+        taskKill: string;
+        displaySwitch: string;
     }
 
     interface MameConfig {

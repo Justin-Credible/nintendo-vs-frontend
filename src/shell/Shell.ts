@@ -9,6 +9,7 @@ import * as yaml from "js-yaml";
 import * as Utilities from "./Utilities";
 import * as BindingHelper from "./BindingHelper";
 import * as Enums from "./Enums";
+var syncExec = require("sync-exec");
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
@@ -44,6 +45,10 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         bindingTable = BindingHelper.getBindingTable(config);
         bindingSideTable = BindingHelper.getBindingSideTable(config);
 
+        // Wire up the event handlers for the node process.
+        process.on("uncaughtException", process_uncaughtException);
+        process.on("SIGTERM", process_sigterm);
+
         // Wire up the event handlers for Electron.
         electron.app.on("exit", app_exit);
         electron.app.on("window-all-closed", app_windowAllClosed);
@@ -61,6 +66,32 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     //#region Helper Methods
 
+    function cleanupOnExit(): void {
+
+        console.log("Attempting to close the TCP server...");
+
+        if (tcpServer) {
+            try {
+                tcpServer.close();
+            }
+            catch (ex) {
+                console.error("An error occurred attempting to close the TCP server.", ex);
+            }
+        }
+
+        console.log("Attempting to close utility processes...");
+
+        try {
+            exec(`${config.utilityBinaries.taskKill} /IM BorderlessGaming.exe`);
+            exec(`${config.utilityBinaries.taskKill} /IM Input-Daemon.exe`);
+        }
+        catch (ex) {
+            console.error("An error occurred attempting to close the utility processes.", ex);
+        }
+
+        electron.app.quit();
+    }
+
     function readConfig(): void {
         buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
         gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
@@ -72,6 +103,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
     function isInputDaemonAvailable(): boolean {
         // The input daemon process is only available on Windows.
         return process.platform === "win32" && fs.existsSync(__dirname + "/../input-daemon.exe");
+    }
+
+    function isBorderlessGamingAvailable(): boolean {
+        // The Borderless Gaming process is only available on Windows.
+        return process.platform === "win32" && fs.existsSync(config.borderlessgaming.executable);
     }
 
     function launchInputDaemon(): void {
@@ -101,7 +137,14 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     function launchBorderlessGaming(): void {
 
-        exec("taskkill /IM BorderlessGaming.exe");
+        if (!isBorderlessGamingAvailable()) {
+            console.log("Unable to start Borderless Gaming; executable missing or platform is not win32.");
+            return;
+        }
+
+        console.log("Terminating any previous Borderless Gaming processes...");
+
+        exec(`${config.utilityBinaries.taskKill} /IM BorderlessGaming.exe`);
 
         let command = "start /b /min \"\" \"" + config.borderlessgaming.executable + "\"";
 
@@ -121,6 +164,12 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         });
     }
 
+    /**
+     * Used to build the two renderer windows for side A and B of the cabinet.
+     * Both windows will be frameless and displayed at a full 1280x1024 resolution.
+     * 
+     * This does nothing if we don't have exactly two 1280x1024 displays.
+     */
     function buildWindows(): void {
 
         let windowOptions: GitHubElectron.BrowserWindowOptions = {
@@ -136,7 +185,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
 
         // Determine if we have two 1280x1024 screens available.
-        let screensAre1280x1024 = displays.length === 2
+        let screensAre1280x1024 = displays.length >= 2
             && displays[0].size.width === 1280
             && displays[0].size.height === 1024
             && displays[1].size.width === 1280
@@ -184,20 +233,94 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
     }
 
+    /**
+     * Used to ensure both windows are displayed a 0,0 on their assigned screens.
+     * 
+     * This does nothing if we don't have exactly two 1280x1024 displays.
+     */
+    function repositionWindows(): void {
+
+        if (!windowA || !windowB) {
+            return;
+        }
+
+        let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
+
+        // During development don't worry about repositioning the screens.
+        if (buildVars.debug) {
+
+            let screensAre1280x1024 = displays.length >= 2
+                && displays[0].size.width === 1280
+                && displays[0].size.height === 1024
+                && displays[1].size.width === 1280
+                && displays[1].size.height === 1024;
+
+            if (!screensAre1280x1024) {
+                return;
+            }
+        }
+
+        // Ugly hack ahead!
+
+        // Before the windows can be repositioned, they must be removed from full screen
+        // mode. Then the bounds can be set. Finally, they can be set back to full screen
+        // mode. Then one last check is made to see if the windows are where they should
+        // be. If they aren't then we'll sleep another second and try again. Sometimes this
+        // is needed if the switch between clone and extend displays is slow.
+
+        windowA.setFullScreen(false);
+        windowB.setFullScreen(false);
+
+        setTimeout(() => {
+            windowA.setBounds(displays[0].bounds);
+            windowB.setBounds(displays[1].bounds);
+
+            setTimeout(() => {
+                windowA.setFullScreen(true);
+                windowB.setFullScreen(true);
+
+                setTimeout(() => {
+
+                    let isWindowAOk = JSON.stringify(windowA.getBounds()) === JSON.stringify(displays[0].bounds);
+                    let isWindowBOk = JSON.stringify(windowB.getBounds()) === JSON.stringify(displays[1].bounds);
+
+                    if (!isWindowAOk || !isWindowBOk) {
+                        setTimeout(() => { repositionWindows(); }, 1000);
+                    }
+
+                }, 500);
+            }, 500);
+        }, 500);
+    }
+
+    //#endregion
+
+    //#region Node Process Events
+
+    function process_uncaughtException(error: Error) {
+
+        console.error("An uncaught exception occurred; preparing to terminate.", error);
+        cleanupOnExit();
+    }
+
+    function process_sigterm() {
+
+        console.error("SIGTERM occurred; preparing to terminate.");
+        cleanupOnExit();
+    }
+
     //#endregion
 
     //#region Electron Application Events
 
     function app_exit(): void {
 
-        exec("taskkill /IM BorderlessGaming.exe");
+        cleanupOnExit();
     }
 
     function app_windowAllClosed(): void {
 
-        if (process.platform !== "darwin") {
-            electron.app.quit();
-        }
+        electron.app.quit();
     }
 
     function app_ready(): void {
@@ -314,6 +437,16 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             return;
         }
 
+        if (game.platform === "PC" && spec.type !== "dual-screen") {
+            console.error("The PC platform only supports dual screen games.");
+            return;
+        }
+
+        if (game.platform === "PC" && process.platform !== "win32") {
+            console.error("The PC platform is only available on the win32 platform.");
+            return;
+        }
+
         let canLaunchSpec = Utilities.canLaunchSpec(sideASpec, sideBSpec, side, spec);
 
         // Sanity check - The renderer should have already checked this.
@@ -411,6 +544,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             command = "start /b /min \"\" " + command;
         }
 
+        // Currently, PC games are only supported by switching the dual screens to be cloned.
+        if (game.platform === "PC") {
+            syncExec(`${config.utilityBinaries.displaySwitch} /clone`);
+        }
+
         console.log("Launching game...", workingDir, command);
 
         windowA.emit("game-launched", side);
@@ -424,6 +562,12 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             if (stderr) {
                 console.error("Process terminated with stderr output.", exec, args, stderr.toString());
+            }
+
+            // Switch back to extended displays from cloned displays.
+            if (game.platform === "PC") {
+                syncExec(`${config.utilityBinaries.displaySwitch} /extend`);
+                repositionWindows();
             }
 
             if (spec.type === "dual-screen") {

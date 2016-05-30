@@ -3,6 +3,10 @@ borderlessgaming:
     executable: "C:/Program Files (x86)/Borderless Gaming/BorderlessGaming.exe"
     delay: 3000
 
+utilityBinaries:
+    taskKill: "C:/WINDOWS/system32/taskkill.exe"
+    displaySwitch: "C:/WINDOWS/system32/displayswitch.exe"
+
 mame:
     executable: "C:/Emulators/MAME/mame64.exe"
     workingDir: "C:/Emulators/MAME"

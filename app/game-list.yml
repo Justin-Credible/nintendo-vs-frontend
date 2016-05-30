@@ -63,14 +63,14 @@
         -
             type: "single-screen"
             players: "1-2"
-# -
-#     name: "Crawl"
-#     platform: "PC"
-#     resource: "C:/Games/Crawl/Crawl.exe"
-#     specs:
-#         -
-#             type: "dual-screen"
-#             players: "1-4"
+-
+    name: "Crawl"
+    platform: "PC"
+    resource: "C:/Games/Crawl/Crawl.exe"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-4"
 -
     name: "Dr. Mario VS"
     platform: "MAME"

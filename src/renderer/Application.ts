@@ -58,9 +58,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
 
             let player_input = _.bind(this.window_playerInput, this);
 
-            player_input = _.debounce(player_input, 50, {
+            player_input = _.debounce(player_input, 150, {
                 trailing: true,
-                maxWait: 150
+                maxWait: 175
             });
 
             // Subscribe to events that are emitted from the shell process.
