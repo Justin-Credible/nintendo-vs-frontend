@@ -1,12 +1,12 @@
 ---
--
-    name: "10-Yard Fight VS"
-    platform: "MAME"
-    resource: "vs10yard"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "10-Yard Fight VS"
+#     platform: "MAME"
+#     resource: "vs10yard"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Balloon Fight VS"
     platform: "MAME"
@@ -23,14 +23,14 @@
         -
             type: "dual-screen"
             players: "1-2"
--
-    name: "RBI Baseball VS"
-    platform: "MAME"
-    resource: "rbibb"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "RBI Baseball VS"
+#     platform: "MAME"
+#     resource: "rbibb"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Battle City VS"
     platform: "MAME"
@@ -87,14 +87,14 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Freedom Force VS"
-    platform: "MAME"
-    resource: "vsfdf"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Freedom Force VS"
+#     platform: "MAME"
+#     resource: "vsfdf"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Gauntlet"
     platform: "MAME"
@@ -127,14 +127,14 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Gong Fight VS"
-    platform: "MAME"
-    resource: "vsgongf"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Gong Fight VS"
+#     platform: "MAME"
+#     resource: "vsgongf"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "The Goonies VS"
     platform: "MAME"
@@ -143,14 +143,14 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Gumshoe VS"
-    platform: "MAME"
-    resource: "vsgshoe"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Gumshoe VS"
+#     platform: "MAME"
+#     resource: "vsgshoe"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Ice Climber VS"
     platform: "MAME"
@@ -159,22 +159,22 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Mach Rider VS (Endurance)"
-    platform: "MAME"
-    resource: "machridr"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
--
-    name: "Mach Rider VS (Fighting)"
-    platform: "MAME"
-    resource: "machridra"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Mach Rider VS (Endurance)"
+#     platform: "MAME"
+#     resource: "machridr"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
+# -
+#     name: "Mach Rider VS (Fighting)"
+#     platform: "MAME"
+#     resource: "machridra"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Pinball VS"
     platform: "MAME"
@@ -191,14 +191,14 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Star Luster VS"
-    platform: "MAME"
-    resource: "starlstr"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Star Luster VS"
+#     platform: "MAME"
+#     resource: "starlstr"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "The Simpsons"
     platform: "MAME"
@@ -235,22 +235,22 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "Super SkyKid VS"
-    platform: "MAME"
-    resource: "vsskykid"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
--
-    name: "Super Xevious"
-    platform: "MAME"
-    resource: "supxevs"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Super SkyKid VS"
+#     platform: "MAME"
+#     resource: "vsskykid"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
+# -
+#     name: "Super Xevious"
+#     platform: "MAME"
+#     resource: "supxevs"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Tennis VS"
     platform: "MAME"
@@ -267,14 +267,14 @@
         -
             type: "single-screen"
             players: "1-2"
--
-    name: "TKO Boxing VS"
-    platform: "MAME"
-    resource: "tkoboxng"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "TKO Boxing VS"
+#     platform: "MAME"
+#     resource: "tkoboxng"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "TMNT"
     platform: "MAME"
@@ -299,14 +299,14 @@
             type: "dual-screen"
             players: "1-4"
             resource: "tmnt2"
--
-    name: "Top Gun VS"
-    platform: "MAME"
-    resource: "topgun"
-    specs:
-        -
-            type: "single-screen"
-            players: "1-2"
+# -
+#     name: "Top Gun VS"
+#     platform: "MAME"
+#     resource: "topgun"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1-2"
 -
     name: "Wrecking Crew VS"
     platform: "MAME"
