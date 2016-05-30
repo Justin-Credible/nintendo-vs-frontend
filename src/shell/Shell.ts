@@ -328,9 +328,19 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         gameList.forEach((game: Interfaces.GameDescriptor) => {
 
             // TODO: If no resource, examine child specs.
-            // TODO: If platform === "PC", grab binary filename, remove EXE and use for image filename.
             if (game.resource) {
-                let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, game.resource + ".png");
+
+                let imageName = game.resource;
+
+                if (game.platform === "PC") {
+                    imageName = path.basename(imageName);
+
+                    if (Utilities.endsWith(imageName, ".exe")) {
+                        imageName = imageName.slice(-4);
+                    }
+                }
+
+                let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, imageName + ".png");
                 game._hasImage = fs.existsSync(imagePath);
             }
         });

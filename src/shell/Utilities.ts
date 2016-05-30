@@ -1,4 +1,18 @@
 
+//#region String Manipulation
+
+/**
+ * Used to format a string by replacing values with the given arguments.
+ * Arguments should be provided in the format of {x} where x is the index
+ * of the argument to be replaced corresponding to the arguments given.
+ * 
+ * For example, the string t = "Hello there {0}, it is {1} to meet you!"
+ * used like this: Utilities.format(t, "dude", "nice") would result in:
+ * "Hello there dude, it is nice to meet you!".
+ * 
+ * @param str The string value to use for formatting.
+ * @param ... args The values to inject into the format string.
+ */
 export function format(formatString: string, ...args: any[]): string {
     var i, reg;
     i = 0;
@@ -10,6 +24,30 @@ export function format(formatString: string, ...args: any[]): string {
 
     return formatString;
 }
+
+/**
+ * Used to determine if a string ends with a specified string.
+ * 
+ * @param str The string to check.
+ * @param suffix The value to check for.
+ * @returns True if str ends with the gtiven suffix, false otherwise.
+ */
+export function endsWith(str: string, suffix: string): boolean {
+
+    if (str == null || str === "") {
+        return false;
+    }
+
+    if (suffix == null || suffix === "") {
+        return true;
+    }
+
+    return (str.substr(str.length - suffix.length) === suffix);
+}
+
+//#endregion
+
+//#region Shell Specific
 
 export function canLaunchSpec(sideASpec: Interfaces.GameSpecification, sideBSpec: Interfaces.GameSpecification, side: string, specToCheck: Interfaces.GameSpecification): boolean {
 
@@ -66,3 +104,5 @@ export function canLaunchSpec(sideASpec: Interfaces.GameSpecification, sideBSpec
         }
     }
 }
+
+//#endregion
