@@ -38,6 +38,12 @@
                 height: 550px;
                 transition: background-image 0.2s ease-in-out;
                 // background-color: teal;
+
+                video {
+                    width: 100%;
+                    position: relative;
+                    top: 25%;
+                }
             }
 
             .player-count {
