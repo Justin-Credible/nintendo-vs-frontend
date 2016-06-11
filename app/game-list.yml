@@ -102,11 +102,11 @@
         -
             type: "single-screen"
             players: "1-2"
-            resource: "gaunt22p"
+            resource: "gauntlet2p"
         -
             type: "dual-screen"
             players: "1-4"
-            resource: "gaunt2"
+            resource: "gauntlet"
 -
     name: "Gauntlet II"
     platform: "MAME"
@@ -114,11 +114,11 @@
         -
             type: "single-screen"
             players: "1-2"
-            resource: "gauntlet2p"
+            resource: "gaunt22p"
         -
             type: "dual-screen"
             players: "1-4"
-            resource: "gauntlet"
+            resource: "gaunt2"
 -
     name: "Gradius VS"
     platform: "MAME"
