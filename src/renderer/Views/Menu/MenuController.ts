@@ -36,6 +36,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private _allowPlayerInput: boolean;
         private _playerInputTimer: ng.IPromise<void>;
+        private _isGameRunning: boolean = false;
 
         //#region BaseController Overrides
 
@@ -44,37 +45,34 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this._allowPlayerInput = true;
 
+            this.$rootScope.$on(Constants.GameLaunchedEvent, _.bind(this.app_gameLaunched, this));
             this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
-            this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
+
+            this.$rootScope.$on(Constants.PlayerInputEvent,
+                (event: ng.IAngularEvent, input: Interfaces.PlayerInput) => {
+
+                this.scope.$apply(() => {
+                    this.app_playerInput(event, input);
+                });
+            });
 
             this.viewModel.version = `${this.Utilities.buildVars.version} (${this.Utilities.buildVars.commitShortSha})`;
             this.viewModel.title = "Nintendo VS";
-            this.viewModel.player1Prompt = "Press Start";
-            this.viewModel.player2Prompt = "Press Start";
-
             this.viewModel.games = this.Utilities.gameList;
-            this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.Utilities.gameList, 0, Constants.PAGE_SIZE);
-            this.viewModel.currentPageIndex = 0;
-            this.viewModel.selectedGame = this.viewModel.games[0];
+            this.resetToIdle();
         }
 
         //#endregion
 
         //#region Controller Helper Properties
 
-        protected get posterImageUrl(): string {
+        protected get videoUrl(): string {
 
-            if (!this.viewModel.selectedGame) {
-                return "url('img/game-place-holder.png')";
+            if (this.viewModel.selectedGame && this.viewModel.selectedGame.videoPath) {
+                return this.viewModel.selectedGame.videoPath;
             }
 
-            if (!this.viewModel.selectedGame._hasImage) {
-                return "url('img/game-place-holder.png')";
-            }
-
-            return this.Utilities.format("url('img/games/{0}/{1}.png')",
-                this.viewModel.selectedGame.platform,
-                this.viewModel.selectedGame.resource);
+            return "";
         }
 
         protected get playerCountDisplay(): string {
@@ -91,7 +89,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 return this.viewModel.selectedGame.specs[lastSpecIndex].players + " Players";
             }
             else {
-                return "[Error 1]";
+                return "[Error 4]";
             }
         }
 
@@ -142,12 +140,35 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Events
 
+        private app_gameLaunched(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor): void {
+
+            if (side === this.Utilities.side) {
+                this._isGameRunning = true;
+            }
+            else {
+                this.UIHelper.showToast("info", "Information", `The other side has started playing ${game.name}!`);
+            }
+        }
+
         private app_gameTerminated(event: ng.IAngularEvent, side: string): void {
 
             if (side === this.Utilities.side) {
+
+                this.UIHelper.hidePleaseWait();
                 this.allowPlayerInput();
                 this.startPlayerInputTimer();
-                this.UIHelper.hidePleaseWait();
+
+                // If a game wasn't running on this side, but we received a terminate event
+                // then perhaps the game never launched. This is likely an error scenario.
+                if (!this._isGameRunning) {
+                    this.SFX.playError();
+                    this.UIHelper.showToast("error", "Game Over Man!", "Could not launch game :(");
+                }
+
+                this._isGameRunning = false;
+            }
+            else {
+                this.UIHelper.showToast("info", "Information", "The other side has finished playing a game.");
             }
         }
 
@@ -171,8 +192,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 // control after a period of inactivity.
 
                 this.viewModel.activePlayer = input.player;
-
                 this.viewModel.selectedGame = this.viewModel.games[0];
+                this.viewModel.currentPageIndex = 0;
 
                 if (input.player === Enums.Player.One) {
                     this.viewModel.player1Prompt = "Choose a Game";
@@ -183,7 +204,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     this.viewModel.player2Prompt = "Choose a Game";
                 }
 
+                this.SFX.playReady();
+
                 this.startPlayerInputTimer();
+
+                return;
             }
             else {
                 // If there was already an active player, just refresh
@@ -192,10 +217,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 this.stopPlayerInputTimer();
 
                 if (input.input === Enums.Input.Back) {
-                    this.viewModel.activePlayer = null;
-                    this.viewModel.selectedGame = null;
-                    this.viewModel.player1Prompt = "Press Start";
-                    this.viewModel.player2Prompt = "Press Start";
+                    this.resetToIdle();
+                    this.SFX.playCancel();
                     return;
                 }
                 else {
@@ -273,21 +296,24 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 }
                 break;
             }
-
-            this.scope.$apply();
         }
 
         private player_inputTimeout(): void {
-
-            this.viewModel.activePlayer = null;
-            this.viewModel.selectedGame = null;
-            this.viewModel.player1Prompt = "Press Start";
-            this.viewModel.player2Prompt = "Press Start";
+            this.resetToIdle();
         }
 
         //#endregion
 
         //#region Private Helpers
+
+        private resetToIdle(): void {
+            this.viewModel.activePlayer = null;
+            this.viewModel.selectedGame = null;
+            this.viewModel.currentPageIndex = 0;
+            this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, 0, Constants.PAGE_SIZE);
+            this.viewModel.player1Prompt = "Press Start";
+            this.viewModel.player2Prompt = "Press Start";
+        }
 
         private startPlayerInputTimer(): void {
             this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
@@ -323,12 +349,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     if (playable) {
                         this.preventPlayerInput();
                         this.stopPlayerInputTimer();
-
                         this.UIHelper.showPleaseWait();
 
                         this.LaunchHelper.launchGame(this.viewModel.selectedGame, result.spec);
+
+                        // Wait two seconds before resetting so the user doesn't see the screen reset
+                        // back to attract mode (the game will have probably launched by then).
+                        this.$timeout(() => { this.resetToIdle(); }, 3000);
                     }
                     else {
+                        this.UIHelper.showToast("error", "Can't Start Game", "The other side is already playing a game.");
                         this.SFX.playError();
                     }
                 }

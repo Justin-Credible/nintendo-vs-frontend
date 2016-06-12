@@ -27,7 +27,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
     // TCP Server for Input Daemon Communication
     var tcpServer: net.Server;
 
-    // Windows
+    // Windows and UI Elements
+    var tray: GitHubElectron.Tray;
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
     var inputTestWindow: GitHubElectron.BrowserWindow;
@@ -59,6 +60,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         electron.ipcMain.on("renderer_isGameRunning", renderer_isGameRunning);
         electron.ipcMain.on("renderer_canLaunchSpec", renderer_canLaunchSpec);
         electron.ipcMain.on("renderer_launchGame", renderer_launchGame);
+        electron.ipcMain.on("renderer_showSystemNotification", renderer_showSystemNotification);
 
         // Create the local TCP server for the input daemon.
         createTcpServer();
@@ -162,6 +164,29 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             console.log("Attempting to restart Borderless Gaming in 2 seconds...");
             setTimeout(() => { launchBorderlessGaming(); }, 2000);
         });
+    }
+
+    function buildTrayMenu(): void {
+
+        let iconPath = path.join(__dirname, "..", "icons", "joystick.ico");
+        tray = new electron.Tray(null);
+        tray.setToolTip("Nintendo VS Frontend");
+
+        let versionDisplay = `Version ${buildVars.version} - ${buildVars.commitShortSha}`;
+
+        let options: GitHubElectron.MenuItemOptions[] = [
+            { type: "normal", label: "Nintendo VS Frontend", sublabel: versionDisplay, enabled: false },
+            { type: "separator" },
+            { label: "Quit", type: "normal", click: tray_quit_click },
+        ];
+
+        // OSX doesn't support sub-labels in menu items, so we'll add it as a seperate item.
+        if (process.platform === "darwin") {
+            options.splice(1, 0, { type: "normal", label: versionDisplay, enabled: false } );
+        }
+
+        let contextMenu = electron.Menu.buildFromTemplate(options);
+        tray.setContextMenu(contextMenu);
     }
 
     /**
@@ -325,25 +350,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     function app_ready(): void {
 
-        gameList.forEach((game: Interfaces.GameDescriptor) => {
+        // Build the tray context menu.
+        buildTrayMenu();
 
-            // TODO: If no resource, examine child specs.
-            if (game.resource) {
-
-                let imageName = game.resource;
-
-                if (game.platform === "PC") {
-                    imageName = path.basename(imageName);
-
-                    if (Utilities.endsWith(imageName, ".exe")) {
-                        imageName = imageName.slice(-4);
-                    }
-                }
-
-                let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, imageName + ".png");
-                game._hasImage = fs.existsSync(imagePath);
-            }
-        });
+        // Populate the path to the preview videos for each game.
+        Utilities.populateVideoPaths(gameList);
 
         /* tslint:disable:no-string-literal */
         global["gameList"] = gameList;
@@ -357,6 +368,14 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Wait to ensure that Borderless Gaming launches and it's window is on the desktop.
         // We want to make sure that our renderer windows are on top of the window.
         setTimeout(() => { buildWindows(); }, config.borderlessgaming.delay || 500);
+    }
+
+    //#endregion
+
+    //#region Tray Menu Events
+
+    function tray_quit_click(): void {
+        electron.app.quit();
     }
 
     //#endregion
@@ -425,36 +444,50 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
         catch (exception) {
             console.error("Unable to parse game descriptor or specification JSON.", side, gameJson, specJson, exception);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (side == null || game == null || spec == null ) {
             console.error("A side, game, and spec are required to launch a game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (side !== "A" && side !== "B") {
             console.error("Unsupported side when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (spec.type !== "single-screen" && spec.type !== "dual-screen") {
             console.error("Unsupported spec type when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform !== "MAME" && game.platform !== "PC") {
             console.error("Unsupported platform type when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform === "PC" && spec.type !== "dual-screen") {
             console.error("The PC platform only supports dual screen games.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform === "PC" && process.platform !== "win32") {
             console.error("The PC platform is only available on the win32 platform.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
@@ -463,6 +496,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Sanity check - The renderer should have already checked this.
         if (!canLaunchSpec) {
             console.warn("The given specification can not be launched at this time because it conflicts with another active spec.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
@@ -514,11 +549,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate executable when launching game.", executable);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate working directory when launching game.", workingDir);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
@@ -562,8 +601,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         console.log("Launching game...", workingDir, command);
 
-        windowA.emit("game-launched", side);
-        windowB.emit("game-launched", side);
+        windowA.emit("game-launched", side, JSON.stringify(game));
+        windowB.emit("game-launched", side, JSON.stringify(game));
 
         exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
@@ -599,6 +638,33 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             windowA.emit("game-terminated", side);
             windowB.emit("game-terminated", side);
+        });
+    }
+
+    function renderer_showSystemNotification(event: any, type: string, title: string, message: string): void {
+
+        let icon: string;
+
+        switch (type) {
+            case "info":
+                icon = "question.ico";
+                break;
+            case "error":
+                icon = "chomp.ico";
+                break;
+            default:
+                icon = "joystick.ico";
+                break;
+        }
+
+        icon = path.join(__dirname, "..", "icons", icon);
+
+        let iconImage = Utilities.createImageFromPath(icon);
+
+        tray.displayBalloon({
+            icon: iconImage,
+            title: title,
+            content: message
         });
     }
 

@@ -13,8 +13,14 @@
 
         <div class="game-info">
 
-            <div class="game-poster"
-                ng-style="{ 'background-image': controller.posterImageUrl }">
+            <div class="game-poster">
+                <video
+                    ng-show="controller.videoUrl"
+                    onloadstart="this.volume=0.2"
+                    src="{{controller.videoUrl}}"
+                    autoplay="true"
+                    loop="true">
+                </video>
             </div>
 
             <div class="player-count">

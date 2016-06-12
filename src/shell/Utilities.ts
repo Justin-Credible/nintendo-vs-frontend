@@ -1,4 +1,8 @@
 
+import * as fs from "fs";
+import * as path from "path";
+import { nativeImage } from "electron";
+
 //#region String Manipulation
 
 /**
@@ -45,9 +49,81 @@ export function endsWith(str: string, suffix: string): boolean {
     return (str.substr(str.length - suffix.length) === suffix);
 }
 
+export function createImageFromPath(path: string): GitHubElectron.NativeImage {
+
+    // The type definition for the nativeImage is incorrect and therefore
+    // we need to index directly into the object to call createFromPath().
+
+    /* tslint:disable:no-string-literal */
+    return nativeImage["createFromPath"](path);
+    /* tslint:enable:no-string-literal */
+}
+
 //#endregion
 
-//#region Shell Specific
+//#region Shell Specific Helpers
+
+export function populateVideoPaths(gameList: Interfaces.GameDescriptor[]): void {
+
+    if (gameList == null) {
+        return;
+    }
+
+    gameList.forEach((game: Interfaces.GameDescriptor) => {
+        game.videoPath = getVideoPath(game);
+    });
+}
+
+export function getVideoPath(game: Interfaces.GameDescriptor): string {
+
+    // If a path was already populated (eg from the config file) then use it.
+    if (game.videoPath) {
+        return;
+    }
+
+    // We need to gather up all of the possible resource names so we can check them all
+    // (for MAME games that have multiple ROMs for 2p vs 4p so we can have a single video).
+
+    let resources: string[] = [];
+
+    if (game.resource) {
+        resources.push(game.resource);
+    }
+
+    if (game.specs) {
+        game.specs.forEach((spec: Interfaces.GameSpecification) => {
+            if (spec.resource) {
+                resources.push(spec.resource);
+            }
+        });
+    }
+
+    let finalVideoPath: string = null;
+
+    // Check to see if a video exists for each of the resource names.
+    resources.forEach((resource: string) => {
+
+        let videoName = resource;
+
+        // Strip off the exe extension for PC games.
+        if (game.platform === "PC") {
+            videoName = path.basename(videoName);
+
+            if (endsWith(videoName, ".exe")) {
+                videoName = videoName.slice(0, -4);
+            }
+        }
+
+        let videoPath = path.join(__dirname, "..", "www", "video", game.platform, videoName + ".mp4");
+
+        // If we found a video with the given resource name, use it.
+        if (fs.existsSync(videoPath)) {
+            finalVideoPath = videoPath;
+        }
+    });
+
+    return finalVideoPath;
+}
 
 export function canLaunchSpec(sideASpec: Interfaces.GameSpecification, sideBSpec: Interfaces.GameSpecification, side: string, specToCheck: Interfaces.GameSpecification): boolean {
 

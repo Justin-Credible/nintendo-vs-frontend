@@ -347,7 +347,7 @@ gulp.task("package", function (cb) {
         dir: "app",
         platform: "win32",
         arch: "x64",
-        icon: "assets/icon.ico",
+        icon: "app/icons/joystick.ico",
         name: packageInfo.name,
         "build-version": packageInfo.version,
         version: packageInfo.dependencies["electron-prebuilt"],

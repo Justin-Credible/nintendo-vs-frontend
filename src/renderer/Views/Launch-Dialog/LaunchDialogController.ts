@@ -35,6 +35,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#endregion
 
+        private _playerInputTimer: ng.IPromise<void>;
         private _cancelGameLaunchedListener: Function;
         private _cancelGameTerminatedListener: Function;
         private _cancelPlayerInputListener: Function;
@@ -58,11 +59,13 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this.viewModel.disabledSpecs = [];
             this.refreshDisabledSpecs();
+            this.startPlayerInputTimer();
 
             this.SFX.playReady();
         }
 
         protected dialog_closing(): void {
+            this.stopPlayerInputTimer();
             this._cancelGameLaunchedListener();
             this._cancelGameTerminatedListener();
             this._cancelPlayerInputListener();
@@ -104,6 +107,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Events
 
+        private player_inputTimeout(): void {
+            let result = new Models.LaunchDialogResultModel();
+            result.action = Constants.DialogResults.Cancel;
+
+            this.SFX.playCancel();
+            this.close(result);
+        }
+
         private app_gameLaunched(event: ng.IAngularEvent, side: string): void {
 
             if (side !== this.Utilities.side) {
@@ -126,6 +137,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             if (input.player !== this.getData().activePlayer) {
                 return;
             }
+
+            this.stopPlayerInputTimer();
+            this.startPlayerInputTimer();
 
             // Handle the out-of-bounds cases first.
             if (input.input === Enums.Input.Up && this.viewModel.selectedOptionIndex === 0) {
@@ -189,6 +203,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#endregion
 
         //#region Private Methods
+
+        private startPlayerInputTimer(): void {
+            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+        }
+
+        private stopPlayerInputTimer(): void {
+            if (this._playerInputTimer) {
+                this.$timeout.cancel(this._playerInputTimer);
+            }
+        }
 
         private refreshDisabledSpecs(): void {
 
