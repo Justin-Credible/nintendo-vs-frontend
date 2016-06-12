@@ -244,7 +244,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // input test window which emulates the functionality of the daemon for testing.
         if (buildVars.debug && !isInputDaemonAvailable()) {
 
-            inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175 });
+            inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175, x: 0, y: 0 });
             inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");
             inputTestWindow.on("closed", _.bind(rendererWindow_closed, null, "input-test"));
 
