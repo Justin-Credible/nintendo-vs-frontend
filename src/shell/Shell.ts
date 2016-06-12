@@ -60,7 +60,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         electron.ipcMain.on("renderer_isGameRunning", renderer_isGameRunning);
         electron.ipcMain.on("renderer_canLaunchSpec", renderer_canLaunchSpec);
         electron.ipcMain.on("renderer_launchGame", renderer_launchGame);
-        electron.ipcMain.on("renderer_showToast", renderer_showToast);
+        electron.ipcMain.on("renderer_showSystemNotification", renderer_showSystemNotification);
 
         // Create the local TCP server for the input daemon.
         createTcpServer();
@@ -601,8 +601,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         console.log("Launching game...", workingDir, command);
 
-        windowA.emit("game-launched", side);
-        windowB.emit("game-launched", side);
+        windowA.emit("game-launched", side, JSON.stringify(game));
+        windowB.emit("game-launched", side, JSON.stringify(game));
 
         exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
@@ -641,9 +641,9 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         });
     }
 
-    function renderer_showToast(event: any, type: string, title: string, message: string): void {
+    function renderer_showSystemNotification(event: any, type: string, title: string, message: string): void {
 
-        let icon = "joystick.ico";
+        let icon: string;
 
         switch (type) {
             case "info":
@@ -651,6 +651,9 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 break;
             case "error":
                 icon = "chomp.ico";
+                break;
+            default:
+                icon = "joystick.ico";
                 break;
         }
 

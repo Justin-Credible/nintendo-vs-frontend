@@ -13,6 +13,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         public static get $inject(): string[] {
             return [
                 "$q",
+                "$timeout",
                 "ngDialog",
                 "electronIpcRenderer",
                 Utilities.ID,
@@ -22,6 +23,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         constructor(
             private $q: ng.IQService,
+            private $timeout: ng.ITimeoutService,
             private ngDialog: angular.dialog.IDialogService,
             private ipcRenderer: GitHubElectron.IpcRenderer,
             private Utilities: Services.Utilities,
@@ -31,10 +33,28 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         //#endregion
 
         public showToast(type: string, title: string, message: string): void {
-            this.ipcRenderer.send("renderer_showToast", type, title, message);
+
+            let dialogOptions: ng.dialog.IDialogOpenOptions = {
+                template: null,
+                overlay: false,
+                className: "ngdialog-theme-nintendo-toast"
+            };
+
+            let controllerOptions = new Models.ToastDialogModel();
+            controllerOptions.title = title;
+            controllerOptions.message = message;
+            controllerOptions.type = type;
+
+            let instance = this.showAndGetDialogInstance(Controllers.ToastDialogController, controllerOptions, dialogOptions);
+
+            this.$timeout(() => { instance.close(); }, 3000);
         }
 
-        public showAndGetDialogInstance(DialogController: Function, data?: any): angular.dialog.IDialogOpenResult {
+        public showSystemNotification(type: string, title: string, message: string): void {
+            this.ipcRenderer.send("renderer_showSystemNotification", type, title, message);
+        }
+
+        public showAndGetDialogInstance(DialogController: Function, data?: any, options?: ng.dialog.IDialogOpenOptions): angular.dialog.IDialogOpenResult {
 
             if (!this.Utilities.derivesFrom(DialogController, Controllers.BaseDialogController)) {
                 throw new Error("The DialogController passed was not a class instance extending BaseDialogController.");
@@ -48,7 +68,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 throw new Error("The DialogController passed did not have a string TemplatePath static property.");
             }
 
-            let options: ng.dialog.IDialogOpenOptions = {
+            let openOptions: ng.dialog.IDialogOpenOptions = {
                 template: templatePath,
                 controller: DialogController,
                 data: data,
@@ -56,16 +76,22 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 closeByEscape: false,
                 closeByNavigation: false,
                 closeByDocument: false,
-                className: "ngdialog-theme-nintendo"
+                className: "ngdialog-theme-nintendo",
             };
 
-            return this.ngDialog.open(options);
+            // Merge the user provided options into the defaults.
+            _.extend(openOptions, options);
+
+            // Template path can't be overridden.
+            openOptions.template = templatePath;
+
+            return this.ngDialog.open(openOptions);
         }
 
-        public showDialog(DialogController: Function, data?: any): ng.IPromise<any> {
+        public showDialog(DialogController: Function, data?: any, options?: ng.dialog.IDialogOpenOptions): ng.IPromise<any> {
             let q = this.$q.defer<any>();
 
-            let instance = this.showAndGetDialogInstance(DialogController, data);
+            let instance = this.showAndGetDialogInstance(DialogController, data, options);
 
             instance.closePromise.then((result: ng.dialog.IDialogClosePromise) => {
                 q.resolve(result.value);

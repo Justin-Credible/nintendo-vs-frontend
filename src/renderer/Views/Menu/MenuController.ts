@@ -140,10 +140,13 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Events
 
-        private app_gameLaunched(event: ng.IAngularEvent, side: string): void {
+        private app_gameLaunched(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor): void {
 
             if (side === this.Utilities.side) {
                 this._isGameRunning = true;
+            }
+            else {
+                this.UIHelper.showToast("info", "Information", `The other side has started playing ${game.name}!`);
             }
         }
 
@@ -163,6 +166,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 }
 
                 this._isGameRunning = false;
+            }
+            else {
+                this.UIHelper.showToast("info", "Information", "The other side has finished playing a game.");
             }
         }
 
@@ -352,6 +358,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.$timeout(() => { this.resetToIdle(); }, 3000);
                     }
                     else {
+                        this.UIHelper.showToast("error", "Can't Start Game", "The other side is already playing a game.");
                         this.SFX.playError();
                     }
                 }
