@@ -14,7 +14,11 @@
         <script type="text/javascript" src="js/bundle.js"></script>
         <script type="text/javascript" src="js/renderer-boot1.js"></script>
     </head>
-    <body>
+    <body ng-controller="RootController">
         <ng-include src="'Views/Menu/Menu.html'"></ng-include>
+        <ng-include
+            ng-show="viewModel.enableAttractMode"
+            src="'Views/Attract-Mode/Attract-Mode.html'">
+        </ng-include>
     </body>
 </html>

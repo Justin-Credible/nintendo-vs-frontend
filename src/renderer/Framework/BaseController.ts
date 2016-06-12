@@ -36,9 +36,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             /* tslint:enable:no-string-literal */
 
-            _.defer(() => {
-                this.view_loaded();
-            });
+            _.defer(() => { this.view_loaded(); });
         }
 
         /**

@@ -36,6 +36,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private _allowPlayerInput: boolean;
         private _playerInputTimer: ng.IPromise<void>;
+        private _attractModeTimer: ng.IPromise<void>;
         private _isGameRunning: boolean = false;
 
         //#region BaseController Overrides
@@ -191,6 +192,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 // start a timer so we can force the player to relinquish
                 // control after a period of inactivity.
 
+                // Ensure attract mode is stopped.
+                this.stopAttractModeTimer();
+                this.$rootScope.$broadcast(Constants.DisableAttractMode);
+
                 this.viewModel.activePlayer = input.player;
                 this.viewModel.selectedGame = this.viewModel.games[0];
                 this.viewModel.currentPageIndex = 0;
@@ -298,6 +303,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             }
         }
 
+        private attractMode_timeout(): void {
+            this.$rootScope.$broadcast(Constants.EnableAttractMode);
+        }
+
         private player_inputTimeout(): void {
             this.resetToIdle();
         }
@@ -313,10 +322,22 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.viewModel.gamesForPage = this.Utilities.getPageAtIndex(this.viewModel.games, 0, Constants.PAGE_SIZE);
             this.viewModel.player1Prompt = "Press Start";
             this.viewModel.player2Prompt = "Press Start";
+
+            this.startAttractModeTimer();
+        }
+
+        private startAttractModeTimer(): void {
+            this._attractModeTimer = this.$timeout(_.bind(this.attractMode_timeout, this), Constants.ATTRACT_MODE_IDLE_TIMEOUT);
+        }
+
+        private stopAttractModeTimer(): void {
+            if (this._attractModeTimer) {
+                this.$timeout.cancel(this._attractModeTimer);
+            }
         }
 
         private startPlayerInputTimer(): void {
-            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), Constants.PLAYER_IDLE_TIMEOUT);
         }
 
         private stopPlayerInputTimer(): void {
