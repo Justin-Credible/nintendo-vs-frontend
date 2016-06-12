@@ -60,6 +60,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         electron.ipcMain.on("renderer_isGameRunning", renderer_isGameRunning);
         electron.ipcMain.on("renderer_canLaunchSpec", renderer_canLaunchSpec);
         electron.ipcMain.on("renderer_launchGame", renderer_launchGame);
+        electron.ipcMain.on("renderer_showToast", renderer_showToast);
 
         // Create the local TCP server for the input daemon.
         createTcpServer();
@@ -169,35 +170,23 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         let iconPath = path.join(__dirname, "..", "icons", "joystick.ico");
         tray = new electron.Tray(null);
-
-        let versionDisplay = `Version ${buildVars.version} - Build ${buildVars.commitShortSha}`;
-
-        let contextMenu = electron.Menu.buildFromTemplate([
-            { label: "Nintendo VS Frontend", sublabel: versionDisplay, type: "normal", enabled: false },
-            { label: "Nintendo VS Frontend", type: "separator" },
-            // { label: "Quit", type: "normal", click: menu_quit_click },
-        ]);
-
         tray.setToolTip("Nintendo VS Frontend");
-        tray.setContextMenu(contextMenu);
 
-// let appIcon = null;
-//   appIcon = new Tray(path.join(__dirname, "..", "..", "assets", "icon.ico"));
-//   const contextMenu = Menu.buildFromTemplate([
-//     { label: 'Nintendo VS Frontend', type: 'normal', enabled: false },
-//     { label: 'Version ' + buildVars.version, type: 'normal', enabled: false },
-//     { label: 'Build ' + buildVars.commitShortSha, type: 'normal', sublabel: 'lol', enabled: false },
-//     { type: 'separator' },
-//     { label: 'Quit', type: 'normal' },
-//   ]);
-//   appIcon.setToolTip('This is my application.');
-//   appIcon.setContextMenu(contextMenu);
-// //   setInterval(() => {
-//     appIcon.displayBalloon({
-//         title: "Game Over Man!",
-//         content: "An error occurred :("
-//     });
-//   }, 1000);
+        let versionDisplay = `Version ${buildVars.version} - ${buildVars.commitShortSha}`;
+
+        let options: GitHubElectron.MenuItemOptions[] = [
+            { type: "normal", label: "Nintendo VS Frontend", sublabel: versionDisplay, enabled: false },
+            { type: "separator" },
+            { label: "Quit", type: "normal", click: tray_quit_click },
+        ];
+
+        // OSX doesn't support sub-labels in menu items, so we'll add it as a seperate item.
+        if (process.platform === "darwin") {
+            options.splice(1, 0, { type: "normal", label: versionDisplay, enabled: false } );
+        }
+
+        let contextMenu = electron.Menu.buildFromTemplate(options);
+        tray.setContextMenu(contextMenu);
     }
 
     /**
@@ -379,6 +368,14 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Wait to ensure that Borderless Gaming launches and it's window is on the desktop.
         // We want to make sure that our renderer windows are on top of the window.
         setTimeout(() => { buildWindows(); }, config.borderlessgaming.delay || 500);
+    }
+
+    //#endregion
+
+    //#region Tray Menu Events
+
+    function tray_quit_click(): void {
+        electron.app.quit();
     }
 
     //#endregion
@@ -641,6 +638,30 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             windowA.emit("game-terminated", side);
             windowB.emit("game-terminated", side);
+        });
+    }
+
+    function renderer_showToast(event: any, type: string, title: string, message: string): void {
+
+        let icon = "joystick.ico";
+
+        switch (type) {
+            case "info":
+                icon = "question.ico";
+                break;
+            case "error":
+                icon = "chomp.ico";
+                break;
+        }
+
+        icon = path.join(__dirname, "..", "icons", icon);
+
+        let iconImage = Utilities.createImageFromPath(icon);
+
+        tray.displayBalloon({
+            icon: iconImage,
+            title: title,
+            content: message
         });
     }
 

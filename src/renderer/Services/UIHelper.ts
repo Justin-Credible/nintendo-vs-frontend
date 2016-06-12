@@ -14,6 +14,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             return [
                 "$q",
                 "ngDialog",
+                "electronIpcRenderer",
                 Utilities.ID,
                 SFX.ID,
             ];
@@ -22,11 +23,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         constructor(
             private $q: ng.IQService,
             private ngDialog: angular.dialog.IDialogService,
+            private ipcRenderer: GitHubElectron.IpcRenderer,
             private Utilities: Services.Utilities,
             private SFX: Services.SFX) {
         }
 
         //#endregion
+
+        public showToast(type: string, title: string, message: string): void {
+            this.ipcRenderer.send("renderer_showToast", type, title, message);
+        }
 
         public showAndGetDialogInstance(DialogController: Function, data?: any): angular.dialog.IDialogOpenResult {
 

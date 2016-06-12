@@ -155,9 +155,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 this.allowPlayerInput();
                 this.startPlayerInputTimer();
 
+                // If a game wasn't running on this side, but we received a terminate event
+                // then perhaps the game never launched. This is likely an error scenario.
                 if (!this._isGameRunning) {
                     this.SFX.playError();
-                    //this.UIHelper.showToast("An error occurred, game over man! :(");
+                    this.UIHelper.showToast("error", "Game Over Man!", "Could not launch game :(");
                 }
 
                 this._isGameRunning = false;

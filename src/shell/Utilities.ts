@@ -1,6 +1,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import { nativeImage } from "electron";
 
 //#region String Manipulation
 
@@ -46,6 +47,16 @@ export function endsWith(str: string, suffix: string): boolean {
     }
 
     return (str.substr(str.length - suffix.length) === suffix);
+}
+
+export function createImageFromPath(path: string): GitHubElectron.NativeImage {
+
+    // The type definition for the nativeImage is incorrect and therefore
+    // we need to index directly into the object to call createFromPath().
+
+    /* tslint:disable:no-string-literal */
+    return nativeImage["createFromPath"](path);
+    /* tslint:enable:no-string-literal */
 }
 
 //#endregion
