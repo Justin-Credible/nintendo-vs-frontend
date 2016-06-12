@@ -15,6 +15,7 @@
 
             <div class="game-poster">
                 <video
+                    ng-show="controller.videoUrl"
                     onloadstart="this.volume=0.2"
                     src="{{controller.videoUrl}}"
                     autoplay="true"
