@@ -1,7 +1,7 @@
 
 namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
-    export class AttractModeController extends BaseController<ViewModels.EmptyViewModel> {
+    export class AttractModeController extends BaseController<ViewModels.AttractModeViewModel> {
 
         //#region Injection
 
@@ -11,13 +11,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             return [
                 "$scope",
                 "$rootScope",
+                "$timeout",
             ];
         }
 
         constructor(
             $scope: ng.IScope,
-            private $rootScope: ng.IRootScopeService) {
-            super($scope, ViewModels.EmptyViewModel);
+            private $rootScope: ng.IRootScopeService,
+            private $timeout: ng.ITimeoutService) {
+            super($scope, ViewModels.AttractModeViewModel);
         }
 
         //#endregion
@@ -36,11 +38,52 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#region Events
 
         private app_enableAttractMode(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor): void {
-            // TODO
+            this.startAttractMode();
         }
 
         private app_disableAttractMode(event: ng.IAngularEvent, side: string): void {
-            // TODO
+            this.viewModel.showSmashBros = false;
+            this.viewModel.showQuestionBlock = false;
+            this.viewModel.showZelda = false;
+            this.viewModel.showGameCube = false;
+        }
+
+        //#endregion
+
+        //#region Private Helpers
+
+        private startAttractMode(): void {
+
+            let delay = 15000;
+
+            this.viewModel.showSmashBros = true;
+
+            this.$timeout(() => {
+                this.viewModel.showSmashBros = false;
+                this.viewModel.showZelda = true;
+
+                this.$timeout(() => {
+
+                    this.viewModel.showZelda = false;
+                    this.viewModel.showQuestionBlock = true;
+
+                    this.$timeout(() => {
+
+                        this.viewModel.showQuestionBlock = false;
+                        this.viewModel.showGameCube = true;
+
+                        this.$timeout(() => {
+
+                            this.viewModel.showGameCube = false;
+                            this.startAttractMode();
+
+                        }, delay);
+
+                    }, delay);
+
+                }, delay);
+
+            }, delay);
         }
 
         //#endregion

@@ -8,7 +8,7 @@ https://github.com/donovanh/zelda
 .zelda {
 
     .press-start {
-        font-family: 'Super Mario Maker';
+        font-family: "Super Mario Maker";
         font-size: 50px;
 
         text-align: center;
@@ -16,12 +16,12 @@ https://github.com/donovanh/zelda
         position: fixed;
         width: 100%;
 
-        animation: pulsate 3s ease-out;
+        animation: zelda-pulsate 3s ease-out;
         animation-iteration-count: infinite;
         opacity: 0.3;
     }
 
-    @keyframes pulsate {
+    @keyframes zelda-pulsate {
         0% {
             opacity: 0.3;
         }

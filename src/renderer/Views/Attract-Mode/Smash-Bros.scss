@@ -13,12 +13,13 @@
     .background {
         width: 1280px;
         height: 1024px;
+        opacity: 0.7;
         background-image:url("../img/smash-bros-background.jpg");
         animation: slide 25s linear infinite;
     }
 
     .press-start {
-        font-family: 'Super Mario Maker';
+        font-family: "Super Mario Maker";
         font-size: 50px;
 
         text-align: center;
@@ -26,12 +27,15 @@
         position: fixed;
         width: 100%;
 
-        animation: pulsate 3s ease-out;
+        animation: smash-bros-pulsate 3s ease-out;
         animation-iteration-count: infinite;
         opacity: 0.3;
+
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: black;
     }
 
-    @keyframes pulsate {
+    @keyframes smash-bros-pulsate {
         0% {
             opacity: 0.3;
         }

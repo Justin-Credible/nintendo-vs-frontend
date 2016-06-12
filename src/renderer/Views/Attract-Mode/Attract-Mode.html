@@ -1,25 +1,23 @@
 
-<div class="attract-mode">
+<div class="attract-mode" ng-controller="AttractModeController">
 
-    <!--
     <ng-include
+        ng-if="viewModel.showSmashBros"
         src="'Views/Attract-Mode/Smash-Bros.html'">
     </ng-include>
-    -->
 
-    <!--
     <ng-include
+        ng-if="viewModel.showQuestionBlock"
         src="'Views/Attract-Mode/Question-Block.html'">
     </ng-include>
-    -->
 
-    <!--
     <ng-include
+        ng-if="viewModel.showZelda"
         src="'Views/Attract-Mode/Zelda.html'">
     </ng-include>
-    -->
 
     <ng-include
+        ng-if="viewModel.showGameCube"
         src="'Views/Attract-Mode/GameCube.html'">
     </ng-include>
 

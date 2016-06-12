@@ -9,14 +9,26 @@ http://codepen.io/edokoa/pen/MKaReW
 
     width: 100%;
     height: 100%;
-    background: url("../img/blue-grid-background.jpg") center top repeat-y;
+
+    background: url("../img/blue-grid-background.png");
+
+    animation: question-block-slide 25s linear infinite;
+
+    @keyframes question-block-slide {
+        from{
+            background-position: 0px 0px;
+        }
+        to{
+            background-position: 1187px 670px;
+        }
+    }
 
     .title {
-        font-family: 'Super Mario Maker';
-        font-size: 75px;
+        font-family: "Super Mario Maker";
+        font-size: 120px;
 
         text-align: center;
-        top: 20px;
+        top: 60px;
         position: fixed;
         width: 100%;
 
@@ -24,7 +36,7 @@ http://codepen.io/edokoa/pen/MKaReW
     }
 
     .press-start {
-        font-family: 'Super Mario Maker';
+        font-family: "Super Mario Maker";
         font-size: 50px;
 
         text-align: center;
@@ -32,12 +44,15 @@ http://codepen.io/edokoa/pen/MKaReW
         position: fixed;
         width: 100%;
 
-        animation: pulsate 3s ease-out;
+        animation: question-block-pulsate 3s ease-out;
         animation-iteration-count: infinite;
         opacity: 0.3;
+
+        -webkit-text-stroke-width: 2px;
+        -webkit-text-stroke-color: black;
     }
 
-    @keyframes pulsate {
+    @keyframes question-block-pulsate {
         0% {
             opacity: 0.3;
         }

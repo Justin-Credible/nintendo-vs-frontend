@@ -26,10 +26,10 @@ https://codepen.io/mallendeo/pen/FoEJw
         }
 
         opacity: 0;
-        animation: fadeinlogo 5s ease-in;
+        animation: gamecube-fadein-logo 5s ease-in;
         animation-fill-mode: forwards;
 
-        @keyframes fadeinlogo {
+        @keyframes gamecube-fadein-logo {
             0% {
                 opacity: 0;
             }
@@ -43,20 +43,20 @@ https://codepen.io/mallendeo/pen/FoEJw
     }
 
     .press-start {
-        font-family: 'Super Mario Maker';
-        font-size: 30px;
+        font-family: "Super Mario Maker";
+        font-size: 50px;
 
         text-align: center;
         bottom: 20px;
         position: fixed;
         width: 100%;
 
-        animation: pulsate 3s ease-out;
+        animation: gamecube-pulsate 3s ease-out;
         animation-iteration-count: infinite;
         opacity: 0.3;
     }
 
-    @keyframes pulsate {
+    @keyframes gamecube-pulsate {
         0% {
             opacity: 0.3;
         }
