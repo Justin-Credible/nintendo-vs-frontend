@@ -15,10 +15,10 @@
 
             <div class="game-poster">
                 <video
+                    onloadstart="this.volume=0.2"
                     src="{{controller.videoUrl}}"
                     autoplay="true"
-                    loop="true"
-                    mute="true">
+                    loop="true">
                 </video>
             </div>
 

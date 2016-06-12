@@ -135,7 +135,7 @@ declare namespace Interfaces {
         platform: string;
         resource: string;
         specs: GameSpecification[];
-        _hasImage?: boolean;
+        videoPath: string;
     }
 
     /**

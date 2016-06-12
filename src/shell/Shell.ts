@@ -27,7 +27,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
     // TCP Server for Input Daemon Communication
     var tcpServer: net.Server;
 
-    // Windows
+    // Windows and UI Elements
+    var tray: GitHubElectron.Tray;
     var windowA: GitHubElectron.BrowserWindow;
     var windowB: GitHubElectron.BrowserWindow;
     var inputTestWindow: GitHubElectron.BrowserWindow;
@@ -162,6 +163,41 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             console.log("Attempting to restart Borderless Gaming in 2 seconds...");
             setTimeout(() => { launchBorderlessGaming(); }, 2000);
         });
+    }
+
+    function buildTrayMenu(): void {
+
+        let iconPath = path.join(__dirname, "..", "icons", "joystick.ico");
+        tray = new electron.Tray(null);
+
+        let versionDisplay = `Version ${buildVars.version} - Build ${buildVars.commitShortSha}`;
+
+        let contextMenu = electron.Menu.buildFromTemplate([
+            { label: "Nintendo VS Frontend", sublabel: versionDisplay, type: "normal", enabled: false },
+            { label: "Nintendo VS Frontend", type: "separator" },
+            // { label: "Quit", type: "normal", click: menu_quit_click },
+        ]);
+
+        tray.setToolTip("Nintendo VS Frontend");
+        tray.setContextMenu(contextMenu);
+
+// let appIcon = null;
+//   appIcon = new Tray(path.join(__dirname, "..", "..", "assets", "icon.ico"));
+//   const contextMenu = Menu.buildFromTemplate([
+//     { label: 'Nintendo VS Frontend', type: 'normal', enabled: false },
+//     { label: 'Version ' + buildVars.version, type: 'normal', enabled: false },
+//     { label: 'Build ' + buildVars.commitShortSha, type: 'normal', sublabel: 'lol', enabled: false },
+//     { type: 'separator' },
+//     { label: 'Quit', type: 'normal' },
+//   ]);
+//   appIcon.setToolTip('This is my application.');
+//   appIcon.setContextMenu(contextMenu);
+// //   setInterval(() => {
+//     appIcon.displayBalloon({
+//         title: "Game Over Man!",
+//         content: "An error occurred :("
+//     });
+//   }, 1000);
     }
 
     /**
@@ -325,25 +361,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     function app_ready(): void {
 
-        gameList.forEach((game: Interfaces.GameDescriptor) => {
+        // Build the tray context menu.
+        buildTrayMenu();
 
-            // TODO: If no resource, examine child specs.
-            if (game.resource) {
-
-                let imageName = game.resource;
-
-                if (game.platform === "PC") {
-                    imageName = path.basename(imageName);
-
-                    if (Utilities.endsWith(imageName, ".exe")) {
-                        imageName = imageName.slice(-4);
-                    }
-                }
-
-                let imagePath = path.join(__dirname, "..", "www", "img", "games", game.platform, imageName + ".png");
-                game._hasImage = fs.existsSync(imagePath);
-            }
-        });
+        // Populate the path to the preview videos for each game.
+        Utilities.populateVideoPaths(gameList);
 
         /* tslint:disable:no-string-literal */
         global["gameList"] = gameList;
@@ -425,36 +447,50 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
         catch (exception) {
             console.error("Unable to parse game descriptor or specification JSON.", side, gameJson, specJson, exception);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (side == null || game == null || spec == null ) {
             console.error("A side, game, and spec are required to launch a game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (side !== "A" && side !== "B") {
             console.error("Unsupported side when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (spec.type !== "single-screen" && spec.type !== "dual-screen") {
             console.error("Unsupported spec type when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform !== "MAME" && game.platform !== "PC") {
             console.error("Unsupported platform type when launching game.", side, game, spec);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform === "PC" && spec.type !== "dual-screen") {
             console.error("The PC platform only supports dual screen games.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (game.platform === "PC" && process.platform !== "win32") {
             console.error("The PC platform is only available on the win32 platform.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
@@ -463,6 +499,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Sanity check - The renderer should have already checked this.
         if (!canLaunchSpec) {
             console.warn("The given specification can not be launched at this time because it conflicts with another active spec.");
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
@@ -514,11 +552,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate executable when launching game.", executable);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate working directory when launching game.", workingDir);
+            windowA.emit("game-terminated", side);
+            windowB.emit("game-terminated", side);
             return;
         }
 
