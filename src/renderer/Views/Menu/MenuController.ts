@@ -38,6 +38,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         private _playerInputTimer: ng.IPromise<void>;
         private _attractModeTimer: ng.IPromise<void>;
         private _isGameRunning: boolean = false;
+        private _isAttractModeRunning: boolean = false;
 
         //#region BaseController Overrides
 
@@ -48,6 +49,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             this.$rootScope.$on(Constants.GameLaunchedEvent, _.bind(this.app_gameLaunched, this));
             this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
+
+            this.$rootScope.$on(Constants.EnableAttractMode, _.bind(this.app_enableAttractMode, this));
+            this.$rootScope.$on(Constants.DisableAttractMode, _.bind(this.app_disableAttractMode, this));
 
             this.$rootScope.$on(Constants.PlayerInputEvent,
                 (event: ng.IAngularEvent, input: Interfaces.PlayerInput) => {
@@ -66,6 +70,10 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#endregion
 
         //#region Controller Helper Properties
+
+        protected get shouldShowN64Logo(): boolean {
+            return !this._isGameRunning && !this._isAttractModeRunning;
+        }
 
         protected get videoUrl(): string {
 
@@ -171,6 +179,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             else {
                 this.UIHelper.showToast("info", "Information", "The other side has finished playing a game.");
             }
+        }
+
+        private app_enableAttractMode(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor): void {
+            this._isAttractModeRunning = true;
+        }
+
+        private app_disableAttractMode(event: ng.IAngularEvent, side: string): void {
+            this._isAttractModeRunning = false;
         }
 
         private app_playerInput(event: ng.IAngularEvent, input: Interfaces.PlayerInput): void {
