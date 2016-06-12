@@ -7,337 +7,44 @@ https://codepen.io/mallendeo/pen/FoEJw
 
 .GameCube {
 
-    *, *:after, *:before {
-        box-sizing: border-box;
-    }
+    .title {
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100%;
-    perspective: 100em;
-    background: #111;
+        font-family: "GameCube";
+        font-size: 30px;
 
-    @keyframes bounce{
-        20%{
-            transform:
-                rotateX(35deg)
-                rotateZ(45deg)
-                translateZ(-5em);
-        }
-        50%{
-            transform:
-                rotateX(47deg)
-                rotateZ(45deg)
-                translateZ(-4em);
-        }
-    }
-    .cube{
-        position: relative;
-        width: 8em;
-        height: 8em;
-        transform:
-                rotateX(45deg)
-                rotateZ(45deg)
-                translateZ(-4em);
-        animation: bounce 3s 3.5s ease forwards;
-        transform-style: preserve-3d;
-        
-        transition: all .8s ease;
-        /*&:hover {
-            transform:
-                rotateX(0)
-                rotateZ(0)
-                translateZ(-4em);
-        }*/
-    }
-    .face {
-        position: absolute;
+        text-align: center;
+        bottom: 145px;
+        position: fixed;
         width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        backface-visibility: hidden;
-        &.top{
-            transform: translateZ(8em);
+
+        h1 {
+            color: #636363;
         }
-        &.left{
-            transform:
-                rotateX(-90deg)
-                translateZ(4em)
-                translateY(-4em);
+
+        h2 {
+            color: #e6e6e6;
         }
-        &.right{
-            transform:
-                rotateX(-90deg)
-                rotateY(90deg)
-                translateZ(4em)
-                translateY(-4em);
-        }
-    }
-    .row{
-        display: flex;
-        margin: 0 0 .3em 0;
-        &:last-child{ margin: 0; }
-        transform: translateZ(0);
-    }
-    .square {
-        height: 2.4em;
-        width: 2.4em;
-        background: #5B4AB9;
-        
-        margin: 0 .3em 0 0;
-        &:last-child{ margin: 0; }
-        position: relative;
+
         opacity: 0;
-        animation: fadeIn .2s linear forwards;
-        &.padding{
-            background: transparent;
-        }
-    }
+        animation: fadeinlogo 5s ease-in;
+        animation-fill-mode: forwards;
 
-    @keyframes cubeMini{
-        5.5%{
-            transform:
-                translateZ(3*2.4+2.2em)
-                translateX(-2.8em)
-                rotateY(-90deg)
-                ;
-        }
-        11%{
-            transform:
-                translateZ(3*2.4+2.2em)
-                translateX(-2.8em*2)
-                rotateY(-180deg)
-                ;
-        }
-        16.5%{
-            transform:
-                translateZ(3*2.4+2.2em)
-                translateX(-2.8em*2)
-                translateY(2.8em)
-                rotateY(-180deg)
-                rotateX(90deg)
-                ;
-        }
-        22%{
-            transform:
-                translateZ(3*2.4+2.2em)
-                translateX(-2.8em*2)
-                translateY(2.8em*2)
-                rotateY(-180deg)
-                rotateX(180deg)
-                ;
-        }
-        27.5%{
-            transform:
-                translateZ(3*2.4+2.2-2.8em)
-                translateX(-2.8em*2)
-                translateY(2.8em*3)
-                rotateY(-180deg)
-                rotateX(270deg)
-                ;
-        }
-        33%{
-            transform:
-                translateZ(3*2.4+2.2-2*2.8em)
-                translateX(-2.8em*2)
-                translateY(2.8em*3)
-                rotateY(-180deg)
-                rotateX(360deg)
-                ;
-        }
-        38.5%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(-2.8em*2)
-                translateY(2.8em*3)
-                rotateY(-180deg)
-                rotateX(450deg)
-                ;
-        }
-        44%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(-2.8em)
-                translateY(2.8em*3)
-                rotateY(-180deg)
-                rotateZ(90deg)
-                rotateX(450deg)
-                ;
-        }
-        49.5%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(0)
-                translateY(2.8em*3)
-                rotateY(-180deg)
-                rotateZ(180deg)
-                rotateX(450deg)
-                ;
-        }
-        55%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(2.8em)
-                translateY(2.8em*2)
-                rotateY(-180deg)
-                rotateZ(270deg)
-                rotateX(450deg)
-                ;
-        }
-        60.5%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(2.8em)
-                translateY(2.8em)
-                rotateY(-180deg)
-                rotateZ(360deg)
-                rotateX(450deg)
-                ;
-        }
-        66%{
-            transform:
-                translateZ(3*2.4+2.2-3*2.8em)
-                translateX(2.4em)
-                translateY(0)
-                rotateY(-180deg)
-                rotateZ(450deg)
-                rotateX(450deg)
-                ;
-        }
-        71.5%{
-            transform:
-                translateZ(3*2.4+2.2-2*2.8em)
-                translateX(2.4em)
-                translateY(0)
-                rotateY(-180deg)
-                rotateZ(450deg)
-                rotateX(360deg)
-                ;
-        }
-        77%{
-            transform:
-                translateZ(3*2.4+2.2-2.8em)
-                translateX(2.4em)
-                translateY(0)
-                rotateY(-180deg)
-                rotateZ(450deg)
-                rotateX(270deg)
-                ;
-        }
-        82.5%{
-            transform:
-                translateZ(3*2.4+2.2-2.8em)
-                translateX(2.4em)
-                translateY(2.8em)
-                rotateY(-180deg)
-                rotateZ(360deg)
-                rotateX(270deg)
-                ;
-        }
-        88%{
-            transform:
-                translateZ(3*2.4+2.2-2.8em)
-                translateX(2.4em)
-                translateY(2.8em*2)
-                rotateY(-180deg)
-                rotateZ(270deg)
-                rotateX(270deg)
-                ;
-        }
-        95%{
-            transform:
-                translateZ(5*2.4+2.2-2.8em)
-                translateX(0)
-                translateY(2.8em*2)
-                rotateY(180deg)
-                rotateZ(270deg)
-                rotateX(270deg)
-                ;
-        }
-        100%{
-            transform:
-                translateZ(3*2.4+2.2-2.8em)
-                translateX(0)
-                translateY(2.8em*2)
-                rotateY(180deg)
-                rotateZ(270deg)
-                rotateX(270deg)
-                ;
-        }
-    }
-
-    .cube.mini {
-        animation: cubeMini 3.5s .2s ease-out forwards;
-        transition: all .4s ease;
-        width: 2.4em;
-        height: 2.4em;
-        position: absolute;
-        right: 0;
-        transform: translateZ(3*2.4+2.2em);
-        .face{
-            backface-visibility: visible;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: #5B4AB9;
-            border: 2px solid #7262c9;
-            &.back {
-                transform:
-                    translateZ(-1.2em)
-                    rotateY(180deg);
+        @keyframes fadeinlogo {
+            0% {
+                opacity: 0;
             }
-            &.right {
-                transform:
-                    rotateY(-270deg)
-                    translateX(1.2em);
-                transform-origin: top right;
+            75% {
+                opacity: 0;
             }
-            &.left {
-                transform:
-                    rotateY(270deg)
-                    translateX(-1.2em);
-                transform-origin: center left;
+            100% {
+                opacity: 1;
             }
-            &.top {
-                transform:
-                    rotateX(-90deg)
-                    translateY(-1.2em);
-                transform-origin: top center;
-            }
-            &.bottom {
-                transform:
-                    rotateX(90deg)
-                    translateY(1.2em);
-                transform-origin: bottom center;
-            }
-            &.front {
-                transform: translateZ(1.2em);
-            }
-        }
-    }
-
-    @keyframes fadeIn {
-        to {
-            opacity: 1;
-            // there's a bug with animation and opacity
-            // fixed using filters, don't know why :/
-            filter: opacity(1);
-        }
-    }
-
-    @for $i from 1 through 15 {
-        .square[data-index="#{$i}"] {
-            animation-delay: #{.2*$i+.2}s;
         }
     }
 
     .press-start {
         font-family: 'Super Mario Maker';
-        font-size: 50px;
+        font-size: 30px;
 
         text-align: center;
         bottom: 20px;
@@ -358,6 +65,356 @@ https://codepen.io/mallendeo/pen/FoEJw
         }
         100% {
             opacity: 0.3;
+        }
+    }
+
+    .cube-container {
+        margin-top: 0;
+
+        @keyframes movecubeup {
+            0% {
+                margin-top: 0;
+            }
+            80% {
+                margin-top: 0;
+            }
+            100% {
+                margin-top: -150px;
+            }
+        }
+
+        animation: movecubeup 5s ease-in;
+        animation-fill-mode: forwards;
+
+        position: fixed;
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100%;
+        perspective: 100em;
+        background: #111;
+
+        *, *:after, *:before {
+            box-sizing: border-box;
+        }
+
+        @keyframes bounce{
+            20%{
+                transform:
+                    rotateX(35deg)
+                    rotateZ(45deg)
+                    translateZ(-5em);
+            }
+            50%{
+                transform:
+                    rotateX(47deg)
+                    rotateZ(45deg)
+                    translateZ(-4em);
+            }
+        }
+        .cube{
+            position: relative;
+            width: 16em;
+            height: 16em;
+            transform:
+                    rotateX(45deg)
+                    rotateZ(45deg)
+                    translateZ(-8em);
+            animation: bounce 3s 3.5s ease forwards;
+            transform-style: preserve-3d;
+            
+            transition: all .8s ease;
+            /*&:hover {
+                transform:
+                    rotateX(0)
+                    rotateZ(0)
+                    translateZ(-4em);
+            }*/
+        }
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            backface-visibility: hidden;
+            &.top{
+                transform: translateZ(16em);
+            }
+            &.left{
+                transform:
+                    rotateX(-90deg)
+                    translateZ(8em)
+                    translateY(-8em);
+            }
+            &.right{
+                transform:
+                    rotateX(-90deg)
+                    rotateY(90deg)
+                    translateZ(8em)
+                    translateY(-8em);
+            }
+        }
+        .row{
+            display: flex;
+            margin: 0 0 .6em 0;
+            &:last-child{ margin: 0; }
+            transform: translateZ(0);
+        }
+        .square {
+            height: 4.8em;
+            width: 4.8em;
+            background: #5B4AB9;
+            
+            margin: 0 .6em 0 0;
+            &:last-child{ margin: 0; }
+            position: relative;
+            opacity: 0;
+            animation: fadeIn .2s linear forwards;
+            &.padding{
+                background: transparent;
+            }
+        }
+
+        @keyframes cubeMini{
+            5.5%{
+                transform:
+                    translateZ(3*4.8+4.4em)
+                    translateX(-5.6em)
+                    rotateY(-90deg)
+                    ;
+            }
+            11%{
+                transform:
+                    translateZ(3*4.8+4.4em)
+                    translateX(-5.6em*2)
+                    rotateY(-180deg)
+                    ;
+            }
+            16.5%{
+                transform:
+                    translateZ(3*4.8+4.4em)
+                    translateX(-5.6em*2)
+                    translateY(5.6em)
+                    rotateY(-180deg)
+                    rotateX(90deg)
+                    ;
+            }
+            22%{
+                transform:
+                    translateZ(3*4.8+4.4em)
+                    translateX(-5.6em*2)
+                    translateY(5.6em*2)
+                    rotateY(-180deg)
+                    rotateX(180deg)
+                    ;
+            }
+            27.5%{
+                transform:
+                    translateZ(3*4.8+4.4-5.6em)
+                    translateX(-5.6em*2)
+                    translateY(5.6em*3)
+                    rotateY(-180deg)
+                    rotateX(270deg)
+                    ;
+            }
+            33%{
+                transform:
+                    translateZ(3*4.8+4.4-2*5.6em)
+                    translateX(-5.6em*2)
+                    translateY(5.6em*3)
+                    rotateY(-180deg)
+                    rotateX(360deg)
+                    ;
+            }
+            38.5%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(-5.6em*2)
+                    translateY(5.6em*3)
+                    rotateY(-180deg)
+                    rotateX(450deg)
+                    ;
+            }
+            44%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(-5.6em)
+                    translateY(5.6em*3)
+                    rotateY(-180deg)
+                    rotateZ(90deg)
+                    rotateX(450deg)
+                    ;
+            }
+            49.5%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(0)
+                    translateY(5.6em*3)
+                    rotateY(-180deg)
+                    rotateZ(180deg)
+                    rotateX(450deg)
+                    ;
+            }
+            55%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(5.6em)
+                    translateY(5.6em*2)
+                    rotateY(-180deg)
+                    rotateZ(270deg)
+                    rotateX(450deg)
+                    ;
+            }
+            60.5%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(5.6em)
+                    translateY(5.6em)
+                    rotateY(-180deg)
+                    rotateZ(360deg)
+                    rotateX(450deg)
+                    ;
+            }
+            66%{
+                transform:
+                    translateZ(3*4.8+4.4-3*5.6em)
+                    translateX(4.8em)
+                    translateY(0)
+                    rotateY(-180deg)
+                    rotateZ(450deg)
+                    rotateX(450deg)
+                    ;
+            }
+            71.5%{
+                transform:
+                    translateZ(3*4.8+4.4-2*5.6em)
+                    translateX(4.8em)
+                    translateY(0)
+                    rotateY(-180deg)
+                    rotateZ(450deg)
+                    rotateX(360deg)
+                    ;
+            }
+            77%{
+                transform:
+                    translateZ(3*4.8+4.4-5.6em)
+                    translateX(4.8em)
+                    translateY(0)
+                    rotateY(-180deg)
+                    rotateZ(450deg)
+                    rotateX(270deg)
+                    ;
+            }
+            82.5%{
+                transform:
+                    translateZ(3*4.8+4.4-5.6em)
+                    translateX(4.8em)
+                    translateY(5.6em)
+                    rotateY(-180deg)
+                    rotateZ(360deg)
+                    rotateX(270deg)
+                    ;
+            }
+            88%{
+                transform:
+                    translateZ(3*4.8+4.4-5.6em)
+                    translateX(4.8em)
+                    translateY(5.6em*2)
+                    rotateY(-180deg)
+                    rotateZ(270deg)
+                    rotateX(270deg)
+                    ;
+            }
+            95%{
+                transform:
+                    translateZ(5*4.8+4.4-5.6em)
+                    translateX(0)
+                    translateY(5.6em*2)
+                    rotateY(180deg)
+                    rotateZ(270deg)
+                    rotateX(270deg)
+                    ;
+            }
+            100%{
+                transform:
+                    translateZ(3*4.8+4.4-5.6em)
+                    translateX(0)
+                    translateY(5.6em*2)
+                    rotateY(180deg)
+                    rotateZ(270deg)
+                    rotateX(270deg)
+                    ;
+            }
+        }
+
+        .cube.mini {
+            animation: cubeMini 3.5s .2s ease-out forwards;
+            transition: all .4s ease;
+            width: 4.8em;
+            height: 4.8em;
+            position: absolute;
+            right: 0;
+            transform: translateZ(3*4.8+4.4em);
+            .face{
+                backface-visibility: visible;
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                background: #5B4AB9;
+                border: 2px solid #7262c9;
+                &.back {
+                    transform:
+                        translateZ(-2.4em)
+                        rotateY(180deg);
+                }
+                &.right {
+                    transform:
+                        rotateY(-270deg)
+                        translateX(2.4em);
+                    transform-origin: top right;
+                }
+                &.left {
+                    transform:
+                        rotateY(270deg)
+                        translateX(-2.4em);
+                    transform-origin: center left;
+                }
+                &.top {
+                    transform:
+                        rotateX(-90deg)
+                        translateY(-2.4em);
+                    transform-origin: top center;
+                }
+                &.bottom {
+                    transform:
+                        rotateX(90deg)
+                        translateY(2.4em);
+                    transform-origin: bottom center;
+                }
+                &.front {
+                    transform: translateZ(2.4em);
+                }
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                // there's a bug with animation and opacity
+                // fixed using filters, don't know why :/
+                filter: opacity(1);
+            }
+        }
+
+        @for $i from 1 through 15 {
+            .square[data-index="#{$i}"] {
+                animation-delay: #{.2*$i+.2}s;
+            }
         }
     }
 }
