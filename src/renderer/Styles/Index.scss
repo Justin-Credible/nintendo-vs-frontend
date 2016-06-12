@@ -2,14 +2,24 @@
 @import "Common/Fonts.scss";
 @import "Common/Colors.scss";
 @import "Common/Global.scss";
+
+// ng-dialog themes
 @import "Common/Dialog-Theme-Nintendo.scss";
 @import "Common/Dialog-Theme-Nintendo-Toast.scss";
 
+// Views
+
 @import "../Views/Attract-Mode/Attract-Mode.scss";
+@import "../Views/Attract-Mode/GameCube.scss";
 @import "../Views/Attract-Mode/Smash-Bros.scss";
 @import "../Views/Attract-Mode/Question-Block.scss";
 @import "../Views/Attract-Mode/Zelda.scss";
+
 @import "../Views/Menu/Menu.scss";
 @import "../Views/Menu/N64-Logo.scss";
+
+// Dialog Views
+
 @import "../Views/Launch-Dialog/Launch-Dialog.scss";
+
 @import "../Views/Toast-Dialog/Toast-Dialog.scss";
