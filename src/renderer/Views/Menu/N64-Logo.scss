@@ -1,0 +1,148 @@
+
+// http://codepen.io/cmargroff/pen/avzGXJ
+
+.n64logo {
+
+    @keyframes spin{
+        from  { transform: rotateX(45deg) rotateZ(-315deg); }
+        to { transform: rotateX(45deg) rotateZ(45deg); }
+    }
+
+    .n64, .viewport{
+        width: 300px;
+        height: 300px;
+    }
+    .viewport{
+        transform: scale(0.5);
+        perspective: 725px;
+        perspective-origin: 50% 50%;
+        position: fixed;
+        top: 100px;
+        left: 50px;
+    }
+    .n64{
+        transform: rotateX(45deg) rotateZ(-315deg);
+        transform-style: preserve-3d;
+        animation-name: spin;
+        animation-duration: 70s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+    }
+    .n64 .side{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        backface-visibility: hidden;
+    }
+    .part{
+        display: block;
+        float: left;
+    }
+    .part.yellow{
+        //background-color:#FFC001;
+        background-color:#919191;
+    }
+    .part.red{
+        //background-color:#FE2015;
+        background-color: #606060;
+    }
+    .part.green{
+        //background-color:#069330;
+        background-color:#aa050e;
+    }
+    .part.blue{
+        //background-color:#011DA9;
+        background-color: #373637;
+    }
+    .bottom>div, .top>div{
+        width: 100px;
+        height: 100px;
+    }
+    .bottom .vert-top, .top .vert-top{
+        transform-origin: left;
+        transform: rotateY(-54deg) scaleX(1.7);
+    }
+    .top .vert-top{
+        transform-origin: right;
+    }
+    .bottom .vert-bottom, .top .vert-bottom{
+        transform-origin: right;
+        transform: rotateY(54deg) scaleX(1.7);
+    }
+    .top .vert-bottom{
+        transform-origin: left;
+    }
+    .bottom .hoz-left, .top .hoz-left{
+        transform-origin: bottom;
+        transform: rotateX(-54deg) scaleY(1.7);
+    }
+    .top .hoz-left{
+        transform-origin: top;
+    }
+    .bottom .hoz-right, .top .hoz-right{
+        transform-origin: top;
+        transform: rotateX(54deg) scaleY(1.7);
+    }
+    .top .hoz-right{
+        transform-origin: bottom;
+    }
+    .bottom.side{
+        backface-visibility: visible;
+    }
+    .top.side{
+        transform-style: preserve-3d;
+        transform: translateZ(300px);
+    }
+    .bottom .red + .red, .top .red + .red{
+        margin-left: 100px;
+    }
+    .front .part, .back .part{
+        width: 100px;
+        height: 100%;
+    }
+    .left .part, .right .part{
+        width: 100%;
+        height: 100px;
+    }
+    .front .part.middle, .back .part.middle{
+        height: 100px;
+        margin-top: 100px;
+        transform: skewY(54deg) scaleY(1.63);
+    }
+    .left .part.middle, .right .part.middle{
+        width: 100px;
+        margin-left: 100px;
+        transform: skewX(-54deg) scaleX(1.63);
+    }
+    .front{
+        transform-origin: 50% 100%;
+        transform: rotateX(-90deg);
+    }
+    .side.inside{
+        backface-visibility: visible;
+    }
+    .front.inside{
+        transform: rotateX(-90deg) translateZ(-100px);
+    }
+    .back{
+        transform-origin: 50% 0%;
+        transform: rotateX(90deg);
+    }
+    .back.inside{
+        transform: rotateX(90deg) translateZ(-100px);
+    }
+    .left{
+        transform-origin: 0% 50%;
+        transform: rotateY(-90deg);
+    }
+    .left.inside{
+        transform: rotateY(-90deg) translateZ(-100px);
+    }
+    .right{
+        transform-origin: 100% 50%;
+        transform: rotateY(90deg);
+    }
+    .right.inside{
+        transform: rotateY(90deg) translateZ(-100px);
+    }
+}
