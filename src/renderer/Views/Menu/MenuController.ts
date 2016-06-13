@@ -64,7 +64,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.viewModel.version = `${this.Utilities.buildVars.version} (${this.Utilities.buildVars.commitShortSha})`;
             this.viewModel.title = "Nintendo VS";
             this.viewModel.games = this.Utilities.gameList;
-            this.resetToIdle();
+            this.resetToIdle(true);
         }
 
         //#endregion
@@ -165,7 +165,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                 this.UIHelper.hidePleaseWait();
                 this.allowPlayerInput();
-                this.startPlayerInputTimer();
+                this.startAttractModeTimer();
 
                 // If a game wasn't running on this side, but we received a terminate event
                 // then perhaps the game never launched. This is likely an error scenario.
@@ -241,7 +241,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 this.stopPlayerInputTimer();
 
                 if (input.input === Enums.Input.Back) {
-                    this.resetToIdle();
+                    this.resetToIdle(true);
                     this.SFX.playCancel();
                     return;
                 }
@@ -327,14 +327,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private player_inputTimeout(): void {
-            this.resetToIdle();
+            this.resetToIdle(true);
         }
 
         //#endregion
 
         //#region Private Helpers
 
-        private resetToIdle(): void {
+        private resetToIdle(allowAttractMode: boolean): void {
             this.viewModel.activePlayer = null;
             this.viewModel.selectedGame = null;
             this.viewModel.currentPageIndex = 0;
@@ -342,10 +342,17 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.viewModel.player1Prompt = "Press Start";
             this.viewModel.player2Prompt = "Press Start";
 
-            this.startAttractModeTimer();
+            if (allowAttractMode) {
+                this.startAttractModeTimer();
+            }
         }
 
         private startAttractModeTimer(): void {
+
+            if (this._attractModeTimer) {
+                this.$timeout.cancel(this._attractModeTimer);
+            }
+
             this._attractModeTimer = this.$timeout(_.bind(this.attractMode_timeout, this), Constants.ATTRACT_MODE_IDLE_TIMEOUT);
         }
 
@@ -356,6 +363,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private startPlayerInputTimer(): void {
+
+            if (this._playerInputTimer) {
+                this.$timeout.cancel(this._playerInputTimer);
+            }
+
             this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), Constants.PLAYER_IDLE_TIMEOUT);
         }
 
@@ -395,7 +407,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                         // Wait two seconds before resetting so the user doesn't see the screen reset
                         // back to attract mode (the game will have probably launched by then).
-                        this.$timeout(() => { this.resetToIdle(); }, 3000);
+                        this.$timeout(() => { this.resetToIdle(false); }, 3000);
                     }
                     else {
                         this.UIHelper.showToast("error", "Can't Start Game", "The other side is already playing a game.");
