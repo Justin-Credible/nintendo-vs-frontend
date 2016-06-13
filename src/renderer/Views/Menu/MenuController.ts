@@ -375,9 +375,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private stopAttractModeTimer(): void {
-            if (this._attractModeTimer != null) {
-                this.$timeout.cancel(this._attractModeTimer);
-            }
+            this.$timeout.cancel(this._attractModeTimer);
         }
 
         private startPlayerInputTimer(): void {
@@ -386,9 +384,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private stopPlayerInputTimer(): void {
-            if (this._playerInputTimer != null) {
-                this.$timeout.cancel(this._playerInputTimer);
-            }
+            this.$timeout.cancel(this._playerInputTimer);
         }
 
         private preventPlayerInput(): void {

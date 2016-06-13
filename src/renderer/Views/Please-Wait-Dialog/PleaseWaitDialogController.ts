@@ -23,17 +23,17 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region BaseDialogController Events
 
-        protected dialog_opened(): void {
+        protected dialog_opened(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
             /* tslint:disable:no-empty */
             /* tslint:enable:no-empty */
         }
 
-        protected dialog_closing(): void {
+        protected dialog_closing(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
             /* tslint:disable:no-empty */
             /* tslint:enable:no-empty */
         }
 
-        protected dialog_closed(): void {
+        protected dialog_closed(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
             /* tslint:disable:no-empty */
             /* tslint:enable:no-empty */
         }

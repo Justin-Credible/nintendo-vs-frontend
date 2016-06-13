@@ -20,10 +20,68 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         constructor(scope: ng.IScope, ViewModelType: any) {
             super(scope, ViewModelType);
 
-            this.scope.$on("ngDialog.opened", _.bind(this.dialog_opened, this));
-            this.scope.$on("ngDialog.closing", _.bind(this.dialog_closing, this));
-            this.scope.$on("ngDialog.closed", _.bind(this.dialog_closed, this));
+            this.scope.$on("ngDialog.opened", _.bind(this.internal_dialog_opened, this));
+            this.scope.$on("ngDialog.closing", _.bind(this.internal_dialog_closing, this));
+            this.scope.$on("ngDialog.closed", _.bind(this.internal_dialog_closed, this));
         }
+
+        //#region Internal Event Handlers
+
+        /**
+         * Internal method to handle dialog opened broadcast events.
+         */
+        private internal_dialog_opened(event: ng.IAngularEvent, element: ng.IAugmentedJQuery) {
+
+            // HACK: Use our insider knowledge of UiHelper to determine if this event is applicable to this dialog instance.
+
+            /* tslint:disable:no-string-literal */
+            let dialogId = this.getData()["__dialogIdCounter"];
+            /* tslint:enable:no-string-literal */
+
+            let className = "UiHelper_Dialog_" + dialogId;
+
+            if (element.hasClass(className)) {
+                this.dialog_opened(event, element);
+            }
+        }
+
+        /**
+         * Internal method to handle dialog closing broadcast events.
+         */
+        private internal_dialog_closing(event: ng.IAngularEvent, element: ng.IAugmentedJQuery) {
+
+            // HACK: Use our insider knowledge of UiHelper to determine if this event is applicable to this dialog instance.
+
+            /* tslint:disable:no-string-literal */
+            let dialogId = this.getData()["__dialogIdCounter"];
+            /* tslint:enable:no-string-literal */
+
+            let className = "UiHelper_Dialog_" + dialogId;
+
+            if (element.hasClass(className)) {
+                this.dialog_closing(event, element);
+            }
+        }
+
+        /**
+         * Internal method to handle dialog closed broadcast events.
+         */
+        private internal_dialog_closed(event: ng.IAngularEvent, element: ng.IAugmentedJQuery) {
+
+            // HACK: Use our insider knowledge of UiHelper to determine if this event is applicable to this dialog instance.
+
+            /* tslint:disable:no-string-literal */
+            let dialogId = this.getData()["__dialogIdCounter"];
+            /* tslint:enable:no-string-literal */
+
+            let className = "UiHelper_Dialog_" + dialogId;
+
+            if (element.hasClass(className)) {
+                this.dialog_closed(event, element);
+            }
+        }
+
+        //#endregion
 
         //#region Protected Methods
 
@@ -57,22 +115,22 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#endregion
 
-        //#region Events
+        //#region Abstract Methods
 
         /**
          * Fired when this dialog is opened.
          */
-        protected abstract dialog_opened();
+        protected abstract dialog_opened(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void;
 
         /**
          * Fired when this dialog is about to close.
          */
-        protected abstract dialog_closing();
+        protected abstract dialog_closing(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void;
 
         /**
          * Fired when this dialog has closed.
          */
-        protected abstract dialog_closed();
+        protected abstract dialog_closed(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void;
 
         //#endregion
     }

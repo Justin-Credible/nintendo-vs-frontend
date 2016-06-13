@@ -30,7 +30,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             private UIHelper: Services.UIHelper,
             private LaunchHelper: Services.LaunchHelper,
             private Utilities: Services.Utilities) {
-            super($scope, ViewModels.EmptyViewModel);
+            super($scope, ViewModels.LaunchDialogViewModel);
         }
 
         //#endregion
@@ -42,7 +42,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region BaseDialogController Events
 
-        protected dialog_opened(): void {
+        protected dialog_opened(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
 
             this._cancelGameLaunchedListener = this.$rootScope.$on(Constants.GameLaunchedEvent, _.bind(this.app_gameLaunched, this));
             this._cancelGameTerminatedListener = this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
@@ -64,14 +64,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.SFX.playReady();
         }
 
-        protected dialog_closing(): void {
+        protected dialog_closing(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
+
             this.stopPlayerInputTimer();
             this._cancelGameLaunchedListener();
             this._cancelGameTerminatedListener();
             this._cancelPlayerInputListener();
         }
 
-        protected dialog_closed(): void {
+        protected dialog_closed(event: ng.IAngularEvent, element: ng.IAugmentedJQuery): void {
             /* tslint:disable:no-empty */
             /* tslint:enable:no-empty */
         }
@@ -221,9 +222,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private stopPlayerInputTimer(): void {
-            if (this._playerInputTimer != null) {
-                this.$timeout.cancel(this._playerInputTimer);
-            }
+            this.$timeout.cancel(this._playerInputTimer);
         }
 
         private refreshDisabledSpecs(): void {

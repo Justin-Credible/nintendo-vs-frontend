@@ -11,23 +11,34 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             return [
                 "$scope",
                 "$rootScope",
-                "$timeout",
+                "$interval",
             ];
         }
 
         constructor(
             $scope: ng.IScope,
             private $rootScope: ng.IRootScopeService,
-            private $timeout: ng.ITimeoutService) {
+            private $interval: ng.IIntervalService) {
             super($scope, ViewModels.AttractModeViewModel);
         }
 
         //#endregion
 
+        private _viewModelNames: string[];
+        private _slideCounter: number;
+        private _attractModeInterval: ng.IPromise<void>;
+
         //#region BaseController Overrides
 
         protected view_loaded(): void {
             super.view_loaded();
+
+            this._viewModelNames = [
+                "showSmashBros",
+                "showQuestionBlock",
+                "showZelda",
+                "showGameCube",
+            ];
 
             this.$rootScope.$on(Constants.EnableAttractMode, _.bind(this.app_enableAttractMode, this));
             this.$rootScope.$on(Constants.DisableAttractMode, _.bind(this.app_disableAttractMode, this));
@@ -42,6 +53,28 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private app_disableAttractMode(event: ng.IAngularEvent, side: string): void {
+            this.stopAttractMode();
+        }
+
+        //#endregion
+
+        //#region Private Helpers
+
+        private startAttractMode(): void {
+
+            this._slideCounter = null;
+
+            this.next();
+
+            this._attractModeInterval = this.$interval(() => {
+                this.next();
+            }, 15000);
+        }
+
+        private stopAttractMode(): void {
+
+            this.$interval.cancel(this._attractModeInterval);
+
             this.viewModel.showSmashBros = false;
             this.viewModel.showQuestionBlock = false;
             this.viewModel.showZelda = false;
@@ -52,38 +85,28 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Private Helpers
 
-        private startAttractMode(): void {
+        private next(): void {
 
-            let delay = 15000;
+            if (this._slideCounter === this._viewModelNames.length - 1) {
+                this._slideCounter = null;
+            }
 
-            this.viewModel.showSmashBros = true;
+            let prevSlideCounter: number;
 
-            this.$timeout(() => {
-                this.viewModel.showSmashBros = false;
-                this.viewModel.showZelda = true;
+            if (this._slideCounter == null) {
+                this._slideCounter = 0;
+                prevSlideCounter = this._viewModelNames.length - 1;
+            }
+            else {
+                prevSlideCounter = this._slideCounter;
+                this._slideCounter += 1;
+            }
 
-                this.$timeout(() => {
+            let prevVmName = this._viewModelNames[prevSlideCounter];
+            let nextVmName = this._viewModelNames[this._slideCounter];
 
-                    this.viewModel.showZelda = false;
-                    this.viewModel.showQuestionBlock = true;
-
-                    this.$timeout(() => {
-
-                        this.viewModel.showQuestionBlock = false;
-                        this.viewModel.showGameCube = true;
-
-                        this.$timeout(() => {
-
-                            this.viewModel.showGameCube = false;
-                            this.startAttractMode();
-
-                        }, delay);
-
-                    }, delay);
-
-                }, delay);
-
-            }, delay);
+            this.viewModel[prevVmName] = false;
+            this.viewModel[nextVmName] = true;
         }
 
         //#endregion

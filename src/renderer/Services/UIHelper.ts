@@ -32,6 +32,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         //#endregion
 
+        /**
+         * Counter to keep track of each of the unique dialog instances.
+         */
+        private _dialogIdCounter: number = 0;
+
         public showToast(type: string, title: string, message: string): void {
 
             let dialogOptions: ng.dialog.IDialogOpenOptions = {
@@ -68,6 +73,17 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
                 throw new Error("The DialogController passed did not have a string TemplatePath static property.");
             }
 
+            this._dialogIdCounter += 1;
+
+            // HACK: We need this variable populated so we can stuff the dialog ID counter in it.
+            // This will lead to problems for dialogs that null check their data via this.getData().
+            if (!data) {
+                data = {};
+            }
+
+            // HACK: For identifying the dialog instance in BaseDialogController to filter broadcast events.
+            data.__dialogIdCounter = this._dialogIdCounter;
+
             let openOptions: ng.dialog.IDialogOpenOptions = {
                 template: templatePath,
                 controller: DialogController,
@@ -84,6 +100,9 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
             // Template path can't be overridden.
             openOptions.template = templatePath;
+
+            // HACK: For identifying the dialog instance in BaseDialogController to filter broadcast events.
+            openOptions.className += " UiHelper_Dialog_" + this._dialogIdCounter;
 
             return this.ngDialog.open(openOptions);
         }
