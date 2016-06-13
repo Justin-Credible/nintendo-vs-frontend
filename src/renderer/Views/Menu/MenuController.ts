@@ -348,31 +348,23 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private startAttractModeTimer(): void {
-
-            if (this._attractModeTimer) {
-                this.$timeout.cancel(this._attractModeTimer);
-            }
-
+            this.stopAttractModeTimer();
             this._attractModeTimer = this.$timeout(_.bind(this.attractMode_timeout, this), Constants.ATTRACT_MODE_IDLE_TIMEOUT);
         }
 
         private stopAttractModeTimer(): void {
-            if (this._attractModeTimer) {
+            if (this._attractModeTimer != null) {
                 this.$timeout.cancel(this._attractModeTimer);
             }
         }
 
         private startPlayerInputTimer(): void {
-
-            if (this._playerInputTimer) {
-                this.$timeout.cancel(this._playerInputTimer);
-            }
-
+            this.stopPlayerInputTimer();
             this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), Constants.PLAYER_IDLE_TIMEOUT);
         }
 
         private stopPlayerInputTimer(): void {
-            if (this._playerInputTimer) {
+            if (this._playerInputTimer != null) {
                 this.$timeout.cancel(this._playerInputTimer);
             }
         }

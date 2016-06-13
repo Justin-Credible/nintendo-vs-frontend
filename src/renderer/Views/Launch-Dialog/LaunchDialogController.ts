@@ -205,11 +205,12 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         //#region Private Methods
 
         private startPlayerInputTimer(): void {
-            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), 10000);
+            this.stopPlayerInputTimer();
+            this._playerInputTimer = this.$timeout(_.bind(this.player_inputTimeout, this), Constants.PLAYER_IDLE_TIMEOUT);
         }
 
         private stopPlayerInputTimer(): void {
-            if (this._playerInputTimer) {
+            if (this._playerInputTimer != null) {
                 this.$timeout.cancel(this._playerInputTimer);
             }
         }
