@@ -115,7 +115,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.close(result);
         }
 
-        private app_gameLaunched(event: ng.IAngularEvent, side: string): void {
+        private app_gameLaunched(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor, spec: Interfaces.GameSpecification): void {
 
             if (side !== this.Utilities.side) {
                 this.refreshDisabledSpecs();
@@ -123,9 +123,20 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             }
         }
 
-        private app_gameTerminated(event: ng.IAngularEvent, side: string): void {
+        private app_gameTerminated(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor, spec: Interfaces.GameSpecification): void {
 
-            if (side !== this.Utilities.side) {
+            if (side !== this.Utilities.side && spec.type === "dual-screen") {
+
+                // If the other side launched a dual screen game, close this dialog without doing anything.
+
+                let result = new Models.LaunchDialogResultModel();
+                result.action = Constants.DialogResults.DoNothing;
+                result.spec = null;
+
+                this.close(result);
+            }
+            else if (side !== this.Utilities.side) {
+                // If the other side launched a game, we may need to display some specs in the list.
                 this.refreshDisabledSpecs();
                 this.scope.$apply();
             }

@@ -84,13 +84,16 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             this.$rootScope.$broadcast(Constants.PlayerInputEvent, input);
         }
 
-        public window_gameLaunched(side: string, gameJson: string): void {
+        public window_gameLaunched(side: string, gameJson: string, specJson: string): void {
             let game: Interfaces.GameDescriptor = JSON.parse(gameJson);
-            this.$rootScope.$broadcast(Constants.GameLaunchedEvent, side, game);
+            let spec: Interfaces.GameSpecification = JSON.parse(specJson);
+            this.$rootScope.$broadcast(Constants.GameLaunchedEvent, side, game, spec);
         }
 
-        public window_gameTerminated(side: string): void {
-            this.$rootScope.$broadcast(Constants.GameTerminatedEvent, side);
+        public window_gameTerminated(side: string, gameJson: string, specJson: string): void {
+            let game: Interfaces.GameDescriptor = JSON.parse(gameJson);
+            let spec: Interfaces.GameSpecification = JSON.parse(specJson);
+            this.$rootScope.$broadcast(Constants.GameTerminatedEvent, side, game, spec);
         }
 
         /**

@@ -149,19 +149,41 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Events
 
-        private app_gameLaunched(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor): void {
+        private app_gameLaunched(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor, spec: Interfaces.GameSpecification): void {
 
             if (side === this.Utilities.side) {
+                // If this side launched a game, simply set the flag. All of the prep work was
+                // already done via the launch dialog closing callback method.
                 this._isGameRunning = true;
+            }
+            else if (spec.type === "dual-screen") {
+
+                // If the other side launched a dual screen game, we need to do some prep work.
+
+                // Ensure attract mode is stopped.
+                this.stopAttractModeTimer();
+
+                if (this._isAttractModeRunning) {
+                    this.$rootScope.$broadcast(Constants.DisableAttractMode);
+                }
+
+                // Perform the same actions as the launch dialog would if we were launching a game.
+
+                this.preventPlayerInput();
+                this.stopPlayerInputTimer();
+                this.UIHelper.showPleaseWait();
+
+                this._isGameRunning = true;
+                this.resetToIdle(false);
             }
             else {
                 this.UIHelper.showToast("info", "Information", `The other side has started playing ${game.name}!`);
             }
         }
 
-        private app_gameTerminated(event: ng.IAngularEvent, side: string): void {
+        private app_gameTerminated(event: ng.IAngularEvent, side: string, game: Interfaces.GameDescriptor, spec: Interfaces.GameSpecification): void {
 
-            if (side === this.Utilities.side) {
+            if (side === this.Utilities.side || spec.type === "dual-screen") {
 
                 this.UIHelper.hidePleaseWait();
                 this.allowPlayerInput();
@@ -406,7 +428,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.SFX.playError();
                     }
                 }
-                else {
+                else if (result.action === Constants.DialogResults.Cancel) {
+
                     this.allowPlayerInput();
                     this.startPlayerInputTimer();
                 }

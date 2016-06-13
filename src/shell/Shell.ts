@@ -444,50 +444,50 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
         catch (exception) {
             console.error("Unable to parse game descriptor or specification JSON.", side, gameJson, specJson, exception);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (side == null || game == null || spec == null ) {
             console.error("A side, game, and spec are required to launch a game.", side, game, spec);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (side !== "A" && side !== "B") {
             console.error("Unsupported side when launching game.", side, game, spec);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (spec.type !== "single-screen" && spec.type !== "dual-screen") {
             console.error("Unsupported spec type when launching game.", side, game, spec);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (game.platform !== "MAME" && game.platform !== "PC") {
             console.error("Unsupported platform type when launching game.", side, game, spec);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (game.platform === "PC" && spec.type !== "dual-screen") {
             console.error("The PC platform only supports dual screen games.");
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (game.platform === "PC" && process.platform !== "win32") {
             console.error("The PC platform is only available on the win32 platform.");
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
@@ -496,8 +496,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Sanity check - The renderer should have already checked this.
         if (!canLaunchSpec) {
             console.warn("The given specification can not be launched at this time because it conflicts with another active spec.");
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
@@ -549,15 +549,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate executable when launching game.", executable);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
         if (!fs.existsSync(executable)) {
             console.error("Unable to locate working directory when launching game.", workingDir);
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
             return;
         }
 
@@ -601,8 +601,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         console.log("Launching game...", workingDir, command);
 
-        windowA.emit("game-launched", side, JSON.stringify(game));
-        windowB.emit("game-launched", side, JSON.stringify(game));
+        windowA.emit("game-launched", side, gameJson, specJson);
+        windowB.emit("game-launched", side, gameJson, specJson);
 
         exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
@@ -636,8 +636,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
                 sideBSpec = null;
             }
 
-            windowA.emit("game-terminated", side);
-            windowB.emit("game-terminated", side);
+            windowA.emit("game-terminated", side, gameJson, specJson);
+            windowB.emit("game-terminated", side, gameJson, specJson);
         });
     }
 

@@ -17,4 +17,5 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Constants {
 namespace JustinCredible.NintendoVsFrontend.Renderer.Constants.DialogResults {
     export const Cancel = "Cancel";
     export const OK = "OK";
+    export const DoNothing = "DoNothing";
 }
