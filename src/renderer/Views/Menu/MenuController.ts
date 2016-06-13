@@ -217,16 +217,19 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 this.viewModel.currentPageIndex = 0;
 
                 if (input.player === Enums.Player.One) {
-                    this.viewModel.player1Prompt = "Choose a Game";
+                    this.viewModel.player1Prompt = "Choose A Game";
                     this.viewModel.player2Prompt = "Please Wait";
                 }
                 else if (input.player === Enums.Player.Two) {
                     this.viewModel.player1Prompt = "Please Wait";
-                    this.viewModel.player2Prompt = "Choose a Game";
+                    this.viewModel.player2Prompt = "Choose A Game";
                 }
 
+                // Greet the new user.
                 this.SFX.playReady();
+                this.UIHelper.showToast("info", "Welcome!", "Use the joystick and A button to select a game!");
 
+                // Start the timer.
                 this.startPlayerInputTimer();
 
                 return;
