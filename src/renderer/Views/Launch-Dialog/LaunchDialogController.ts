@@ -120,7 +120,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
             if (side !== this.Utilities.side) {
                 this.refreshDisabledSpecs();
-                this.scope.$apply();
             }
         }
 
@@ -139,7 +138,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             else if (side !== this.Utilities.side) {
                 // If the other side launched a game, we may need to display some specs in the list.
                 this.refreshDisabledSpecs();
-                this.scope.$apply();
             }
         }
 
@@ -208,8 +206,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     this.SFX.playError();
                 }
             }
-
-            this.scope.$apply();
         }
 
         //#endregion

@@ -53,13 +53,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.$rootScope.$on(Constants.EnableAttractMode, _.bind(this.app_enableAttractMode, this));
             this.$rootScope.$on(Constants.DisableAttractMode, _.bind(this.app_disableAttractMode, this));
 
-            this.$rootScope.$on(Constants.PlayerInputEvent,
-                (event: ng.IAngularEvent, input: Interfaces.PlayerInput) => {
-
-                this.scope.$apply(() => {
-                    this.app_playerInput(event, input);
-                });
-            });
+            this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
             this.viewModel.version = `${this.Utilities.buildVars.version} (${this.Utilities.buildVars.commitShortSha})`;
             this.viewModel.title = "Nintendo VS";

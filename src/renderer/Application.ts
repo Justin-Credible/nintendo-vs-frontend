@@ -81,19 +81,27 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
         //#region Event Handlers
 
         public window_playerInput(input: Interfaces.PlayerInput): void {
-            this.$rootScope.$broadcast(Constants.PlayerInputEvent, input);
+            this.$rootScope.$apply(() => {
+                this.$rootScope.$broadcast(Constants.PlayerInputEvent, input);
+            });
         }
 
         public window_gameLaunched(side: string, gameJson: string, specJson: string): void {
             let game: Interfaces.GameDescriptor = JSON.parse(gameJson);
             let spec: Interfaces.GameSpecification = JSON.parse(specJson);
-            this.$rootScope.$broadcast(Constants.GameLaunchedEvent, side, game, spec);
+
+            this.$rootScope.$apply(() => {
+                this.$rootScope.$broadcast(Constants.GameLaunchedEvent, side, game, spec);
+            });
         }
 
         public window_gameTerminated(side: string, gameJson: string, specJson: string): void {
             let game: Interfaces.GameDescriptor = JSON.parse(gameJson);
             let spec: Interfaces.GameSpecification = JSON.parse(specJson);
-            this.$rootScope.$broadcast(Constants.GameTerminatedEvent, side, game, spec);
+
+            this.$rootScope.$apply(() => {
+                this.$rootScope.$broadcast(Constants.GameTerminatedEvent, side, game, spec);
+            });
         }
 
         /**
