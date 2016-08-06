@@ -15,6 +15,7 @@
         -
             type: "dual-screen"
             players: "1-2"
+            layout: "duo-face-off"
 -
     name: "Baseball VS"
     platform: "MAME"
@@ -23,6 +24,7 @@
         -
             type: "dual-screen"
             players: "1-2"
+            layout: "duo-face-off"
 # -
 #     name: "RBI Baseball VS"
 #     platform: "MAME"
@@ -31,6 +33,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-simultaneous"
 -
     name: "Battle City VS"
     platform: "MAME"
@@ -39,6 +42,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "dual-simultaneous"
 -
     name: "Battletoads"
     platform: "MAME"
@@ -47,6 +51,7 @@
         -
             type: "dual-screen"
             players: "1-3"
+            layout: "trio"
 -
     name: "Castlevania VS"
     platform: "MAME"
@@ -54,7 +59,8 @@
     specs:
         -
             type: "single-screen"
-            players: "1-2"
+            players: "1"
+            layout: "solo"
 -
     name: "Clu Clu Land VS"
     platform: "MAME"
@@ -63,6 +69,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-simultaneous"
 -
     name: "Crawl"
     platform: "PC"
@@ -71,6 +78,7 @@
         -
             type: "dual-screen"
             players: "1-4"
+            layout: "quartet"
 -
     name: "Dr. Mario VS"
     platform: "MAME"
@@ -79,6 +87,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-simultaneous"
 -
     name: "Excitebike VS"
     platform: "MAME"
@@ -86,7 +95,8 @@
     specs:
         -
             type: "single-screen"
-            players: "1-2"
+            players: "1"
+            layout: "solo"
 # -
 #     name: "Freedom Force VS"
 #     platform: "MAME"
@@ -95,6 +105,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-simultaneous"
 -
     name: "Gauntlet"
     platform: "MAME"
@@ -103,10 +114,12 @@
             type: "single-screen"
             players: "1-2"
             resource: "gauntlet2p"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "gauntlet"
+            layout: "quartet"
 -
     name: "Gauntlet II"
     platform: "MAME"
@@ -115,10 +128,12 @@
             type: "single-screen"
             players: "1-2"
             resource: "gaunt22p"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "gaunt2"
+            layout: "quartet"
 -
     name: "Gradius VS"
     platform: "MAME"
@@ -127,6 +142,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-alternating"
 # -
 #     name: "Gong Fight VS"
 #     platform: "MAME"
@@ -135,6 +151,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-simultaneous"
 -
     name: "The Goonies VS"
     platform: "MAME"
@@ -142,7 +159,8 @@
     specs:
         -
             type: "single-screen"
-            players: "1-2"
+            players: "1"
+            layout: "solo"
 # -
 #     name: "Gumshoe VS"
 #     platform: "MAME"
@@ -151,6 +169,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-alternating"
 -
     name: "Ice Climber VS"
     platform: "MAME"
@@ -159,6 +178,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-simultaneous"
 # -
 #     name: "Mach Rider VS (Endurance)"
 #     platform: "MAME"
@@ -166,7 +186,8 @@
 #     specs:
 #         -
 #             type: "single-screen"
-#             players: "1-2"
+#             players: "1"
+#             layout: "solo"
 # -
 #     name: "Mach Rider VS (Fighting)"
 #     platform: "MAME"
@@ -174,7 +195,8 @@
 #     specs:
 #         -
 #             type: "single-screen"
-#             players: "1-2"
+#             players: "1"
+#             layout: "solo"
 -
     name: "Pinball VS"
     platform: "MAME"
@@ -183,6 +205,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-alternating"
 -
     name: "Platoon VS"
     platform: "MAME"
@@ -190,7 +213,8 @@
     specs:
         -
             type: "single-screen"
-            players: "1-2"
+            players: "1"
+            layout: "solo"
 # -
 #     name: "Star Luster VS"
 #     platform: "MAME"
@@ -199,6 +223,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-alternating"
 -
     name: "The Simpsons"
     platform: "MAME"
@@ -207,10 +232,12 @@
             type: "single-screen"
             players: "1-2"
             resource: "simpsons2p"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "simpsons"
+            layout: "quartet"
 -
     name: "Slalom VS"
     platform: "MAME"
@@ -219,6 +246,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-alternating"
 -
     name: "Soccer VS"
     platform: "MAME"
@@ -227,6 +255,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-simultaneous"
 -
     name: "Super Mario Bros. VS"
     platform: "MAME"
@@ -235,6 +264,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: duo-alternating
 # -
 #     name: "Super SkyKid VS"
 #     platform: "MAME"
@@ -243,6 +273,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-alternating"
 # -
 #     name: "Super Xevious"
 #     platform: "MAME"
@@ -251,6 +282,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-alternating"
 -
     name: "Tennis VS"
     platform: "MAME"
@@ -259,6 +291,7 @@
         -
             type: "dual-screen"
             players: "1-4"
+            layout: "quartet"
 -
     name: "Tetris VS"
     platform: "MAME"
@@ -267,6 +300,7 @@
         -
             type: "single-screen"
             players: "1-2"
+            layout: "duo-simultaneous"
 # -
 #     name: "TKO Boxing VS"
 #     platform: "MAME"
@@ -275,6 +309,7 @@
 #         -
 #             type: "single-screen"
 #             players: "1-2"
+#             layout: "duo-simultaneous"
 -
     name: "TMNT"
     platform: "MAME"
@@ -283,10 +318,12 @@
             type: "single-screen"
             players: "1-2"
             resource: "tmnt2po"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "tmnt"
+            layout: "duo-alternating"
 -
     name: "TMNT 2: Turtles in Time"
     platform: "MAME"
@@ -295,10 +332,12 @@
             type: "single-screen"
             players: "1-2"
             resource: "tmnt22p"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "tmnt2"
+            layout: "quartet"
 # -
 #     name: "Top Gun VS"
 #     platform: "MAME"
@@ -306,7 +345,8 @@
 #     specs:
 #         -
 #             type: "single-screen"
-#             players: "1-2"
+#             players: "1"
+#             layout: "solo"
 -
     name: "Wrecking Crew VS"
     platform: "MAME"
@@ -315,6 +355,7 @@
         -
             type: "dual-screen"
             players: "1-2"
+            layout: "duo-face-off"
 # -
 #     name: "World Cup"
 #     platform: "NES"
@@ -323,6 +364,7 @@
 #         -
 #             type: "dual-screen"
 #             players: "1-4"
+#             layout: "quartet"
 -
     name: "X-Men"
     platform: "MAME"
@@ -331,7 +373,9 @@
             type: "single-screen"
             players: "1-2"
             resource: "xmen2pu"
+            layout: "duo-simultaneous"
         -
             type: "dual-screen"
             players: "1-4"
             resource: "xmen"
+            layout: "quartet"
