@@ -42,7 +42,7 @@
         -
             type: "single-screen"
             players: "1-2"
-            layout: "dual-simultaneous"
+            layout: "duo-simultaneous"
 -
     name: "Battletoads"
     platform: "MAME"
@@ -323,7 +323,7 @@
             type: "dual-screen"
             players: "1-4"
             resource: "tmnt"
-            layout: "duo-alternating"
+            layout: "quartet"
 -
     name: "TMNT 2: Turtles in Time"
     platform: "MAME"
