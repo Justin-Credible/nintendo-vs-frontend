@@ -81,6 +81,19 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         //#region Controller Helper Methods
 
+        protected getCaviatDisplayText(spec: Interfaces.GameSpecification): string {
+
+            if (!spec) {
+                return "";
+            }
+
+            if (spec.layout === "duo-alternating") {
+                return "* two player gameplay is not simultaneous (alternating).";
+            }
+
+            return "";
+        }
+
         protected getSpecDisplayName(spec: Interfaces.GameSpecification): string {
 
             let screenDisplay = "[???]";

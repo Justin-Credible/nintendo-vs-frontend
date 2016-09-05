@@ -331,7 +331,7 @@
         -
             type: "single-screen"
             players: "1-2"
-            resource: "tmnt22p"
+            resource: "tmnt22pu"
             layout: "duo-simultaneous"
         -
             type: "dual-screen"

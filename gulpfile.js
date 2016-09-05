@@ -111,7 +111,7 @@ function string_src(filename, str) {
  * and then compiles the SASS into CSS and builds the TypeScript source code.
  */
 gulp.task("default", function (cb) {
-    runSequence("plugins", "libs", "tsd", "sass", "ts", cb);
+    runSequence("libs", "tsd", "sass", "templates", "ts", cb);
 });
 
 /**

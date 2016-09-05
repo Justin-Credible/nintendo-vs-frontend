@@ -9,6 +9,10 @@
         <img ng-src="img/layouts/{{viewModel.selectedSpec.layout}}.png">
     </div>
 
+    <div class="caviats">
+        {{controller.getCaviatDisplayText(viewModel.selectedSpec)}}
+    </div>
+
     <div class="specs">
 
         <div ng-repeat="spec in viewModel.specs"
