@@ -545,6 +545,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         }
         else if (game.platform === "PC") {
             executable = game.resource;
+            workingDir = path.dirname(game.resource);
         }
 
         if (!fs.existsSync(executable)) {
