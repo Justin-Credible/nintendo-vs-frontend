@@ -578,10 +578,13 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             sideBSpec = spec;
         }
 
+        // TODO: Commented this out for now as it appears that node child_process.exec(...)
+        // is already wrapping the command with quotes in this format using cmd.exe:
+        // cmd.exe /s /c "COMMAND_HERE"
         // If there are spaces in the executable path, wrap it in quotes.
-        if (executable.indexOf(" ")) {
-            executable = "\"" + executable + "\"";
-        }
+        // if (executable.indexOf(" ") > -1) {
+        //     executable = `"${executable}"`;
+        // }
 
         let execOptions = {
             cwd: workingDir
@@ -608,11 +611,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         exec(command, execOptions, (error: Error, stdout: Buffer, stderr: Buffer) => {
 
             if (error) {
-                console.error("Process terminated with error.", exec, args, error);
+                console.error("Process terminated with error.", error);
+            }
+
+            if (stdout) {
+                console.log("Process terminated with stdout output.", stdout.toString());
             }
 
             if (stderr) {
-                console.error("Process terminated with stderr output.", exec, args, stderr.toString());
+                console.error("Process terminated with stderr output.", stderr.toString());
             }
 
             // Switch back to extended displays from cloned displays.
