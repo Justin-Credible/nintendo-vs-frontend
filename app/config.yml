@@ -22,7 +22,7 @@ mame:
 menu:
     keyInputMinDelay: 150
     keyInputMaxDelay: 175
-    originMonitorSide: "b"
+    originMonitorSide: "B"
 
 bindings:
     player1:

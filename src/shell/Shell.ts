@@ -240,13 +240,13 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         if (screensAre1280x1024 && originIndex != null && nonOriginIndex != null && originIndex !== nonOriginIndex) {
 
             // Put the side A and B windows on the correct monitors by config.
-            if (config.menu.originMonitorSide === "a") {
+            if (config.menu.originMonitorSide === "A") {
                 optionsA.x = displays[originIndex].bounds.x;
                 optionsA.y = displays[originIndex].bounds.y;
                 optionsB.x = displays[nonOriginIndex].bounds.x;
                 optionsB.y = displays[nonOriginIndex].bounds.y;
             }
-            else if (config.menu.originMonitorSide === "b") {
+            else if (config.menu.originMonitorSide === "B") {
                 optionsA.x = displays[nonOriginIndex].bounds.x;
                 optionsA.y = displays[nonOriginIndex].bounds.y;
                 optionsB.x = displays[originIndex].bounds.x;
@@ -338,11 +338,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let windowAIndex = null;
         let windowBIndex = null;
 
-        if (config.menu.originMonitorSide === "a") {
+        if (config.menu.originMonitorSide === "A") {
             windowAIndex = originIndex;
             windowBIndex = nonOriginIndex;
         }
-        else if (config.menu.originMonitorSide === "b") {
+        else if (config.menu.originMonitorSide === "B") {
             windowAIndex = nonOriginIndex;
             windowBIndex = originIndex;
         }
@@ -590,6 +590,15 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             if (spec.type === "dual-screen") {
                 args.push("-numscreens 2");
+
+                if (side === "A") {
+                    args.push(Utilities.format("-screen0 {0}", config.mame.screens.a));
+                    args.push(Utilities.format("-screen1 {0}", config.mame.screens.b));
+                }
+                else if (side === "B") {
+                    args.push(Utilities.format("-screen0 {0}", config.mame.screens.b));
+                    args.push(Utilities.format("-screen1 {0}", config.mame.screens.a));
+                }
             }
             else if (spec.type === "single-screen") {
 
