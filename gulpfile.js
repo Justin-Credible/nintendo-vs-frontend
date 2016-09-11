@@ -339,7 +339,7 @@ gulp.task("libs", function(cb) {
  * runtime and place the output in the build directory. This currently assumes building for
  * the Windows platform and must be run on a Windows machine to properly edit the icon.
  */
-gulp.task("package", function (cb) {
+gulp.task("package", ["default"], function (cb) {
 
     var packageInfo = JSON.parse(fs.readFileSync("app/package.json", "utf8"));
 
