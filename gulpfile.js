@@ -341,20 +341,21 @@ gulp.task("libs", function(cb) {
  */
 gulp.task("package", ["default"], function (cb) {
 
-    var packageInfo = JSON.parse(fs.readFileSync("app/package.json", "utf8"));
+    var packageInfo = JSON.parse(fs.readFileSync("package.json", "utf8"));
+    var appPackageInfo = JSON.parse(fs.readFileSync("app/package.json", "utf8"));
 
     var options = {
         dir: "app",
         platform: "win32",
         arch: "x64",
         icon: "app/icons/joystick.ico",
-        name: packageInfo.name,
-        "build-version": packageInfo.version,
-        version: packageInfo.dependencies["electron-prebuilt"],
+        name: appPackageInfo.name,
+        "build-version": appPackageInfo.version,
+        version: packageInfo.dependencies["electron"],
         out: "build",
         overwrite: true,
         "version-string": {
-            FileDescription: packageInfo.name
+            FileDescription: appPackageInfo.name
         }
     };
 

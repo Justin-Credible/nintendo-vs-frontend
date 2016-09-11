@@ -11,7 +11,6 @@
   "readme": "README.md",
   "main": "shell-boot.js",
   "dependencies": {
-    "electron-prebuilt": "0.36.8",
     "js-yaml": "3.4.6",
     "lodash": "3.10.1",
     "sync-exec": "0.6.2"
