@@ -56,6 +56,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.$rootScope.$on(Constants.PlayerInputEvent, _.bind(this.app_playerInput, this));
 
             this.viewModel.version = `${this.Utilities.buildVars.version} (${this.Utilities.buildVars.commitShortSha})`;
+            this.viewModel.side = this.Utilities.side;
             this.viewModel.title = "Nintendo VS";
             this.viewModel.games = this.Utilities.gameList;
             this.resetToIdle(true);

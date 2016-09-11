@@ -3,6 +3,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.ViewModels {
 
     export class MenuViewModel {
         public version: string;
+        public side: string;
         public title: string;
         public showN64Logo: boolean;
         public player1Prompt: string;

@@ -3,22 +3,26 @@ borderlessgaming:
     executable: "C:/Program Files (x86)/Borderless Gaming/BorderlessGaming.exe"
     delay: 3000
 
-utilityBinaries:
-    taskKill: "C:/WINDOWS/system32/taskkill.exe"
-    displaySwitch: "C:/WINDOWS/system32/displayswitch.exe"
+displayFusion:
+    executable: "C:/Program Files (x86)/DisplayFusion/DisplayFusionCommand.exe"
+    cloneProfile: "clone"
+    extendProfile: "extend"
+
+taskKill: "C:/WINDOWS/system32/taskkill.exe"
 
 mame:
     executable: "C:/Emulators/MAME/mame64.exe"
     workingDir: "C:/Emulators/MAME"
     args:
     screens:
-        a: \\.\DISPLAY1
-        b: \\.\DISPLAY2
+        a: \\.\DISPLAY2
+        b: \\.\DISPLAY1
     customConfigRoot: "C:/Emulators/mame-configs"
 
 menu:
     keyInputMinDelay: 150
     keyInputMaxDelay: 175
+    originMonitorSide: "b"
 
 bindings:
     player1:

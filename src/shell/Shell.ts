@@ -84,8 +84,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         console.log("Attempting to close utility processes...");
 
         try {
-            exec(`${config.utilityBinaries.taskKill} /IM BorderlessGaming.exe`);
-            exec(`${config.utilityBinaries.taskKill} /IM Input-Daemon.exe`);
+            exec(`${config.taskKill} /IM BorderlessGaming.exe`);
+            exec(`${config.taskKill} /IM Input-Daemon.exe`);
         }
         catch (ex) {
             console.error("An error occurred attempting to close the utility processes.", ex);
@@ -146,7 +146,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         console.log("Terminating any previous Borderless Gaming processes...");
 
-        exec(`${config.utilityBinaries.taskKill} /IM BorderlessGaming.exe`);
+        exec(`${config.taskKill} /IM BorderlessGaming.exe`);
 
         let command = "start /b /min \"\" \"" + config.borderlessgaming.executable + "\"";
 
@@ -209,21 +209,49 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
 
-        // Determine if we have two 1280x1024 screens available.
+        console.log("Display Configuration --------------------------------");
+        console.log(JSON.stringify(displays, null, 4));
+        console.log("------------------------------------------------------");
+
+        // Determine if we have exactly two 1280x1024 screens available.
         let screensAre1280x1024 = displays.length >= 2
             && displays[0].size.width === 1280
             && displays[0].size.height === 1024
             && displays[1].size.width === 1280
             && displays[1].size.height === 1024;
 
+        // Next up find the "origin" screen; that is, the screen at position (0, 0).
+        // Windows uses the origin screen to determine the positioning of all of the
+        // other monitors attached to the system.
+
+        // Find the index of the monitor in the array that is at (0, 0).
+        let originIndex = _.findIndex(displays, (display: Interfaces.ElectronDisplay) => {
+            return display.bounds.x === 0 && display.bounds.y === 0;
+        });
+
+        // Find the index of the monitor in the array that is NOT at (0, 0).
+        let nonOriginIndex = _.findIndex(displays, (display: Interfaces.ElectronDisplay) => {
+            return !(display.bounds.x === 0 && display.bounds.y === 0);
+        });
+
         // If we have the corrent screen configuration, position a window on
         // each of the screens. If not, then make sure the windows show up with
-        // frames and borders etc.
-        if (screensAre1280x1024) {
-            optionsA.x = displays[0].bounds.x;
-            optionsA.y = displays[0].bounds.y;
-            optionsB.x = displays[1].bounds.x;
-            optionsB.y = displays[1].bounds.y;
+        // frames and borders etc so they can be moved around during debugging.
+        if (screensAre1280x1024 && originIndex != null && nonOriginIndex != null && originIndex !== nonOriginIndex) {
+
+            // Put the side A and B windows on the correct monitors by config.
+            if (config.menu.originMonitorSide === "a") {
+                optionsA.x = displays[originIndex].bounds.x;
+                optionsA.y = displays[originIndex].bounds.y;
+                optionsB.x = displays[nonOriginIndex].bounds.x;
+                optionsB.y = displays[nonOriginIndex].bounds.y;
+            }
+            else if (config.menu.originMonitorSide === "b") {
+                optionsA.x = displays[nonOriginIndex].bounds.x;
+                optionsA.y = displays[nonOriginIndex].bounds.y;
+                optionsB.x = displays[originIndex].bounds.x;
+                optionsB.y = displays[originIndex].bounds.y;
+            }
         }
         else {
             optionsA.fullscreen = false;
@@ -285,6 +313,45 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
             }
         }
 
+        // Next up find the "origin" screen; that is, the screen at position (0, 0).
+        // Windows uses the origin screen to determine the positioning of all of the
+        // other monitors attached to the system.
+
+        // Find the index of the monitor in the array that is at (0, 0).
+        let originIndex = _.findIndex(displays, (display: Interfaces.ElectronDisplay) => {
+            return display.bounds.x === 0 && display.bounds.y === 0;
+        });
+
+        // Find the index of the monitor in the array that is NOT at (0, 0).
+        let nonOriginIndex = _.findIndex(displays, (display: Interfaces.ElectronDisplay) => {
+            return !(display.bounds.x === 0 && display.bounds.y === 0);
+        });
+
+        if (originIndex == null || nonOriginIndex == null || originIndex === nonOriginIndex) {
+            console.error("Unable to determine origin monitor in repositionWindows().", originIndex, nonOriginIndex);
+            return;
+        }
+
+        // Determine the index of the display that corresponds to the correct
+        // side as defined in the configuration.
+
+        let windowAIndex = null;
+        let windowBIndex = null;
+
+        if (config.menu.originMonitorSide === "a") {
+            windowAIndex = originIndex;
+            windowBIndex = nonOriginIndex;
+        }
+        else if (config.menu.originMonitorSide === "b") {
+            windowAIndex = nonOriginIndex;
+            windowBIndex = originIndex;
+        }
+
+        if (windowAIndex == null || windowBIndex == null || windowAIndex === windowBIndex) {
+            console.error("Unable to determine window indexes in repositionWindows().", originIndex, nonOriginIndex);
+            return;
+        }
+
         // Ugly hack ahead!
 
         // Before the windows can be repositioned, they must be removed from full screen
@@ -297,8 +364,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         windowB.setFullScreen(false);
 
         setTimeout(() => {
-            windowA.setBounds(displays[0].bounds);
-            windowB.setBounds(displays[1].bounds);
+            windowA.setBounds(displays[windowAIndex].bounds);
+            windowB.setBounds(displays[windowBIndex].bounds);
 
             setTimeout(() => {
                 windowA.setFullScreen(true);
@@ -306,8 +373,8 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
                 setTimeout(() => {
 
-                    let isWindowAOk = JSON.stringify(windowA.getBounds()) === JSON.stringify(displays[0].bounds);
-                    let isWindowBOk = JSON.stringify(windowB.getBounds()) === JSON.stringify(displays[1].bounds);
+                    let isWindowAOk = JSON.stringify(windowA.getBounds()) === JSON.stringify(displays[windowAIndex].bounds);
+                    let isWindowBOk = JSON.stringify(windowB.getBounds()) === JSON.stringify(displays[windowBIndex].bounds);
 
                     if (!isWindowAOk || !isWindowBOk) {
                         setTimeout(() => { repositionWindows(); }, 1000);
@@ -597,7 +664,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         // Currently, PC games are only supported by switching the dual screens to be cloned.
         if (game.platform === "PC") {
-            syncExec(`${config.utilityBinaries.displaySwitch} /clone`);
+            let command = `"${config.displayFusion.executable}" -monitorloadprofile ${config.displayFusion.cloneProfile}`;
+            console.log(`Switching display to clone profile with command:\n${command}`);
+            let result = syncExec(command);
+            result = JSON.stringify(result, null, 4);
+            console.log(`Display switch result:\n${result}`);
         }
 
         console.log("Launching game...", workingDir, command);
@@ -617,7 +688,12 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
             // Switch back to extended displays from cloned displays.
             if (game.platform === "PC") {
-                syncExec(`${config.utilityBinaries.displaySwitch} /extend`);
+                let command = `"${config.displayFusion.executable}" -monitorloadprofile ${config.displayFusion.extendProfile}`;
+                console.log(`Switching display to extended profile with command:\n${command}`);
+                let result = syncExec(command);
+                result = JSON.stringify(result, null, 4);
+                console.log(`Display switch result:\n${result}`);
+
                 repositionWindows();
             }
 

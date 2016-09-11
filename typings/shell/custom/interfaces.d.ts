@@ -69,7 +69,8 @@ declare namespace Interfaces {
 
     interface Config {
         borderlessgaming: BorderlessGamingConfig;
-        utilityBinaries: UtilityBinaries;
+        displayFusion: DisplayFusionConfig;
+        taskKill: string;
         mame: MameConfig;
         menu: MenuConfig;
         bindings: Bindings;
@@ -80,9 +81,10 @@ declare namespace Interfaces {
         delay: number;
     }
 
-    interface UtilityBinaries {
-        taskKill: string;
-        displaySwitch: string;
+    interface DisplayFusionConfig {
+        executable: string;
+        cloneProfile: string;
+        extendProfile: string;
     }
 
     interface MameConfig {
@@ -99,6 +101,7 @@ declare namespace Interfaces {
     interface MenuConfig {
         keyInputMinDelay: number;
         keyInputMaxDelay: number;
+        originMonitorSide: string;
     }
 
     interface Bindings {
