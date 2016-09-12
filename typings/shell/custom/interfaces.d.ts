@@ -102,6 +102,7 @@ declare namespace Interfaces {
         keyInputMinDelay: number;
         keyInputMaxDelay: number;
         originMonitorSide: string;
+        realTimeAttractMode: boolean;
     }
 
     interface Bindings {

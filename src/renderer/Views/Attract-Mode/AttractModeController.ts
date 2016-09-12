@@ -12,13 +12,15 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                 "$scope",
                 "$rootScope",
                 "$interval",
+                Services.Utilities.ID,
             ];
         }
 
         constructor(
             $scope: ng.IScope,
             private $rootScope: ng.IRootScopeService,
-            private $interval: ng.IIntervalService) {
+            private $interval: ng.IIntervalService,
+            private Utilities: Services.Utilities) {
             super($scope, ViewModels.AttractModeViewModel);
         }
 
@@ -62,6 +64,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
         private startAttractMode(): void {
 
+            if (!this.Utilities.menuConfig.realTimeAttractMode) {
+                this.viewModel.showVideo = true;
+                return;
+            }
+
             this._slideCounter = null;
 
             this.next();
@@ -72,6 +79,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         }
 
         private stopAttractMode(): void {
+
+            if (!this.Utilities.menuConfig.realTimeAttractMode) {
+                this.viewModel.showVideo = false;
+                return;
+            }
 
             this.$interval.cancel(this._attractModeInterval);
 

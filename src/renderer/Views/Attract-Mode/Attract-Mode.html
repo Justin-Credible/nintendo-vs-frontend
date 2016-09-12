@@ -2,6 +2,11 @@
 <div class="attract-mode" ng-controller="AttractModeController">
 
     <ng-include
+        ng-if="viewModel.showVideo"
+        src="'Views/Attract-Mode/Video.html'">
+    </ng-include>
+
+    <ng-include
         ng-if="viewModel.showSmashBros"
         src="'Views/Attract-Mode/Smash-Bros.html'">
     </ng-include>

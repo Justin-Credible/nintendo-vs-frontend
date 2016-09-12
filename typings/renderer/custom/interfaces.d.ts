@@ -74,5 +74,7 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
     interface MenuConfig {
         keyInputMinDelay: number;
         keyInputMaxDelay: number;
+        originMonitorSide: string;
+        realTimeAttractMode: boolean;
     }
 }
