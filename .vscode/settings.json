@@ -32,6 +32,9 @@
 
     "typescript.tsdk": "node_modules/typescript/lib",
 
+    "tslint.configFile": "tslint.json",
+    "tslint.ignoreDefinitionFiles": true,
+
     "editor.tabSize": 4,
     "editor.insertSpaces": true
 }
