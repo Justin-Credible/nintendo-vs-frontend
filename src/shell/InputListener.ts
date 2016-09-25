@@ -1,5 +1,5 @@
 
-import events = require('events');
+import events = require("events");
 import * as net from "net";
 import * as ConfigManager from "./ConfigManager";
 import * as InputDaemon from "./InputDaemon";
