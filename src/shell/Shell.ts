@@ -5,27 +5,17 @@ import * as path from "path";
 import * as electron from "electron";
 import * as _ from "lodash";
 import * as fs from "fs";
-import * as yaml from "js-yaml";
+import * as ConfigManager from "./ConfigManager";
 import * as Utilities from "./Utilities";
-import * as BindingHelper from "./BindingHelper";
 import * as Enums from "./Enums";
+import * as InputDaemon from "./InputDaemon";
+import { InputListener } from "./InputListener";
+import * as BorderlessGaming from "./BorderlessGaming";
 var syncExec = require("sync-exec");
 
 namespace JustinCredible.NintendoVsFrontend.Shell {
 
-    // Runtime Configuration
-    var buildVars: Interfaces.BuildVars;
-    var gameList: Interfaces.GameDescriptor[];
-    var config: Interfaces.Config;
-
-    // Controller Bindings
-    var bindingTable: Interfaces.NumberDictionary<Interfaces.PlayerInput>;
-    var bindingSideTable: Interfaces.NumberDictionary<string>;
-    var sideABindings: number[] = [];
-    var sideBBindings: number[] = [];
-
-    // TCP Server for Input Daemon Communication
-    var tcpServer: net.Server;
+    var inputListener: InputListener;
 
     // Windows and UI Elements
     var tray: GitHubElectron.Tray;
@@ -42,9 +32,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
     export function main(): void {
 
         // Read in configuration values.
-        readConfig();
-        bindingTable = BindingHelper.getBindingTable(config);
-        bindingSideTable = BindingHelper.getBindingSideTable(config);
+        ConfigManager.loadConfigs();
 
         // Wire up the event handlers for the node process.
         process.on("uncaughtException", process_uncaughtException);
@@ -62,108 +50,22 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         electron.ipcMain.on("renderer_launchGame", renderer_launchGame);
         electron.ipcMain.on("renderer_showSystemNotification", renderer_showSystemNotification);
 
-        // Create the local TCP server for the input daemon.
-        createTcpServer();
+        // Listen for controller input.
+        inputListener = new InputListener();
+        inputListener.initialize();
+
+        inputListener.on("player-input", inputListener_playerInput);
     }
 
     //#region Helper Methods
 
     function cleanupOnExit(): void {
 
-        console.log("Attempting to close the TCP server...");
-
-        if (tcpServer) {
-            try {
-                tcpServer.close();
-            }
-            catch (ex) {
-                console.error("An error occurred attempting to close the TCP server.", ex);
-            }
-        }
-
-        console.log("Attempting to close utility processes...");
-
-        try {
-            exec(`${config.taskKill} /IM BorderlessGaming.exe`);
-            exec(`${config.taskKill} /IM Input-Daemon.exe`);
-        }
-        catch (ex) {
-            console.error("An error occurred attempting to close the utility processes.", ex);
-        }
+        inputListener.shutdown();
+        BorderlessGaming.shutdown();
+        InputDaemon.shutdown();
 
         electron.app.quit();
-    }
-
-    function readConfig(): void {
-        buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
-        gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
-        config = yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yml", "utf8"));
-
-        // TODO: Validate config and throw exception if not valid.
-    }
-
-    function isInputDaemonAvailable(): boolean {
-        // The input daemon process is only available on Windows.
-        return process.platform === "win32" && fs.existsSync(__dirname + "/../input-daemon.exe");
-    }
-
-    function isBorderlessGamingAvailable(): boolean {
-        // The Borderless Gaming process is only available on Windows.
-        return process.platform === "win32" && fs.existsSync(config.borderlessgaming.executable);
-    }
-
-    function launchInputDaemon(): void {
-
-        let command = "start /MIN " + __dirname + "/../input-daemon.exe";
-
-        console.log("Attempting to start input daemon with command:\n    " + command);
-
-        if (!isInputDaemonAvailable()) {
-            console.log("Unable to start input daemon; executable missing or platform is not win32.");
-            return;
-        }
-
-        exec(command, (error: Error, stdout: Buffer, stderr: Buffer) => {
-
-            if (error) {
-                console.log("Error launching input daemon.", error);
-            }
-            else if (stdout || stderr) {
-                console.log("Input daemon terminated unexpectedly.", stdout, stderr);
-            }
-
-            console.log("Attempting to restart input daemon in 2 seconds...");
-            setTimeout(() => { launchInputDaemon(); }, 2000);
-        });
-    }
-
-    function launchBorderlessGaming(): void {
-
-        if (!isBorderlessGamingAvailable()) {
-            console.log("Unable to start Borderless Gaming; executable missing or platform is not win32.");
-            return;
-        }
-
-        console.log("Terminating any previous Borderless Gaming processes...");
-
-        exec(`${config.taskKill} /IM BorderlessGaming.exe`);
-
-        let command = "start /b /min \"\" \"" + config.borderlessgaming.executable + "\"";
-
-        console.log("Attempting to start Borderless Gaming with command:\n    " + command);
-
-        exec(command, (error: Error, stdout: Buffer, stderr: Buffer) => {
-
-            if (error) {
-                console.log("Error launching Borderless Gaming.", error);
-            }
-            else if (stdout || stderr) {
-                console.log("Borderless Gaming terminated unexpectedly.", stdout, stderr);
-            }
-
-            console.log("Attempting to restart Borderless Gaming in 2 seconds...");
-            setTimeout(() => { launchBorderlessGaming(); }, 2000);
-        });
     }
 
     function buildTrayMenu(): void {
@@ -172,7 +74,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         tray = new electron.Tray(null);
         tray.setToolTip("Nintendo VS Frontend");
 
-        let versionDisplay = `Version ${buildVars.version} - ${buildVars.commitShortSha}`;
+        let versionDisplay = `Version ${ConfigManager.buildVars.version} - ${ConfigManager.buildVars.commitShortSha}`;
 
         let options: GitHubElectron.MenuItemOptions[] = [
             { type: "normal", label: "Nintendo VS Frontend", sublabel: versionDisplay, enabled: false },
@@ -240,13 +142,13 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         if (screensAre1280x1024 && originIndex != null && nonOriginIndex != null && originIndex !== nonOriginIndex) {
 
             // Put the side A and B windows on the correct monitors by config.
-            if (config.menu.originMonitorSide === "A") {
+            if (ConfigManager.config.menu.originMonitorSide === "A") {
                 optionsA.x = displays[originIndex].bounds.x;
                 optionsA.y = displays[originIndex].bounds.y;
                 optionsB.x = displays[nonOriginIndex].bounds.x;
                 optionsB.y = displays[nonOriginIndex].bounds.y;
             }
-            else if (config.menu.originMonitorSide === "B") {
+            else if (ConfigManager.config.menu.originMonitorSide === "B") {
                 optionsA.x = displays[nonOriginIndex].bounds.x;
                 optionsA.y = displays[nonOriginIndex].bounds.y;
                 optionsB.x = displays[originIndex].bounds.x;
@@ -270,7 +172,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
         // If this is a debug build AND the input daemon is not available, show the
         // input test window which emulates the functionality of the daemon for testing.
-        if (buildVars.debug && !isInputDaemonAvailable()) {
+        if (ConfigManager.buildVars.debug && !InputDaemon.isAvailable()) {
 
             inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175, x: 0, y: 0 });
             inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");
@@ -300,7 +202,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
 
         // During development don't worry about repositioning the screens.
-        if (buildVars.debug) {
+        if (ConfigManager.buildVars.debug) {
 
             let screensAre1280x1024 = displays.length >= 2
                 && displays[0].size.width === 1280
@@ -338,11 +240,11 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let windowAIndex = null;
         let windowBIndex = null;
 
-        if (config.menu.originMonitorSide === "A") {
+        if (ConfigManager.config.menu.originMonitorSide === "A") {
             windowAIndex = originIndex;
             windowBIndex = nonOriginIndex;
         }
-        else if (config.menu.originMonitorSide === "B") {
+        else if (ConfigManager.config.menu.originMonitorSide === "B") {
             windowAIndex = nonOriginIndex;
             windowBIndex = originIndex;
         }
@@ -421,20 +323,21 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         buildTrayMenu();
 
         // Populate the path to the preview videos for each game.
-        Utilities.populateVideoPaths(gameList);
+        Utilities.populateVideoPaths(ConfigManager.gameList);
 
+        // Expose these as globals so they can be accessed via the render windows via Boot2.ts.
         /* tslint:disable:no-string-literal */
-        global["gameList"] = gameList;
-        global["buildVars"] = buildVars;
-        global["menuConfig"] = config.menu;
+        global["gameList"] = ConfigManager.gameList;
+        global["buildVars"] = ConfigManager.buildVars;
+        global["menuConfig"] = ConfigManager.config.menu;
         /* tslint:enable:no-string-literal */
 
         // Ensure the Borderless Gaming app is running.
-        launchBorderlessGaming();
+        BorderlessGaming.launch();
 
         // Wait to ensure that Borderless Gaming launches and it's window is on the desktop.
         // We want to make sure that our renderer windows are on top of the window.
-        setTimeout(() => { buildWindows(); }, config.borderlessgaming.delay || 500);
+        setTimeout(() => { buildWindows(); }, ConfigManager.config.borderlessgaming.delay || 500);
     }
 
     //#endregion
@@ -572,6 +475,7 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         let workingDir: string = null;
         let args: string[] = [];
         let startMinimized = false;
+        let config = ConfigManager.config;
 
         if (game.platform === "MAME") {
             executable = config.mame.executable;
@@ -782,49 +686,16 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
 
     //#endregion
 
-    //#region TCP/Sockets
+    //#region Input Listener Events
 
-    function createTcpServer(): void {
-        console.log("Starting TCP server at 127.0.0.1:6000...");
-        tcpServer = net.createServer(tcpServer_connect);
-        tcpServer.listen(6000, tcpServer_listen);
-    }
+    function inputListener_playerInput(side: string, input: Enums.Input): void {
 
-    function tcpServer_listen() {
-        console.log("TCP server started at 127.0.0.1:6000");
-        launchInputDaemon();
-    }
-
-    function tcpServer_connect(socket: net.Socket): void {
-        console.log("Client connected via TCP.");
-        socket.on("data", socket_data);
-        socket.on("end", socket_end);
-        socket.on("error", socket_error);
-    }
-
-    function socket_data(data: Buffer): void {
-        let keyString = data.toString("utf-8");
-
-        let key = parseInt(keyString, 10);
-
-        let input = bindingTable[key];
-
-        if (input) {
-            if (bindingSideTable[key] === "A" && !sideAGame) {
-                windowA.emit("player-input", input);
-            }
-            else if (bindingSideTable[key] === "B" && !sideBGame) {
-                windowB.emit("player-input", input);
-            }
+        if (side === "A" && !sideAGame) {
+            windowA.emit("player-input", input);
         }
-    }
-
-    function socket_end() {
-        console.log("TCP connection closed.");
-    }
-
-    function socket_error(error: any) {
-        console.error("TCP connection error.", error);
+        else if (side === "B" && !sideBGame) {
+            windowB.emit("player-input", input);
+        }
     }
 
     //#endregion
