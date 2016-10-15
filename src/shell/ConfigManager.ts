@@ -1,7 +1,25 @@
 
+import * as fs from "fs";
+import * as yaml from "js-yaml";
 import * as Enums from "./Enums";
 
-export function getBindingTable(config: Interfaces.Config): Interfaces.NumberDictionary<Interfaces.PlayerInput> {
+export var buildVars: Interfaces.BuildVars;
+export var gameList: Interfaces.GameDescriptor[];
+export var config: Interfaces.Config;
+
+export var bindingTable: Interfaces.NumberDictionary<Interfaces.PlayerInput>;
+export var bindingSideTable: Interfaces.NumberDictionary<string>;
+
+export function loadConfigs(): void {
+    buildVars = JSON.parse(fs.readFileSync(__dirname + "/../build-vars.json").toString());
+    gameList = yaml.safeLoad(fs.readFileSync(__dirname + "/../game-list.yml", "utf8"));
+    config = yaml.safeLoad(fs.readFileSync(__dirname + "/../config.yml", "utf8"));
+
+    bindingTable = getBindingTable(config);
+    bindingSideTable = getBindingSideTable(config);
+}
+
+function getBindingTable(config: Interfaces.Config): Interfaces.NumberDictionary<Interfaces.PlayerInput> {
 
     var table: Interfaces.NumberDictionary<Interfaces.PlayerInput> = {};
 
@@ -44,7 +62,7 @@ export function getBindingTable(config: Interfaces.Config): Interfaces.NumberDic
     return table;
 }
 
-export function getBindingSideTable(config: Interfaces.Config): Interfaces.NumberDictionary<string> {
+function getBindingSideTable(config: Interfaces.Config): Interfaces.NumberDictionary<string> {
 
     var table: Interfaces.NumberDictionary<string> = {};
 
