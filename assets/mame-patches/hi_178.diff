@@ -1,0 +1,597 @@
+diff -Nru oldsrc/emu/emuopts.cpp src/emu/emuopts.cpp
+--- oldsrc/emu/emuopts.cpp	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/emuopts.cpp	2016-09-28 23:50:30.101527022 +1000
+@@ -49,6 +49,10 @@
+ 	{ OPTION_SNAPSHOT_DIRECTORY,                         "snap",      OPTION_STRING,     "directory to save/load screenshots" },
+ 	{ OPTION_DIFF_DIRECTORY,                             "diff",      OPTION_STRING,     "directory to save hard drive image difference files" },
+ 	{ OPTION_COMMENT_DIRECTORY,                          "comments",  OPTION_STRING,     "directory to save debugger comments" },
++	
++	// MKCHAMP - ADDING CFG OPTION TO SPECIFY HISCORE DIRECTORY..."hi" BY DEFAULT
++	{ nullptr,                                              nullptr,        OPTION_HEADER,     "CORE OUTPUT DIRECTORY OPTIONS" },
++	{ OPTION_HISCORE_DIRECTORY,                          "hi",        OPTION_STRING,     "directory to save hiscores" },
+ 
+ 	// state/playback options
+ 	{ nullptr,                                              nullptr,        OPTION_HEADER,     "CORE STATE/PLAYBACK OPTIONS" },
+@@ -201,6 +205,9 @@
+ 	{ OPTION_PLUGIN,                                    nullptr,     OPTION_STRING,     "list of plugins to enable" },
+ 	{ OPTION_NO_PLUGIN,                                  nullptr,     OPTION_STRING,     "list of plugins to disable" },
+ 	{ OPTION_LANGUAGE ";lang",                           "English",   OPTION_STRING,    "display language" },
++	// MKChamp Hiscore Diff options
++ 	{ nullptr,                                           nullptr,        OPTION_HEADER,     "CORE MKChamp OPTIONS" },
++ 	{ OPTION_DISABLE_HISCORE_PATCH,                      "0",         OPTION_BOOLEAN,    "disable hiscore saving" },
+ 	{ nullptr }
+ };
+ 
+diff -Nru oldsrc/emu/emuopts.h src/emu/emuopts.h
+--- oldsrc/emu/emuopts.h	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/emuopts.h	2016-09-28 23:50:30.101527022 +1000
+@@ -45,6 +45,8 @@
+ #define OPTION_SNAPSHOT_DIRECTORY   "snapshot_directory"
+ #define OPTION_DIFF_DIRECTORY       "diff_directory"
+ #define OPTION_COMMENT_DIRECTORY    "comment_directory"
++//MKCHAMP - DECLARING THE DIRECTORY OPTION FOR HIGH SCORES TO BE SAVED TO
++#define OPTION_HISCORE_DIRECTORY	  "hiscore_directory"
+ 
+ // core state/playback options
+ #define OPTION_STATE                "state"
+@@ -188,6 +190,9 @@
+ 
+ #define OPTION_LANGUAGE             "language"
+ 
++ /* MKChamp Hiscore Diff Options */
++ #define OPTION_DISABLE_HISCORE_PATCH		"disable_hiscore_patch"
++
+ //**************************************************************************
+ //  TYPE DEFINITIONS
+ //**************************************************************************
+@@ -233,6 +238,9 @@
+ 	const char *snapshot_directory() const { return value(OPTION_SNAPSHOT_DIRECTORY); }
+ 	const char *diff_directory() const { return value(OPTION_DIFF_DIRECTORY); }
+ 	const char *comment_directory() const { return value(OPTION_COMMENT_DIRECTORY); }
++	
++	// MKCHAMP - hiscore directory options
++	const char *hiscore_directory() const { return value(OPTION_HISCORE_DIRECTORY); }
+ 
+ 	// core state/playback options
+ 	const char *state() const { return value(OPTION_STATE); }
+@@ -353,6 +361,9 @@
+ 	const char *ui_font() const { return value(OPTION_UI_FONT); }
+ 	ui_option ui() const { return m_ui; }
+ 	const char *ram_size() const { return value(OPTION_RAMSIZE); }
++	
++	// MKChamp Hiscore Diff options 
++	bool disable_hiscore_patch() const { return bool_value(OPTION_DISABLE_HISCORE_PATCH); }
+ 
+ 	// core comm options
+ 	const char *comm_localhost() const { return value(OPTION_COMM_LOCAL_HOST); }
+diff -Nru oldsrc/emu/hiscore.cpp src/emu/hiscore.cpp
+--- oldsrc/emu/hiscore.cpp	1970-01-01 10:00:00.000000000 +1000
++++ src/emu/hiscore.cpp	2016-09-28 23:50:30.101527022 +1000
+@@ -0,0 +1,376 @@
++/***************************************************************************
++
++    hiscore.cpp
++
++    Manages the hiscore system.
++
++    This is an unofficial version based on MAME.
++    Please do not send any reports from this build to the MAME team.
++
++***************************************************************************/
++
++#include "emu.h"
++#include "emuopts.h"
++#include "hiscore.h"
++
++
++#define MAX_CONFIG_LINE_SIZE 48
++
++static emu_timer *timer;
++
++struct memory_range
++{
++	UINT32 cpu, addr, num_bytes, start_value, end_value;
++	struct memory_range *next;
++};
++
++static struct
++{
++	int hiscores_have_been_loaded;
++	memory_range *mem_range;
++} state;
++
++
++static void copy_to_memory (running_machine &machine, int cpu, int addr, UINT8 *source, int num_bytes)
++{
++	int i;
++	address_space *targetspace;
++
++	if (strstr(machine.system().source_file,"cinemat.cpp") > 0)
++	{
++		targetspace = &machine.cpu[cpu]->memory().space(AS_DATA);
++	}
++	else
++	{
++		targetspace = &machine.cpu[cpu]->memory().space(AS_PROGRAM);
++	}
++
++	for (i=0; i<num_bytes; i++)
++	{
++    		targetspace->write_byte(addr+i, source[i]);
++	}
++}
++
++static void copy_from_memory (running_machine &machine, int cpu, int addr, UINT8 *dest, int num_bytes)
++{
++	int i;
++	address_space *targetspace;
++
++	if (strstr(machine.system().source_file,"cinemat.cpp") > 0)
++	{
++		targetspace = &machine.cpu[cpu]->memory().space(AS_DATA);
++	}
++	else
++	{
++		targetspace = &machine.cpu[cpu]->memory().space(AS_PROGRAM);
++	}
++
++	for (i=0; i<num_bytes; i++)
++	{
++		dest[i] = targetspace->read_byte(addr+i);
++	}
++}
++
++/*  hexstr2num extracts and returns the value of a hexadecimal field from the
++    character buffer pointed to by pString.
++    When hexstr2num returns, *pString points to the character following
++    the first non-hexadecimal digit, or NULL if an end-of-string marker
++    (0x00) is encountered. */
++static UINT32 hexstr2num (const char **pString)
++{
++	const char *string = *pString;
++	UINT32 result = 0;
++
++	if (string)
++	{
++		for(;;)
++		{
++			char c = *string++;
++			int digit;
++
++			if (c>='0' && c<='9')
++			{
++				digit = c-'0';
++			}
++			else if (c>='a' && c<='f')
++			{
++				digit = 10+c-'a';
++			}
++			else if (c>='A' && c<='F')
++			{
++				digit = 10+c-'A';
++			}
++			else
++			{
++				/* not a hexadecimal digit */
++				/* safety check for premature EOL */
++				if (!c) 
++					string = NULL;
++				break;
++			}
++			result = result*16 + digit;
++		}
++		*pString = string;
++	}
++	return result;
++}
++
++/*  given a line in the hiscore.dat file, determine if it encodes a
++    memory range (or a game name).
++    For now we assume that CPU number is always a decimal digit, and
++    that no game name starts with a decimal digit. */
++static int is_mem_range (const char *pBuf)
++{
++	char c;
++
++	for(;;)
++	{
++		c = *pBuf++;
++		if (c == 0) 
++			return 0; /* premature EOL */
++		if (c == ':') 
++			break;
++	}
++
++	c = *pBuf; /* character following first ':' */
++
++	return (c>='0' && c<='9') || (c>='a' && c<='f') || (c>='A' && c<='F');
++}
++
++/*  matching_game_name is used to skip over lines until we find <gamename>: */
++static int matching_game_name (const char *pBuf, const char *name)
++{
++	while (*name)
++	{
++		if (*name++ != *pBuf++) 
++			return 0;
++	}
++	return (*pBuf == ':');
++}
++
++/* safe_to_load checks the start and end values of each memory range */
++static int safe_to_load (running_machine &machine)
++{
++	memory_range *mem_range = state.mem_range;
++	address_space *srcspace;
++
++	if (strstr(machine.system().source_file,"cinemat.cpp") > 0)
++	{
++		srcspace = &machine.cpu[mem_range->cpu]->memory().space(AS_DATA);
++	}
++	else
++	{
++		srcspace = &machine.cpu[mem_range->cpu]->memory().space(AS_PROGRAM);
++	}
++
++	while (mem_range)
++	{
++		if (srcspace->read_byte(mem_range->addr) != mem_range->start_value)
++		{
++			return 0;
++		}
++
++		if (srcspace->read_byte(mem_range->addr + mem_range->num_bytes - 1) != mem_range->end_value)
++		{
++			return 0;
++		}
++
++		mem_range = mem_range->next;
++	}
++	return 1;
++}
++
++/* hiscore_free disposes of the mem_range linked list */
++static void hiscore_free (void)
++{
++	memory_range *mem_range = state.mem_range;
++
++	while (mem_range)
++	{
++		memory_range *next = mem_range->next;
++		global_free_array(mem_range);
++		mem_range = next;
++	}
++	state.mem_range = NULL;
++}
++
++static void hiscore_load (running_machine &machine)
++{
++	osd_file::error filerr;
++  	emu_file f(machine.options().hiscore_directory(), OPEN_FLAG_READ);
++  	filerr = f.open(machine.basename(), ".hi");				
++	state.hiscores_have_been_loaded = 1;
++
++	if (filerr == osd_file::error::NONE)
++	{
++		memory_range *mem_range = state.mem_range;
++
++		while (mem_range)
++		{
++			UINT8 *data = global_alloc_array(UINT8, mem_range->num_bytes);
++
++			if (data)
++			{
++				/*  this buffer will almost certainly be small
++                  	enough to be dynamically allocated, but let's
++                  	avoid memory trashing just in case */
++          			f.read(data, mem_range->num_bytes);
++				copy_to_memory (machine,mem_range->cpu, mem_range->addr, data, mem_range->num_bytes);
++				global_free_array(data);
++			}
++			mem_range = mem_range->next;
++		}
++		f.close();
++	}
++}
++
++static void hiscore_save (running_machine &machine)
++{
++	osd_file::error filerr;
++  	emu_file f(machine.options().hiscore_directory(), OPEN_FLAG_WRITE | OPEN_FLAG_CREATE | OPEN_FLAG_CREATE_PATHS);
++  	filerr = f.open(machine.basename(), ".hi");
++
++	if (filerr == osd_file::error::NONE)
++	{
++		memory_range *mem_range = state.mem_range;
++
++		while (mem_range)
++		{
++			UINT8 *data = global_alloc_array(UINT8, mem_range->num_bytes);
++
++			if (data)
++			{
++				/*  this buffer will almost certainly be small
++                        enough to be dynamically allocated, but let's
++                        avoid memory trashing just in case */
++				copy_from_memory (machine, mem_range->cpu, mem_range->addr, data, mem_range->num_bytes);
++				f.write(data, mem_range->num_bytes);
++				global_free_array(data);
++			}
++			mem_range = mem_range->next;
++		}
++		f.close();
++	}
++}
++
++/* call hiscore_update periodically (i.e. once per frame) */
++static TIMER_CALLBACK( hiscore_periodic )
++{
++	if (state.mem_range)
++	{
++		if (!state.hiscores_have_been_loaded)
++		{
++			if (safe_to_load(machine))
++			{
++				hiscore_load(machine);
++				timer->enable(false);
++			}
++		}
++	}
++}
++
++/* call hiscore_close when done playing game */
++void hiscore_close (running_machine &machine)
++{
++	if (state.hiscores_have_been_loaded) 
++		hiscore_save(machine);
++	hiscore_free();
++}
++
++/* call hiscore_open once after loading a game */
++void hiscore_init (running_machine &machine)
++{
++	memory_range *mem_range = state.mem_range;
++	address_space *initspace;
++	osd_file::error filerr;
++  	const char *name = machine.system().name;
++	state.hiscores_have_been_loaded = 0;
++
++	while (mem_range)
++	{
++		if (strstr(machine.system().source_file,"cinemat.cpp") > 0)
++		{
++			initspace = &machine.cpu[mem_range->cpu]->memory().space(AS_DATA);
++			initspace->write_byte(mem_range->addr, ~mem_range->start_value);
++			initspace->write_byte(mem_range->addr + mem_range->num_bytes-1, ~mem_range->end_value);
++			mem_range = mem_range->next;
++		}
++		else
++		{
++			initspace = &machine.cpu[mem_range->cpu]->memory().space(AS_PROGRAM);
++			initspace->write_byte(mem_range->addr, ~mem_range->start_value);
++		  	initspace->write_byte(mem_range->addr + mem_range->num_bytes-1, ~mem_range->end_value);
++			mem_range = mem_range->next;
++		}
++	}
++
++	state.mem_range = NULL;
++	emu_file f(OPEN_FLAG_READ);
++  	filerr = f.open("hiscore", ".dat");
++
++	if(filerr == osd_file::error::NONE)
++	{
++		char buffer[MAX_CONFIG_LINE_SIZE];
++		enum { FIND_NAME, FIND_DATA, FETCH_DATA } mode;
++		mode = FIND_NAME;
++
++		while (f.gets(buffer, MAX_CONFIG_LINE_SIZE))
++		{
++			if (mode == FIND_NAME)
++			{
++				if (matching_game_name (buffer, name))
++				{
++					mode = FIND_DATA;
++				}
++			}
++			else if (is_mem_range (buffer))
++			{
++				const char *pBuf = buffer;
++				mem_range = (memory_range *)malloc(sizeof(memory_range));
++
++				if (mem_range)
++				{
++					mem_range->cpu = hexstr2num (&pBuf);
++					mem_range->addr = hexstr2num (&pBuf);
++					mem_range->num_bytes = hexstr2num (&pBuf);
++					mem_range->start_value = hexstr2num (&pBuf);
++					mem_range->end_value = hexstr2num (&pBuf);
++
++					mem_range->next = NULL;
++					{
++						memory_range *last = state.mem_range;
++						while (last && last->next) last = last->next;
++
++						if (last == NULL)
++						{
++							state.mem_range = mem_range;
++						}
++						else
++						{
++							last->next = mem_range;
++						}
++					}
++
++					mode = FETCH_DATA;
++				}
++				else
++				{
++					hiscore_free();
++					break;
++				}
++			}
++			else
++			{
++				/* line is a game name */
++				if (mode == FETCH_DATA) 
++					break;
++			}
++		}
++		f.close();
++	}
++	
++	timer = machine.scheduler().timer_alloc(timer_expired_delegate(FUNC(hiscore_periodic), &machine));
++	timer->adjust(machine.first_screen()->frame_period(), 0, machine.first_screen()->frame_period());
++
++	machine.add_notifier(MACHINE_NOTIFY_EXIT, machine_notify_delegate(FUNC(hiscore_close), &machine));
++}
+diff -Nru oldsrc/emu/hiscore.h src/emu/hiscore.h
+--- oldsrc/emu/hiscore.h	1970-01-01 10:00:00.000000000 +1000
++++ src/emu/hiscore.h	2016-09-28 23:50:30.101527022 +1000
+@@ -0,0 +1,19 @@
++/***************************************************************************
++
++    hiscore.h
++
++    Manages the hiscore system.
++
++    Copyright (c) 1996-2006, Nicola Salmoria and the MAME Team.
++    Visit http://mamedev.org for licensing and usage restrictions.
++
++***************************************************************************/
++
++#pragma once
++
++#ifndef __HISCORE_H__
++#define __HISCORE_H__
++
++void hiscore_init( running_machine &machine );
++
++#endif	/* __HISCORE_H__ */
+diff -Nru oldsrc/emu/machine.cpp src/emu/machine.cpp
+--- oldsrc/emu/machine.cpp	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/machine.cpp	2016-09-28 23:50:30.101527022 +1000
+@@ -74,6 +74,8 @@
+ #include "config.h"
+ #include "debugger.h"
+ #include "render.h"
++//MKCHAMP - ADDING HEADER FILE HISCORE FOR INCLUSION
++#include "hiscore.h"
+ #include "uiinput.h"
+ #include "crsshair.h"
+ #include "unzip.h"
+@@ -105,6 +107,8 @@
+ //  running_machine - constructor
+ //-------------------------------------------------
+ 
++int cpunum;
++
+ running_machine::running_machine(const machine_config &_config, machine_manager &manager)
+ 	: firstcpu(nullptr),
+ 		primary_screen(nullptr),
+@@ -146,6 +150,11 @@
+ 			break;
+ 		}
+ 	primary_screen = screen_device_iterator(root_device()).first();
++	
++	//MKCHAMP--initialize the cpu for hiscore
++ 	cpu[0] = firstcpu;
++ 	for (cpunum = 1; cpunum < ARRAY_LENGTH(cpu) && cpu[cpunum - 1] != NULL; cpunum++)
++ 		cpu[cpunum] = cpu[cpunum - 1]->next();
+ 
+ 	// fetch core options
+ 	if (options().debug())
+@@ -302,6 +311,10 @@
+ 
+ 		// load the configuration settings and NVRAM
+ 		m_configuration->load_settings();
++		
++		//MKCHAMP - INITIALIZING THE HISCORE ENGINE
++		if (! options().disable_hiscore_patch())
++			hiscore_init(*this);
+ 
+ 		// disallow save state registrations starting here.
+ 		// Don't do it earlier, config load can create network
+diff -Nru oldsrc/emu/machine.h src/emu/machine.h
+--- oldsrc/emu/machine.h	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/machine.h	2016-09-28 23:50:30.101527022 +1000
+@@ -238,6 +238,7 @@
+ 
+ 	// CPU information
+ 	cpu_device *            firstcpu;           // first CPU
++	device_t *		        cpu[8];             // MKChamp--CPU for hiscore support 
+ 
+ private:
+ 	// video-related information
+diff -Nru oldsrc/emu/profiler.cpp src/emu/profiler.cpp
+--- oldsrc/emu/profiler.cpp	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/profiler.cpp	2016-09-28 23:50:30.101527022 +1000
+@@ -156,6 +156,8 @@
+ 		{ PROFILER_BLIT,             "OSD Blitting" },
+ 		{ PROFILER_SOUND,            "Sound Generation" },
+ 		{ PROFILER_TIMER_CALLBACK,   "Timer Callbacks" },
++		//MKCHAMP - INCLUDING THE HISCORE ENGINE TO THE PROFILER
++		{ PROFILER_HISCORE,          "Hiscore" },
+ 		{ PROFILER_INPUT,            "Input Processing" },
+ 		{ PROFILER_MOVIE_REC,        "Movie Recording" },
+ 		{ PROFILER_LOGERROR,         "Error Logging" },
+diff -Nru oldsrc/emu/profiler.h src/emu/profiler.h
+--- oldsrc/emu/profiler.h	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/profiler.h	2016-09-28 23:50:30.101527022 +1000
+@@ -51,6 +51,8 @@
+ 	PROFILER_BLIT,
+ 	PROFILER_SOUND,
+ 	PROFILER_TIMER_CALLBACK,
++	//MKCHAMP - INCLUDING THE HISCORE ENGINE TO THE PROFILER
++ 	PROFILER_HISCORE,
+ 	PROFILER_INPUT,             // input.c and inptport.c
+ 	PROFILER_MOVIE_REC,         // movie recording
+ 	PROFILER_LOGERROR,          // logerror
+diff -Nru oldsrc/emu/render.cpp src/emu/render.cpp
+--- oldsrc/emu/render.cpp	2016-09-28 13:25:48.000000000 +1000
++++ src/emu/render.cpp	2016-09-28 23:50:30.101527022 +1000
+@@ -1398,7 +1398,8 @@
+ 		}
+ 
+ 	// if we are not in the running stage, draw an outer box
+-	else
++	// DISABLE WHITE BORDER
++	else if ( !m_manager.machine().options().skip_gameinfo() )
+ 	{
+ 		render_primitive *prim = list.alloc(render_primitive::QUAD);
+ 		set_render_bounds_xy(&prim->bounds, 0.0f, 0.0f, (float)m_width, (float)m_height);
+diff -Nru oldsrc/frontend/mame/ui/ui.cpp src/frontend/mame/ui/ui.cpp
+--- oldsrc/frontend/mame/ui/ui.cpp	2016-09-28 13:25:48.000000000 +1000
++++ src/frontend/mame/ui/ui.cpp	2016-09-28 23:50:30.105527061 +1000
+@@ -307,7 +307,8 @@
+ 		switch (state)
+ 		{
+ 			case 0:
+-				if (show_warnings)
++				// DISABLE INTERACTIVE WARNING MESSAGES
++				if (show_gameinfo)
+ 					messagebox_text = machine_info().warnings_string();
+ 				if (!messagebox_text.empty())
+ 				{
+@@ -771,6 +772,10 @@
+ 
+ UINT32 mame_ui_manager::handler_messagebox(render_container &container)
+ {
++	// DISABLE INITIALIZING, LOADING & DECRYPTING MESSAGES
++	if (machine().options().skip_gameinfo())
++		return 0;
++
+ 	draw_text_box(container, messagebox_text.c_str(), ui::text_layout::LEFT, 0.5f, 0.5f, messagebox_backcolor);
+ 	return 0;
+ }
+diff -Nru oldscripts/src/emu.lua scripts/src/emu.lua
+--- oldscripts/src/emu.lua	2016-09-28 13:25:42.000000000 +1000
++++ scripts/src/emu.lua	2016-09-28 23:50:30.105527061 +1000
+@@ -119,6 +119,8 @@
+ 	MAME_DIR .. "src/emu/emupal.h",
+ 	MAME_DIR .. "src/emu/fileio.cpp",
+ 	MAME_DIR .. "src/emu/fileio.h",
++	MAME_DIR .. "src/emu/hiscore.cpp",
++ 	MAME_DIR .. "src/emu/hiscore.h",
+ 	MAME_DIR .. "src/emu/image.cpp",
+ 	MAME_DIR .. "src/emu/image.h",
+ 	MAME_DIR .. "src/emu/input.cpp",
