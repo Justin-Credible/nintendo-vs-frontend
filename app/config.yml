@@ -17,6 +17,9 @@ mame:
     screens:
         a: \\.\DISPLAY2
         b: \\.\DISPLAY1
+    mameAudioChannelSwitches:
+        a: "-audio_right_channel_only"
+        b: "-audio_left_channel_only"
     customConfigRoot: "C:/Emulators/mame-configs"
 
 menu:

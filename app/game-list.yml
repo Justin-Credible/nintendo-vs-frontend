@@ -206,15 +206,15 @@
             type: "single-screen"
             players: "1-2"
             layout: "duo-alternating"
--
-    name: "Platoon VS"
-    platform: "MAME"
-    resource: "platoon"
-    specs:
-        -
-            type: "single-screen"
-            players: "1"
-            layout: "solo"
+# -
+#     name: "Platoon VS"
+#     platform: "MAME"
+#     resource: "platoon"
+#     specs:
+#         -
+#             type: "single-screen"
+#             players: "1"
+#             layout: "solo"
 # -
 #     name: "Star Luster VS"
 #     platform: "MAME"

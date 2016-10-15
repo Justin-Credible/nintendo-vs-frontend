@@ -1,0 +1,121 @@
+From 0b32f1020acfe21f0310e2231010ddb718fb10cb Mon Sep 17 00:00:00 2001
+From: Justin Unterreiner <justin.unterreiner@gmail.com>
+Date: Thu, 6 Oct 2016 21:13:38 -0700
+Subject: [PATCH] Added switches for enabling only the left or right audio
+ channels
+
+---
+ src/osd/modules/lib/osdobj_common.cpp   |  2 ++
+ src/osd/modules/lib/osdobj_common.h     |  4 ++++
+ src/osd/modules/sound/xaudio2_sound.cpp | 32 +++++++++++++++++++++++++++++++-
+ 3 files changed, 37 insertions(+), 1 deletion(-)
+
+diff --git a/src/osd/modules/lib/osdobj_common.cpp b/src/osd/modules/lib/osdobj_common.cpp
+index 351b87a..cf3d4f3 100644
+--- a/src/osd/modules/lib/osdobj_common.cpp
++++ b/src/osd/modules/lib/osdobj_common.cpp
+@@ -126,6 +126,8 @@ const options_entry osd_options::s_option_entries[] =
+ 	{ nullptr,                                nullptr,          OPTION_HEADER,    "OSD SOUND OPTIONS" },
+ 	{ OSDOPTION_SOUND,                        OSDOPTVAL_AUTO,   OPTION_STRING,    "sound output method: " },
+ 	{ OSDOPTION_AUDIO_LATENCY "(1-5)",        "2",              OPTION_INTEGER,   "set audio latency (increase to reduce glitches, decrease for responsiveness)" },
++	{ OSDOPTION_AUDIO_LEFT_CHANNEL_ONLY,      "0",              OPTION_BOOLEAN,   "Use only the left channel for audio." },
++	{ OSDOPTION_AUDIO_RIGHT_CHANNEL_ONLY,     "0",              OPTION_BOOLEAN,   "Use only the right channel for audio." },
+ 
+ #ifdef SDLMAME_MACOSX
+ 	{ nullptr,                                nullptr,          OPTION_HEADER,    "CoreAudio-SPECIFIC OPTIONS" },
+diff --git a/src/osd/modules/lib/osdobj_common.h b/src/osd/modules/lib/osdobj_common.h
+index 55f14d8..441ef1d 100644
+--- a/src/osd/modules/lib/osdobj_common.h
++++ b/src/osd/modules/lib/osdobj_common.h
+@@ -72,6 +72,8 @@
+ 
+ #define OSDOPTION_SOUND                 "sound"
+ #define OSDOPTION_AUDIO_LATENCY         "audio_latency"
++#define OSDOPTION_AUDIO_LEFT_CHANNEL_ONLY "audio_left_channel_only"
++#define OSDOPTION_AUDIO_RIGHT_CHANNEL_ONLY "audio_right_channel_only"
+ 
+ #define OSDOPTION_AUDIO_OUTPUT          "audio_output"
+ #define OSDOPTION_AUDIO_EFFECT          "audio_effect"
+@@ -147,6 +149,8 @@ public:
+ 	// sound options
+ 	const char *sound() const { return value(OSDOPTION_SOUND); }
+ 	int audio_latency() const { return int_value(OSDOPTION_AUDIO_LATENCY); }
++	bool audio_left_channel_only() const { return bool_value(OSDOPTION_AUDIO_LEFT_CHANNEL_ONLY); }
++	bool audio_right_channel_only() const { return bool_value(OSDOPTION_AUDIO_RIGHT_CHANNEL_ONLY); }
+ 
+ 	// CoreAudio specific options
+ 	const char *audio_output() const { return value(OSDOPTION_AUDIO_OUTPUT); }
+diff --git a/src/osd/modules/sound/xaudio2_sound.cpp b/src/osd/modules/sound/xaudio2_sound.cpp
+index f835f69..65972bf 100644
+--- a/src/osd/modules/sound/xaudio2_sound.cpp
++++ b/src/osd/modules/sound/xaudio2_sound.cpp
+@@ -8,6 +8,7 @@
+ 
+ #include "sound_module.h"
+ #include "modules/osdmodule.h"
++#include "modules/lib/osdobj_common.h"
+ 
+ #if defined(OSD_WINDOWS)
+ 
+@@ -209,6 +210,8 @@ private:
+ 	osd::dynamic_module::ptr         m_xaudio_dll;
+ 	xaudio2_create_ptr               XAudio2Create;
+ 	BOOL                             m_initialized;
++	bool                             m_left_channel_only;
++	bool                             m_right_channel_only;
+ 
+ public:
+ 	sound_xaudio2() :
+@@ -230,7 +233,9 @@ public:
+ 		m_underflows(0),
+ 		m_in_underflow(FALSE),
+ 		XAudio2Create(nullptr),
+-		m_initialized(FALSE)
++		m_initialized(FALSE),
++		m_left_channel_only(FALSE),
++		m_right_channel_only(FALSE)
+ 	{
+ 	}
+ 
+@@ -296,6 +301,16 @@ int sound_xaudio2::init(osd_options const &options)
+ 		return 1;
+ 	}
+ 
++	if (options.audio_left_channel_only())
++	{
++		m_left_channel_only = true;
++	}
++
++	if (options.audio_right_channel_only())
++	{
++		m_right_channel_only = true;
++	}
++
+ 	// Create the IXAudio2 object
+ 	HR_GOERR(this->XAudio2Create(m_xAudio2.GetAddressOf(), 0, XAUDIO2_DEFAULT_PROCESSOR));
+ 
+@@ -442,6 +457,21 @@ void sound_xaudio2::set_mastervolume(int attenuation)
+ 	// We only support a reduction from 1.0, so we generate values in the range 0.0 to 1.0
+ 	float scaledVolume = (32.0f + attenuation) / 32.0f;
+ 
++	// Normally we want both left and right channels to be fully volume.
++	float volumes[2] = { 1.0, 1.0 };
++
++	if (m_right_channel_only)
++	{
++		volumes[0] = 0;
++	}
++
++	if (m_left_channel_only)
++	{
++		volumes[1] = 0;
++	}
++
++	m_sourceVoice->SetChannelVolumes(2, volumes);
++
+ 	// set the master volume
+ 	HR_RETV(m_sourceVoice->SetVolume(scaledVolume));
+ }
+-- 
+2.7.0
+
