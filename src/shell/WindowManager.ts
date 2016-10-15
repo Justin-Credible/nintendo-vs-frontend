@@ -439,9 +439,11 @@ export class WindowManager extends events.EventEmitter {
 
                 if (side === "A") {
                     args.push(Utilities.format("-screen {0}", config.mame.screens.a));
+                    args.push(config.mame.mameAudioChannelSwitches.a);
                 }
                 else if (side === "B") {
                     args.push(Utilities.format("-screen {0}", config.mame.screens.b));
+                    args.push(config.mame.mameAudioChannelSwitches.b);
                 }
             }
 

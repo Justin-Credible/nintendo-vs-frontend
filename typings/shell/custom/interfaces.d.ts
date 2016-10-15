@@ -95,6 +95,10 @@ declare namespace Interfaces {
             a: string;
             b: string;
         };
+        mameAudioChannelSwitches: {
+            a: string;
+            b: string;
+        };
         customConfigRoot: string;
     }
 
