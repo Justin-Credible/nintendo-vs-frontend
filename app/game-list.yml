@@ -250,7 +250,7 @@
         -
             type: "single-screen"
             players: "1"
-            layout: "solo"
+            layout: "duo-alternating"
 # -
 #     name: "Star Luster VS"
 #     platform: "MAME"
