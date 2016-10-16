@@ -432,7 +432,9 @@ export class WindowManager extends events.EventEmitter {
             }
             else if (spec.type === "single-screen") {
 
-                startMinimized = true;
+                // Starting MAME with "start /b /min" and "-skip_gameinfo" started causing
+                // MAME to crash as of version 0.178; disabling this functionality for now.
+                // startMinimized = true;
 
                 args.push("-global_inputs");
                 args.push("-window");
