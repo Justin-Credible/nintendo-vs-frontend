@@ -1,4 +1,4 @@
-Nintendo VS. DualSystem Frontend
+Nintendo VS. Dual System Frontend
 =============================
 
 This is a frontend for the Nintendo VS. DualSystem (aka "[Red Tent](http://www.johnsarcade.com/nintendo_vs_dualsystem_tent.php)") arcade machine.
@@ -29,7 +29,7 @@ Testing was done on Virtual Box using a Windows 10 installation configured for d
 
 ## Frontend
 
-The frontend is writen in TypeScript and runs in [Electron](https://github.com/electron/electron). Build tools require Node version 4.2.2.
+The frontend is writen in [TypeScript](https://www.typescriptlang.org/) and runs in [Electron](https://github.com/electron/electron). Build tools require Node version 4.2.2.
 
 ```
 $ git clone https://github.com/Justin-Credible/nintendo-vs-frontend.git
@@ -52,7 +52,7 @@ This repository contains a pre-built input daemon binary so I didn't forget to i
 
 ## MAME
 
-This project needed a custom build of [MAME](https://github.com/mamedev/mame); I used version 0.178 (which has the required `-global_inputs` switch.
+This project needed a custom build of [MAME](https://github.com/mamedev/mame); I used version 0.178 (which has the required `-global_inputs` switch).
 
 In addition, you'll need to apply the patches located in `assets/mame-patches`.
 
