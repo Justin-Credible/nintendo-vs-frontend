@@ -72,7 +72,7 @@ Screen dependencies are currently hardcoded. There must be exactly two 1280x1024
 
 If you are using a Mac for development, a seperate renderer window will open when you run the frontend. This window is used to emulate the input daemon which is only available for Windows. This window must be in focus when pressing keys so that the frontend can receive keyboard input.
 
-[Borderless Gaming](https://github.com/Codeusa/Borderless-Gaming) must be installed (tested with version 8.4.33315.1328). Each game must be launched at least once from each side of the cabinet and added to the favorite list so MAME window will be forced to full screen during launch.
+[Borderless Gaming](https://github.com/Codeusa/Borderless-Gaming) must be installed (tested with version 8.4.33315.1328). Each game must be launched at least once from each side of the cabinet and added to the favorite list so MAME window will be forced to full screen during launch. A pre-built list is located in `assets/borderless-gaming`.
 
 While two MAME instances can run currently (one for each side), PC games are limited to a single instance. When launching a PC game the displays will switch to "clone" mode to display the same image on each screen. They'll switch back to "extended" mode once the game exists.
 
