@@ -94,6 +94,16 @@ I've also included all of my MAME configs for these control mappings in `assets/
 
 The `assets/marquee` directory contains the Photoshop file I used to create the instruction cards. I printed on high gloss card stock at my local office supplies store.
 
+## Launch as primary shell
+
+The frontend can be set as the startup shell which will replace Windows Explorer by adding a entry called `Shell` at the following registry location. It should point to the full path of `nintendo-vs-frontend.exe`:
+
+`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System`
+
+It is recommended you do this for a dedicated arcade user and leave your primary account for system administration. Since Windows Explorer will no longer load when the arcade user logs in. You can press CTRL+Shift+Esc to open the task manager, or CTRL+ALT+Delete to log off.
+
+Finally, you can enable auto login for your arcade user via Start > Run > `control userpasswords2`.
+
 # Contributing
 
 I'm not interested in making this a general purpose frontend and therefore will not accept any contributions of that nature. This frontend is specifically for my dual screen cabinet.
