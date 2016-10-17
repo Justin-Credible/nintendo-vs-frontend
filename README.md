@@ -13,7 +13,7 @@ This repository contains all of the software and docs you'll need to assemble a 
 
 # Overview
 
-To achieve this I needed to write a custom frontend for my cabinet.
+To enable two games to be playable simultaneously on a single PC with two screens, I had to write a custom frontend for my cabinet.
 
 The frontend displays a game list on each screen and allows users to select a game. It shows video clips for the selected game. Each side of the cabinet operates independently, unless a four player game is selected, in which case both sides can play the same game together.
 
@@ -74,9 +74,9 @@ If you are using a Mac for development, a seperate renderer window will open whe
 
 [Borderless Gaming](https://github.com/Codeusa/Borderless-Gaming) must be installed (tested with version 8.4.33315.1328). Each game must be launched at least once from each side of the cabinet and added to the favorite list so MAME window will be forced to full screen during launch. A pre-built list is located in `assets/borderless-gaming`.
 
-While two MAME instances can run currently (one for each side), PC games are limited to a single instance. When launching a PC game the displays will switch to "clone" mode to display the same image on each screen. They'll switch back to "extended" mode once the game exists.
+While two MAME instances can run currently (one for each side), PC games are limited to a single instance. When launching a PC game the displays will switch to "clone" mode to display the same image on each screen. They'll switch back to "extended" mode once the game exits.
 
-[DisplayFusion](https://www.displayfusion.com/) Pro must be installed (tested with version 8.0). It is used when launching PC games; it is used to switch between the "extended" and "clone" display modes.
+[DisplayFusion](https://www.displayfusion.com/) Pro must be installed (tested with version 8.0). It is used when launching PC games; it switches between the "extended" and "clone" display modes.
 
 # Attract Mode
 
@@ -100,7 +100,7 @@ The frontend can be set as the startup shell which will replace Windows Explorer
 
 `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System`
 
-It is recommended you do this for a dedicated arcade user and leave your primary account for system administration. Since Windows Explorer will no longer load when the arcade user logs in. You can press CTRL+Shift+Esc to open the task manager, or CTRL+ALT+Delete to log off.
+I recommended you do this for a dedicated arcade user and leave your primary account for system administration. Since Windows Explorer will no longer load when the arcade user logs in. You can press CTRL+Shift+Esc to open the task manager, or CTRL+ALT+Delete to log off.
 
 Finally, you can enable auto login for your arcade user via Start > Run > `control userpasswords2`.
 
