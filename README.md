@@ -1,4 +1,4 @@
-Nintendo VS. Dual System Frontend
+Frontend for Nintendo Vs.
 =============================
 
 This is a frontend for the Nintendo VS. DualSystem (aka "[Red Tent](http://www.johnsarcade.com/nintendo_vs_dualsystem_tent.php)") arcade machine.
@@ -8,6 +8,8 @@ It is designed to support up to four players on two screens running up to two co
 Each side can play its own game independently (two players on each side) or both sides can play a four player game (e.g. Gauntlet, TMNT).
 
 This repository contains all of the software and docs you'll need to assemble a replica of my cabinet.
+
+You can read more about the cabinet [here](http://justin-credible.net/2016/10/21/nintendo-vs/)  or see a video of the frontend in action [here](https://youtu.be/zIqEkgNy3qg).
 
 ![banner](assets/photos/banner.jpg)
 
