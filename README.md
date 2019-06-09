@@ -11,6 +11,8 @@ This repository contains all of the software and docs you'll need to assemble a 
 
 You can read more about the cabinet [here](http://justin-credible.net/2016/10/21/nintendo-vs/)  or see a video of the frontend in action [here](https://youtu.be/zIqEkgNy3qg).
 
+Pre-built releases can be found on the [releases page](https://github.com/Justin-Credible/nintendo-vs-frontend/releases), and changes are documented in the [change log](CHANGELOG.md).
+
 ![banner](assets/photos/banner.jpg)
 
 # Overview
@@ -40,7 +42,7 @@ $ npm install
 $ gulp
 ```
 
-You can use `gulp package` to create a distribution build in the `build` directory. The frontend can be built/packaged on a Mac or Windows. If you package on a Mac you may be prompted to install certain Wine components (the packager needs a Windows specific API to inject an icon into the Win32 binary).
+You can use `gulp package` to create a distribution build in the `build` directory. The frontend can be built/packaged on a Mac or Windows. If you package on a Mac you may be prompted to install certain Wine components (the packager needs a Windows specific API to inject an icon into the Win32 binary; see [here]()https://github.com/electron-userland/electron-packager#building-windows-apps-from-non-windows-platforms). If you are not prompted to install it, you can install Wine manually using Homebrew: `brew install wine`.
 
 The frontend is split into two code-bases; the visual part is located in `src/renderer` and the launcher that handles window management etc is located in `src/shell`. Both of these make up the frontend.
 

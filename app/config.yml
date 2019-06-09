@@ -29,7 +29,7 @@ menu:
     originMonitorSide: "B"
     realTimeAttractMode: true
     autoStart:
-        sideAGameName: "Balloon Fight VS"
+        sideAGameName: "Ice Climber VS"
         sideASpecIndex: 0
         sideBGameName: "Mario Bros."
         sideBSpecIndex: 0
