@@ -28,6 +28,11 @@ menu:
     keyInputMaxDelay: 175
     originMonitorSide: "B"
     realTimeAttractMode: true
+    autoStart:
+        sideAGameName: "Balloon Fight VS"
+        sideASpecIndex: 0
+        sideBGameName: "Mario Bros."
+        sideBSpecIndex: 0
 
 bindings:
     player1:

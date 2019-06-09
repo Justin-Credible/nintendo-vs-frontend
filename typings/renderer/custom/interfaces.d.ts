@@ -68,6 +68,11 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         layout: string;
     }
 
+    interface GameDescSpecPair {
+        descriptor: GameDescriptor;
+        specification: GameSpecification;
+    }
+
     /**
      * Configuration specific to the menu.
      */
@@ -76,5 +81,16 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         keyInputMaxDelay: number;
         originMonitorSide: string;
         realTimeAttractMode: boolean;
+        autoStart: AutoStartConfig;
+    }
+
+    /**
+     * Configuration for auto-starting games when the menu loads.
+     */
+    interface AutoStartConfig {
+        sideAGameName: string;
+        sideASpecIndex: number;
+        sideBGameName: string;
+        sideBSpecIndex: number;
     }
 }

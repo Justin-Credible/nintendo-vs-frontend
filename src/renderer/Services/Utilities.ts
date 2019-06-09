@@ -81,6 +81,51 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             return this._side_ === "B";
         }
 
+        /**
+         * Returns the game descriptor and specification that should be used
+         * to auto-start a game for the current side as defined in config.yml
+         * under menu->autoStart.
+         */
+        public get autoStartGame(): Interfaces.GameDescSpecPair {
+
+            if (!this.menuConfig.autoStart) {
+                return null;
+            }
+
+            let descriptionName: string = null;
+            let specificationIndex: number = null;
+
+            if (this.isSideA) {
+                descriptionName = this.menuConfig.autoStart.sideAGameName;
+                specificationIndex = this.menuConfig.autoStart.sideASpecIndex;
+            }
+            else {
+                descriptionName = this.menuConfig.autoStart.sideBGameName;
+                specificationIndex = this.menuConfig.autoStart.sideBSpecIndex;
+            }
+
+            if (descriptionName == null || specificationIndex == null) {
+                return null;
+            }
+
+            let descriptor = _.find(this.gameList, (descriptor) => descriptor.name === descriptionName);
+
+            if (descriptor == null) {
+                return null;
+            }
+
+            let specification = descriptor.specs[specificationIndex];
+
+            if (specification == null) {
+                return null;
+            }
+
+            return {
+                descriptor: descriptor,
+                specification: specification,
+            };
+        }
+
         //#endregion
 
         //#region String Manipulation

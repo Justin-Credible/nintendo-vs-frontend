@@ -45,8 +45,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
         protected view_loaded(): void {
             super.view_loaded();
 
-            this._allowPlayerInput = true;
-
             this.$rootScope.$on(Constants.GameLaunchedEvent, _.bind(this.app_gameLaunched, this));
             this.$rootScope.$on(Constants.GameTerminatedEvent, _.bind(this.app_gameTerminated, this));
 
@@ -59,7 +57,43 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.viewModel.side = this.Utilities.side;
             this.viewModel.title = "Nintendo VS";
             this.viewModel.games = this.Utilities.gameList;
-            this.resetToIdle(true);
+
+            let autoStartGame = this.Utilities.autoStartGame;
+
+            if (autoStartGame) {
+
+                // If auto-start is configured, then we need to first make sure the specified game
+                // spec can be launched. Allow side A to perform this check first, and B second,
+                // via the different timeout values.
+
+                this.UIHelper.showPleaseWait();
+
+                let delay = this.Utilities.isSideA ? 250 : 500;
+
+                this.$timeout(() => {
+
+                    let canLaunch = this.LaunchHelper.canLaunchSpec(autoStartGame.specification);
+
+                    if (!canLaunch) {
+                        this.UIHelper.showToast("error", "Game Over Man!", "Could not launch game :(");
+                        this.UIHelper.hidePleaseWait();
+                        this.resetToIdle(true);
+                        this.allowPlayerInput();
+                        return;
+                    }
+
+                    this.resetToIdle(false);
+                    this.preventPlayerInput();
+
+                    this.LaunchHelper.launchGame(autoStartGame.descriptor, autoStartGame.specification);
+
+                }, delay);
+            }
+            else {
+                // If auto-start is not configured, then setup the menu and allow input.
+                this.resetToIdle(true);
+                this.allowPlayerInput();
+            }
         }
 
         //#endregion

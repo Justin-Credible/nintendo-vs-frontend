@@ -107,6 +107,7 @@ declare namespace Interfaces {
         keyInputMaxDelay: number;
         originMonitorSide: string;
         realTimeAttractMode: boolean;
+        autoStart: AutoStartConfig;
     }
 
     interface Bindings {
@@ -153,5 +154,16 @@ declare namespace Interfaces {
         type: string;
         players: string;
         resource: string;
+        layout: string;
+    }
+
+    /**
+     * Configuration for auto-starting games when the menu loads.
+     */
+    interface AutoStartConfig {
+        sideAGameName: string;
+        sideASpecIndex: number;
+        sideBGameName: string;
+        sideBSpecIndex: number;
     }
 }
