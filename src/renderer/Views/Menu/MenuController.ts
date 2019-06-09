@@ -86,7 +86,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             }
 
             if (this.viewModel.selectedGame.specs.length === 1) {
-                return this.viewModel.selectedGame.specs[0].players + " Players";
+                let plural = this.viewModel.selectedGame.specs[0].players !== "1";
+                return this.viewModel.selectedGame.specs[0].players + " Player" + (plural ? "s" : "");
             }
             else if (this.viewModel.selectedGame.specs.length > 1) {
                 let lastSpecIndex = this.viewModel.selectedGame.specs.length - 1;
@@ -108,7 +109,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                     return "1 Screen";
                 }
                 else if (this.viewModel.selectedGame.specs[0].type === "dual-screen") {
-                    return "2 Screen";
+                    return "2 Screens";
                 }
                 else {
                     return "[Error 1]";
@@ -244,7 +245,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
 
                 // Greet the new user.
                 this.SFX.playReady();
-                this.UIHelper.showToast("info", "Welcome!", "Use the joystick and A button to select a game!");
+                this.UIHelper.showToast("info", "Welcome!", "Use the joystick and the [A] button to select a game!");
 
                 // Start the timer.
                 this.startPlayerInputTimer();
