@@ -96,6 +96,8 @@ I used two [Mini-Pac](https://www.ultimarc.com/minipac.html) keyboard encoders. 
 
 I've also included all of my MAME configs for these control mappings in `assets/mame-configs`.
 
+The `assets/mame-nvram` directory contains additional settings for each game (such as silenced attract modes, when possible).
+
 The `assets/marquee` directory contains the Photoshop file I used to create the instruction cards. I printed on high gloss card stock at my local office supplies store.
 
 ## Launch as primary shell
