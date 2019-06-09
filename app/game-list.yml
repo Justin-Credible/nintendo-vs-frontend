@@ -249,7 +249,7 @@
     specs:
         -
             type: "single-screen"
-            players: "1"
+            players: "1-2"
             layout: "duo-alternating"
 # -
 #     name: "Star Luster VS"
