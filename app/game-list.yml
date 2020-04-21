@@ -106,6 +106,15 @@
             type: "single-screen"
             players: "1"
             layout: "solo"
+-
+    name: "Felix & Son"
+    platform: "PC"
+    resource: "C:/Games/Felix_and_Son/felix_and_son.exe"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-2"
+            layout: "duo-face-off"
 # -
 #     name: "Freedom Force VS"
 #     platform: "MAME"
