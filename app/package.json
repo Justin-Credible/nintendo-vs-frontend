@@ -11,7 +11,7 @@
   "readme": "README.md",
   "main": "shell-boot.js",
   "dependencies": {
-    "js-yaml": "3.4.6",
+    "js-yaml": "3.13.1",
     "lodash": "3.10.1",
     "sync-exec": "0.6.2"
   }
