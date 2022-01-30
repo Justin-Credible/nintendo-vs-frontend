@@ -234,6 +234,15 @@
             players: "1-2"
             layout: "duo-simultaneous"
 -
+    name: "Pac-Man Battle Royale"
+    platform: "PC"
+    resource: "C:/Games/Pac-Man_Museum/PACMuseum-patched.exe"
+    specs:
+        -
+            type: "dual-screen"
+            players: "1-4"
+            layout: "quartet"
+-
     name: "Pinball VS"
     platform: "MAME"
     resource: "vspinbal"
