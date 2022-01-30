@@ -34,6 +34,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             var instance = new Audio(href);
             instance.loop = false;
             instance.autoplay = false;
+            instance.volume = 0.25;
 
             this._audioInstances[href] = instance;
 
