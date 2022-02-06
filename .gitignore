@@ -10,16 +10,8 @@ app/www/js/templates.js
 app/www/js/bundle.*
 app/www/js/src
 app/www/css/bundle.*
-src/shell/tsd.d.ts
-src/renderer/tsd.d.ts
 src/input-daemon/bin
 src/input-daemon/obj
-
-# TypeScript Definitions
-/typings/shell/*
-/typings/renderer/*
-!/typings/shell/custom/
-!/typings/renderer/custom/
 
 # Visual Studio user preferences etc
 *.docstates
