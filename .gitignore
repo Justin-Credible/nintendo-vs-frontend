@@ -1,7 +1,6 @@
 
 # Packages etc
 node_modules/
-bower_components/
 
 # Generated Artifacts
 build/*
@@ -21,9 +20,6 @@ src/input-daemon/obj
 /typings/renderer/*
 !/typings/shell/custom/
 !/typings/renderer/custom/
-
-# Renderer Libraries
-app/www/lib
 
 # Visual Studio user preferences etc
 *.docstates
