@@ -30,6 +30,7 @@ menu:
     keyInputMaxDelay: 175
     originMonitorSide: "B"
     realTimeAttractMode: true
+    sfxVolume: 0.25
     autoStart:
         sideAGameName: "Ice Climber VS"
         sideASpecIndex: 0

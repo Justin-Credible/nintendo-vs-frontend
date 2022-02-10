@@ -11,12 +11,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         public static ID = "SFX";
 
         public static get $inject(): string[] {
-            return [];
+            return [
+                Utilities.ID,
+            ];
         }
 
-        constructor() {
-            /* tslint:disable:no-empty */
-            /* tslint:enable:no-empty */
+        constructor(
+            private Utilities: Utilities,
+        ) {
         }
 
         private _audioInstances: Interfaces.Dictionary<HTMLAudioElement> = {};
@@ -34,7 +36,8 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
             var instance = new Audio(href);
             instance.loop = false;
             instance.autoplay = false;
-            instance.volume = 0.25;
+            instance.volume = this.Utilities.menuConfig.sfxVolume == null
+                ? 0.25 : this.Utilities.menuConfig.sfxVolume;
 
             this._audioInstances[href] = instance;
 

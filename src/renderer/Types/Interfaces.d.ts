@@ -50,6 +50,7 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         keyInputMaxDelay: number;
         originMonitorSide: string;
         realTimeAttractMode: boolean;
+        sfxVolume: number;
         autoStart: AutoStartConfig;
     }
 
