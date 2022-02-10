@@ -5,7 +5,7 @@
             "label": "Build All",
             "type": "shell",
             "command": "${workspaceFolder}/bin/build",
-            "problemMatcher": [],
+            "problemMatcher": []
         },
         {
             "label": "Compile TypeScript (tsc)",
@@ -14,10 +14,11 @@
             "problemMatcher": "$tsc",
             "group": {
                 "kind": "build",
-                "isDefault": true,
+                "isDefault": true
             },
             "presentation": {
                 "reveal": "silent",
+                "revealProblems": "onProblem",
             }
         },
         {
@@ -25,23 +26,63 @@
             "type": "shell",
             "command": "${workspaceFolder}/bin/tsc-shell",
             "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
         },
         {
             "label": "Compile TypeScript for Renderer (tsc-renderer)",
             "type": "shell",
             "command": "${workspaceFolder}/bin/tsc-renderer",
             "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
+        },
+        {
+            "label": "Lint TypeScript",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tslint",
+            "problemMatcher": [
+                {
+                    // https://github.com/CorpGlory/types-grafana/blob/4beede5fa0e5bdebdb23b09e4e1e214dcc4c267f/.github/tslint-stylish.json
+                    "owner": "tslint-stylish",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^([^\\s].+?)(:\\d+:\\d+)?$",
+                            "file": 1,
+                        },
+                        {
+                            "regexp": "^(ERROR|WARNING|INFO):\\s+(\\d+):(\\d+)\\s+([\\w-]+)\\s+(.*)$",
+                            "line": 2,
+                            "column": 3,
+                            "severity": 1,
+                            "message": 5,
+                            "code": 4,
+                            "loop": true,
+                        },
+                    ],
+                },
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
         },
         {
             "label": "Compile Sass Styles",
             "type": "shell",
             "command": "${workspaceFolder}/bin/sass",
             "problemMatcher": [
-                "$node-sass",
+                "$node-sass"
             ],
             "presentation": {
                 "reveal": "silent",
-            },
+                "revealProblems": "onProblem",
+            }
         },
         {
             "label": "Compile HTML Templates",
@@ -50,7 +91,8 @@
             "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
-            },
-        },
+                "revealProblems": "onProblem",
+            }
+        }
     ]
 }
