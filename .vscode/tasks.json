@@ -1,56 +1,56 @@
 {
-    "version": "0.1.0",
-    "command": "gulp",
-    "isShellCommand": true,
-    "args": [
-        "--no-color"
-    ],
+    "version": "2.0.0",
     "tasks": [
         {
-            "taskName": "ts",
-            "isBuildCommand": true,
-            "showOutput": "silent",
-            "problemMatcher": "$tsc"
+            "label": "Build All",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/build",
+            "problemMatcher": [],
         },
         {
-            "taskName": "lint",
-            "showOutput": "silent",
+            "label": "Compile TypeScript (tsc)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc",
+            "problemMatcher": "$tsc",
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "presentation": {
+                "reveal": "silent",
+            }
+        },
+        {
+            "label": "Compile TypeScript for Shell (tsc-shell)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc-shell",
+            "problemMatcher": "$tsc",
+        },
+        {
+            "label": "Compile TypeScript for Renderer (tsc-renderer)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc-renderer",
+            "problemMatcher": "$tsc",
+        },
+        {
+            "label": "Compile Sass Styles",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/sass",
             "problemMatcher": [
-                {
-                    "owner": "gulp",
-                    "fileLocation": ["absolute"],
-                    "pattern": {
-                        "regexp": "^\\[\\d\\d:\\d\\d:\\d\\d\\] \\[gulp-tslint\\] (.*) \\(.*\\) (.*)\\[(\\d*), (\\d*)\\]: (.*)$",
-                        "file": 2,
-                        "line": 3,
-                        "column": 4,
-                        "message": 5,
-                        "severity": 1
-                    }
-                }
-            ]
+                "$node-sass",
+            ],
+            "presentation": {
+                "reveal": "silent",
+            },
         },
         {
-            "taskName": "templates",
-            "showOutput": "never"
+            "label": "Compile HTML Templates",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/templates",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+            },
         },
-        {
-            "taskName": "sass",
-            "showOutput": "silent",
-            "problemMatcher": [
-                {
-                    "owner": "gulp",
-                    "fileLocation": ["relative", "${workspaceRoot}"],
-                    "pattern": {
-                        "regexp": "^\\[sass\\] \\[(.*)\\] \\[(.*)\\] \\[(\\d+):(\\d+)\\] - (.*)$",
-                        "file": 2,
-                        "line": 3,
-                        "column": 4,
-                        "message": 5,
-                        "severity": 1
-                    }
-                }
-            ]
-        }
     ]
 }
