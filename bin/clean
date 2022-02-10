@@ -21,3 +21,6 @@ rm $SCRIPT_PATH/../app/www/css/bundle.*
 
 # cleans tsc-shell output
 rm -rf $SCRIPT_PATH/../app/shell
+
+# cleans package output
+rm -rf $SCRIPT_PATH/../build
