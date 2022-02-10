@@ -33,7 +33,7 @@ Testing was done on Virtual Box using a Windows 10 installation configured for d
 
 ## Frontend
 
-The frontend is writen in [TypeScript](https://www.typescriptlang.org/) and runs in [Electron](https://github.com/electron/electron). Build tools require Node version v16.13.2.
+The frontend is writen in [TypeScript](https://www.typescriptlang.org/) and runs in [Electron](https://github.com/electron/electron). Build tools require Node v16.13.2. Packaging requires Node v11.15.0.
 
 ```
 $ git clone https://github.com/Justin-Credible/nintendo-vs-frontend.git

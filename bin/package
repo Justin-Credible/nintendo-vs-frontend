@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Get the path to the script's parent directory.
+if [ -n "$ZSH_VERSION" ]; then
+    # https://stackoverflow.com/a/23259585
+    SCRIPT_PATH=$( cd "$(dirname "${(%):-%N}")" ; pwd -P )
+else
+    # Assume Bash
+    # https://stackoverflow.com/a/4774063
+    SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+fi
+
+# Uses electron-packager to package up the contents of the app directory with the Electron
+# runtime and place the output in the build directory. This currently assumes building for
+# the Windows platform and must be run on a Windows machine to properly edit the icon.
+
+# Additionally, the electron-packager requires Node v11.15.0!
+
+node $SCRIPT_PATH/package.js
