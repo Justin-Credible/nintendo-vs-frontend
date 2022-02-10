@@ -94,7 +94,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
             Application.setAngularModule(ngModule);
             Application.start();
         });
-    };
+    }
 
     /**
      * Function that is used to configure AngularJs.
@@ -122,7 +122,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Boot2 {
 
         // Setup all of the client side routes and their controllers and views.
         //RouteConfig.setupRoutes($stateProvider, $urlRouterProvider);
-    };
+    }
 
     //#endregion
 }

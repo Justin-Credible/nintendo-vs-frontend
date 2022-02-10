@@ -1,4 +1,6 @@
 ---
+debug: true
+
 borderlessgaming:
     executable: "C:/Program Files (x86)/Borderless Gaming/BorderlessGaming.exe"
     delay: 3000

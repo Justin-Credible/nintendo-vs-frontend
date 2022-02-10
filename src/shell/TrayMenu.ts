@@ -17,20 +17,23 @@ export class TrayMenu extends events.EventEmitter {
     private buildMenu(): void {
 
         let iconPath = path.join(__dirname, "..", "icons", "joystick.ico");
-        this._tray = new electron.Tray(iconPath);
+
+        // https://github.com/electron/electron/issues/22167
+        //@ts-ignore
+        const nimage = electron.nativeImage.createFromPath(iconPath);
+
+        this._tray = new electron.Tray(nimage);
         this._tray.setToolTip("Nintendo VS Frontend");
 
-        let versionDisplay = `Version ${ConfigManager.buildVars.version} - ${ConfigManager.buildVars.commitShortSha}`;
-
         let options: GitHubElectron.MenuItemOptions[] = [
-            { type: "normal", label: "Nintendo VS Frontend", sublabel: versionDisplay, enabled: false },
+            { type: "normal", label: "Nintendo VS Frontend", enabled: false },
             { type: "separator" },
             { label: "Quit", type: "normal", click: this.tray_quit_click.bind(this) },
         ];
 
         // OSX doesn't support sub-labels in menu items, so we'll add it as a seperate item.
         if (process.platform === "darwin") {
-            options.splice(1, 0, { type: "normal", label: versionDisplay, enabled: false } );
+            options.splice(1, 0, { type: "normal", label: "", enabled: false } );
         }
 
         let contextMenu = electron.Menu.buildFromTemplate(options);

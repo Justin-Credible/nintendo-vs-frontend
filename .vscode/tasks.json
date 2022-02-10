@@ -1,56 +1,98 @@
 {
-    "version": "0.1.0",
-    "command": "gulp",
-    "isShellCommand": true,
-    "args": [
-        "--no-color"
-    ],
+    "version": "2.0.0",
     "tasks": [
         {
-            "taskName": "ts",
-            "isBuildCommand": true,
-            "showOutput": "silent",
-            "problemMatcher": "$tsc"
+            "label": "Build All",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/build",
+            "problemMatcher": []
         },
         {
-            "taskName": "lint",
-            "showOutput": "silent",
+            "label": "Compile TypeScript (tsc)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc",
+            "problemMatcher": "$tsc",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
+        },
+        {
+            "label": "Compile TypeScript for Shell (tsc-shell)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc-shell",
+            "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
+        },
+        {
+            "label": "Compile TypeScript for Renderer (tsc-renderer)",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tsc-renderer",
+            "problemMatcher": "$tsc",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
+        },
+        {
+            "label": "Lint TypeScript",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/tslint",
             "problemMatcher": [
                 {
-                    "owner": "gulp",
-                    "fileLocation": ["absolute"],
-                    "pattern": {
-                        "regexp": "^\\[\\d\\d:\\d\\d:\\d\\d\\] \\[gulp-tslint\\] (.*) \\(.*\\) (.*)\\[(\\d*), (\\d*)\\]: (.*)$",
-                        "file": 2,
-                        "line": 3,
-                        "column": 4,
-                        "message": 5,
-                        "severity": 1
-                    }
-                }
-            ]
+                    // https://github.com/CorpGlory/types-grafana/blob/4beede5fa0e5bdebdb23b09e4e1e214dcc4c267f/.github/tslint-stylish.json
+                    "owner": "tslint-stylish",
+                    "fileLocation": "absolute",
+                    "pattern": [
+                        {
+                            "regexp": "^([^\\s].+?)(:\\d+:\\d+)?$",
+                            "file": 1,
+                        },
+                        {
+                            "regexp": "^(ERROR|WARNING|INFO):\\s+(\\d+):(\\d+)\\s+([\\w-]+)\\s+(.*)$",
+                            "line": 2,
+                            "column": 3,
+                            "severity": 1,
+                            "message": 5,
+                            "code": 4,
+                            "loop": true,
+                        },
+                    ],
+                },
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
         },
         {
-            "taskName": "templates",
-            "showOutput": "never"
-        },
-        {
-            "taskName": "sass",
-            "showOutput": "silent",
+            "label": "Compile Sass Styles",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/sass",
             "problemMatcher": [
-                {
-                    "owner": "gulp",
-                    "fileLocation": ["relative", "${workspaceRoot}"],
-                    "pattern": {
-                        "regexp": "^\\[sass\\] \\[(.*)\\] \\[(.*)\\] \\[(\\d+):(\\d+)\\] - (.*)$",
-                        "file": 2,
-                        "line": 3,
-                        "column": 4,
-                        "message": 5,
-                        "severity": 1
-                    }
-                }
-            ]
+                "$node-sass"
+            ],
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
+        },
+        {
+            "label": "Compile HTML Templates",
+            "type": "shell",
+            "command": "${workspaceFolder}/bin/templates",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+            }
         }
     ]
 }

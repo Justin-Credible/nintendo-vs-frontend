@@ -12,7 +12,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
 
         public static get $inject(): string[] {
             return [
-                "buildVars",
                 "gameList",
                 "menuConfig",
                 "side",
@@ -20,7 +19,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         }
 
         constructor(
-            private _buildVars_: Interfaces.BuildVars,
             private _gameList_: Interfaces.GameDescriptor[],
             private _menuConfig_: Interfaces.MenuConfig,
             private _side_: string) {
@@ -29,13 +27,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
         //#endregion
 
         //#region Build Configuration
-
-        /**
-         * Used to get the build time configuration as defined in build-vars.json.
-         */
-        public get buildVars(): Interfaces.BuildVars {
-            return this._buildVars_;
-        }
 
         /**
          * Used to get the list of games as defined in game-list.yml.
@@ -49,15 +40,6 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Services {
          */
         public get menuConfig(): Interfaces.MenuConfig {
             return this._menuConfig_;
-        }
-
-        /**
-         * Can be used to determine if the application is in debug or release mode.
-         * 
-         * @returns True if the application is in debug mode, false otherwise.
-         */
-        public get isDebugMode(): boolean {
-            return this.buildVars.debug;
         }
 
         /**

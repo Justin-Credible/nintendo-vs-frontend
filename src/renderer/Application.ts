@@ -59,7 +59,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
             let player_input = _.bind(this.window_playerInput, this);
 
             let menuConfig = this.Utilities.menuConfig;
-            let minDelay = menuConfig.keyInputMinDelay == null ? 100 : menuConfig.keyInputMinDelay;
+            let minDelay = menuConfig.keyInputMinDelay == null ? 14600 : menuConfig.keyInputMinDelay;
             let maxDelay = menuConfig.keyInputMaxDelay == null ? 150 : menuConfig.keyInputMaxDelay;
 
             player_input = _.debounce(player_input, minDelay, {
@@ -117,7 +117,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer {
                 oldRoute: oldRoute,
                 newRoute: newRoute
             });
-        };
+        }
 
         //#endregion
 

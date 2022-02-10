@@ -134,7 +134,7 @@ export class WindowManager extends events.EventEmitter {
 
         // If this is a debug build AND the input daemon is not available, show the
         // input test window which emulates the functionality of the daemon for testing.
-        if (ConfigManager.buildVars.debug && !InputDaemon.isAvailable()) {
+        if (ConfigManager.config.debug && !InputDaemon.isAvailable()) {
 
             this._inputTestWindow = new electron.BrowserWindow({ width: 300, height: 175, x: 0, y: 0 });
             this._inputTestWindow.loadURL("file://" + __dirname + "../../www/input-test.html");
@@ -166,7 +166,7 @@ export class WindowManager extends events.EventEmitter {
         let displays: Interfaces.ElectronDisplay[] = electron.screen.getAllDisplays();
 
         // During development don't worry about repositioning the screens.
-        if (ConfigManager.buildVars.debug) {
+        if (ConfigManager.config.debug) {
 
             let screensAre1280x1024 = displays.length >= 2
                 && displays[0].size.width === 1280

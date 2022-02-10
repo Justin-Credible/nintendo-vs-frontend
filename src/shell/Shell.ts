@@ -94,7 +94,6 @@ namespace JustinCredible.NintendoVsFrontend.Shell {
         // Expose these as globals so they can be accessed via the render windows via Boot2.ts.
         /* tslint:disable:no-string-literal */
         global["gameList"] = ConfigManager.gameList;
-        global["buildVars"] = ConfigManager.buildVars;
         global["menuConfig"] = ConfigManager.config.menu;
         /* tslint:enable:no-string-literal */
 

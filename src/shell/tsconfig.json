@@ -3,8 +3,8 @@
         "target": "es5",
         "outDir": "../../app/shell",
         "sourceMap": true,
-        "declaration": true,
-        "removeComments": true,
+        "declaration": false,
+        "removeComments": false,
         "sourceRoot": "",
         "module": "commonjs"
     }

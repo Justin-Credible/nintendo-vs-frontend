@@ -17,7 +17,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
     export function construct(constructor, args) {
         function F(): void {
             return constructor.apply(this, args);
-        };
+        }
         F.prototype = constructor.prototype;
         return new F();
     }
@@ -50,7 +50,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
     // /**
     //  * Used to register each of the directives that exist in the Directives namespace
     //  * with the given Angular module.
-    //  * 
+    //  *
     //  * @params ngModule The root Angular module to use for registration.
     //  */
     // export function registerDirectives(ngModule: ng.IModule): void {
@@ -71,7 +71,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
     // /**
     //  * Used to register each of the filters that exist in the Filters namespace
     //  * with the given Angular module.
-    //  * 
+    //  *
     //  * @params ngModule The root Angular module to use for registration.
     //  */
     // export function registerFilters(ngModule: ng.IModule): void {
@@ -105,7 +105,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
     //  * Used to create a function that returns a data structure describing an Angular directive
     //  * for an element from one of our own classes implementing IElementDirective. It handles
     //  * creating an instance and invoked the render method when linking is invoked.
-    //  * 
+    //  *
     //  * @param Directive A class reference (not instance) to a element directive class that implements Directives.IElementDirective.
     //  * @returns A factory function that can be used by Angular to create an instance of the element directive.
     //  */
@@ -179,7 +179,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
     // /**
     //  * Used to create an array of injection property names followed by a function that will be
     //  * used by Angular to create an instance of the given directive.
-    //  * 
+    //  *
     //  * @param Directive A class reference (not instance) to a directive class.
     //  * @returns An array of injection property names followed by a factory function for use by Angular.
     //  */
@@ -210,7 +210,7 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.BootHelper {
 
     // /**
     //  * Used to create a function that returns a function for use by a filter.
-    //  * 
+    //  *
     //  * @param fn The function that will provide the filter's logic.
     //  */
     // export function getFilterFactoryFunction(fn: Function): () => Function {
