@@ -4,7 +4,6 @@ node_modules/
 
 # Generated Artifacts
 build/*
-app/build-vars.json
 app/shell
 app/www/js/templates.js
 app/www/js/bundle.*
