@@ -10,4 +10,4 @@ else
     SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 fi
 
-$SCRIPT_PATH/../node_modules/.bin/tslint -c $SCRIPT_PATH/../tslint.json -p $SCRIPT_PATH/../tslint.json
+npx tslint -c $SCRIPT_PATH/../tslint.json -p $SCRIPT_PATH/../tslint.json

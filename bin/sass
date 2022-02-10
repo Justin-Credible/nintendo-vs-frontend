@@ -10,4 +10,4 @@ else
     SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 fi
 
-$SCRIPT_PATH/../node_modules/.bin/sass $SCRIPT_PATH/../src/renderer/Styles/Index.scss:$SCRIPT_PATH/../app/www/css/bundle.css
+npx sass $SCRIPT_PATH/../src/renderer/Styles/Index.scss:$SCRIPT_PATH/../app/www/css/bundle.css

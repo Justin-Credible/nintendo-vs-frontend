@@ -10,4 +10,4 @@ else
     SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 fi
 
-$SCRIPT_PATH/../node_modules/.bin/tsc -p $SCRIPT_PATH/../src/renderer
+npx tsc -p $SCRIPT_PATH/../src/renderer

@@ -11,5 +11,6 @@ else
 fi
 
 $SCRIPT_PATH/tsc
+$SCRIPT_PATH/tslint
 $SCRIPT_PATH/templates
 $SCRIPT_PATH/sass

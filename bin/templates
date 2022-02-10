@@ -10,4 +10,4 @@ else
     SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 fi
 
-$SCRIPT_PATH/../node_modules/.bin/nghtml2js --files "$SCRIPT_PATH/../src/renderer/Views/**/*.html" --output $SCRIPT_PATH/../app/www/js/templates.js
+npx nghtml2js --files "$SCRIPT_PATH/../src/renderer/Views/**/*.html" --output $SCRIPT_PATH/../app/www/js/templates.js
