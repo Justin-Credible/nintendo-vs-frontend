@@ -31,7 +31,7 @@ Testing was done on Virtual Box using a Windows 10 installation configured for d
 
 # Compiling
 
-If you wish to build the Frontend and Input Daemon packages you can follow the steps below. Otherwise see the releases section for a pre-packaged zip file.
+If you wish to build the Frontend and Input Daemon packages you can follow the steps below. Otherwise see the [releases](https://github.com/Justin-Credible/nintendo-vs-frontend/releases) section for a pre-packaged zip file.
 
 ## Frontend
 
