@@ -1,6 +1,6 @@
 {
   "name": "nintendo-vs-frontend",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A frontend for the Nintendo VS. DualSystem (aka \"Red Tent\") arcade cabinet.",
   "author": "Justin Unterreiner",
   "license": "MIT",
