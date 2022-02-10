@@ -31,6 +31,8 @@ Testing was done on Virtual Box using a Windows 10 installation configured for d
 
 # Compiling
 
+If you wish to build the Frontend and Input Daemon packages you can follow the steps below. Otherwise see the releases section for a pre-packaged zip file.
+
 ## Frontend
 
 The frontend is writen in [TypeScript](https://www.typescriptlang.org/) and runs in [Electron](https://github.com/electron/electron). Build tools require Node v16.13.2. Packaging requires Node v11.15.0.
@@ -38,11 +40,19 @@ The frontend is writen in [TypeScript](https://www.typescriptlang.org/) and runs
 ```
 $ git clone https://github.com/Justin-Credible/nintendo-vs-frontend.git
 $ cd nintendo-vs-frontend
-$ npm install
-$ gulp
+$ nvm install v16.13.2
+$ nvm use v16.13.2
+$ ./bin/setup
+$ ./bin/build
+$ ./bin/run
 ```
 
-You can use `gulp package` to create a distribution build in the `build` directory. The frontend can be built/packaged on a Mac or Windows. If you package on a Mac you may be prompted to install certain Wine components (the packager needs a Windows specific API to inject an icon into the Win32 binary; see [here]()https://github.com/electron-userland/electron-packager#building-windows-apps-from-non-windows-platforms). If you are not prompted to install it, you can install Wine manually using Homebrew: `brew install wine`.
+You can use `./bin/package` to create a distribution build in the `build` directory. The frontend can be built/packaged on a Mac or Windows. If you package on a Mac you may be prompted to install certain Wine components (the packager needs a Windows specific API to inject an icon into the Win32 binary; see [here]()https://github.com/electron-userland/electron-packager#building-windows-apps-from-non-windows-platforms). If you are not prompted to install it, you can install Wine manually using Homebrew: `brew install wine`.
+
+```
+$ nvm use v11.15.0
+$ ./bin/package
+```
 
 The frontend is split into two code-bases; the visual part is located in `src/renderer` and the launcher that handles window management etc is located in `src/shell`. Both of these make up the frontend.
 
