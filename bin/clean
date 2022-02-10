@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Get the path to the script's parent directory.
+if [ -n "$ZSH_VERSION" ]; then
+    # https://stackoverflow.com/a/23259585
+    SCRIPT_PATH=$( cd "$(dirname "${(%):-%N}")" ; pwd -P )
+else
+    # Assume Bash
+    # https://stackoverflow.com/a/4774063
+    SCRIPT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+fi
+
+# cleans tsc-renderer output
+rm $SCRIPT_PATH/../app/www/js/bundle.*
+
+# cleans templates output
+rm $SCRIPT_PATH/../app/www/js/templates.js
+
+# cleans sass output
+rm $SCRIPT_PATH/../app/www/css/bundle.*
+
+# cleans tsc-shell output
+rm -rf $SCRIPT_PATH/../app/shell
