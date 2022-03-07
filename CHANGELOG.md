@@ -6,7 +6,9 @@ For packages corresponding to these changes, see the [releases page](https://git
 ## [v1.2.0]
 TBD - In Progress
 ### Changed
+- Added ability to scale the UI to smaller screens
 - Ability to change menu sound effects volume via `sfxVolume` in `config.yml`
+- Fix for UI freeze when launching PC game
 
 ## [v1.1.0](https://github.com/Justin-Credible/nintendo-vs-frontend/releases/tag/v1.1.0) - 2019-06-09
 ### Added
