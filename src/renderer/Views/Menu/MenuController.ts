@@ -442,11 +442,11 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
                         this.stopPlayerInputTimer();
                         this.UIHelper.showPleaseWait();
 
-                        this.LaunchHelper.launchGame(this.viewModel.selectedGame, result.spec);
+                        this.$timeout(() => { this.LaunchHelper.launchGame(this.viewModel.selectedGame, result.spec); }, 250);
 
-                        // Wait two seconds before resetting so the user doesn't see the screen reset
+                        // Wait a few seconds before resetting so the user doesn't see the screen reset
                         // back to attract mode (the game will have probably launched by then).
-                        this.$timeout(() => { this.resetToIdle(false); }, 3000);
+                        this.$timeout(() => { this.resetToIdle(false); }, 4000);
                     }
                     else {
                         this.UIHelper.showToast("error", "Can't Start Game", "The other side is already playing a game.");
