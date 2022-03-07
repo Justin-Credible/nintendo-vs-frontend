@@ -11,12 +11,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             return [
                 "$scope",
                 "$rootScope",
+                "Utilities",
             ];
         }
 
         constructor(
             $scope: ng.IScope,
-            private $rootScope: ng.IRootScopeService) {
+            private $rootScope: ng.IRootScopeService,
+            private Utilities: Services.Utilities) {
             super($scope, ViewModels.RootViewModel);
         }
 
@@ -31,6 +33,14 @@ namespace JustinCredible.NintendoVsFrontend.Renderer.Controllers {
             this.$rootScope.$on(Constants.DisableAttractMode, _.bind(this.app_disableAttractMode, this));
 
             this.viewModel.enableAttractMode = false;
+
+            let scalingFactor = this.Utilities.side === "A"
+                ? this.Utilities.menuConfig.scalingFactor.screenA
+                : this.Utilities.menuConfig.scalingFactor.screenB;
+
+            this.viewModel.mainContainerStyle = {
+                "transform": `scale(${scalingFactor})`
+            };
         }
 
         //#endregion

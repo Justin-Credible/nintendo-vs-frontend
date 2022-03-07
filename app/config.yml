@@ -37,6 +37,17 @@ menu:
         sideBGameName: "Mario Bros."
         sideBSpecIndex: 0
 
+    # The UI was designed for 1280x1024. Recommended scaling values for smaller resolutions:
+    # Width   Height  Aspect  Ratio
+    # 1280    1024    5:4     1.0
+    # 1280    960     4:3     0.91
+    # 1024    768     4:3     0.75
+    # 800     600     4:3     0.575
+    # 640     480     4:3     0.45
+    scalingFactor:
+        screenA: 1.0
+        screenB: 1.0
+
 bindings:
     player1:
         up: 84 #T

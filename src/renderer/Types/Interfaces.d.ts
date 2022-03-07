@@ -52,6 +52,10 @@ declare namespace JustinCredible.NintendoVsFrontend.Renderer.Interfaces {
         realTimeAttractMode: boolean;
         sfxVolume: number;
         autoStart: AutoStartConfig;
+        scalingFactor: {
+            screenA: number;
+            screenB: number;
+        }
     }
 
     /**

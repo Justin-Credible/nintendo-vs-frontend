@@ -1,14 +1,22 @@
 
-body, div {
+body, div, .main-container {
     margin: 0;
     padding: 0;
 }
 
 body {
+    background: $background-color;
+    overflow: hidden;
+}
+
+.main-container {
     background-image: url("../img/header.png");
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-color: $background-color;
     font-family: "Press Start K";
     color: white;
+    width: 1280px;
+    height: 1024px;
+    transform-origin: top center;
 }

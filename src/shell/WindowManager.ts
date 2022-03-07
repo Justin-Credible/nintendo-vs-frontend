@@ -55,17 +55,17 @@ export class WindowManager extends events.EventEmitter {
 
     /**
      * Used to build the two renderer windows for side A and B of the cabinet.
-     * Both windows will be frameless and displayed at a full 1280x1024 resolution.
+     * Both windows will be frameless and displayed at a full screen.
      * 
-     * This does nothing if we don't have exactly two 1280x1024 displays.
+     * This does nothing if we don't have exactly two displays (or are in debug mode).
      */
     public buildWindows(): void {
 
         let windowOptions: GitHubElectron.BrowserWindowOptions = {
             frame: false,
             fullscreen: true,
-            width: 1280,
-            height: 1024
+            width: 640,
+            height: 480
         };
 
         let optionsA = _.clone(windowOptions);
@@ -76,13 +76,6 @@ export class WindowManager extends events.EventEmitter {
         console.log("--- Display Configuration --------------------------------");
         console.log(JSON.stringify(displays, null, 4));
         console.log("----------------------------------------------------------");
-
-        // Determine if we have exactly two 1280x1024 screens available.
-        let screensAre1280x1024 = displays.length >= 2
-            && displays[0].size.width === 1280
-            && displays[0].size.height === 1024
-            && displays[1].size.width === 1280
-            && displays[1].size.height === 1024;
 
         // Next up find the "origin" screen; that is, the screen at position (0, 0).
         // Windows uses the origin screen to determine the positioning of all of the
@@ -101,7 +94,10 @@ export class WindowManager extends events.EventEmitter {
         // If we have the corrent screen configuration, position a window on
         // each of the screens. If not, then make sure the windows show up with
         // frames and borders etc so they can be moved around during debugging.
-        if (screensAre1280x1024 && originIndex != null && nonOriginIndex != null && originIndex !== nonOriginIndex) {
+        if (!ConfigManager.config.debug
+            && originIndex != null
+            && nonOriginIndex != null
+            && originIndex !== nonOriginIndex) {
 
             // Put the side A and B windows on the correct monitors by config.
             if (ConfigManager.config.menu.originMonitorSide === "A") {
@@ -118,6 +114,7 @@ export class WindowManager extends events.EventEmitter {
             }
         }
         else {
+            // We're debugging OR couldn't find two screens.
             optionsA.fullscreen = false;
             optionsB.fullscreen = false;
             optionsA.frame = true;
@@ -167,16 +164,7 @@ export class WindowManager extends events.EventEmitter {
 
         // During development don't worry about repositioning the screens.
         if (ConfigManager.config.debug) {
-
-            let screensAre1280x1024 = displays.length >= 2
-                && displays[0].size.width === 1280
-                && displays[0].size.height === 1024
-                && displays[1].size.width === 1280
-                && displays[1].size.height === 1024;
-
-            if (!screensAre1280x1024) {
-                return;
-            }
+            return;
         }
 
         // Next up find the "origin" screen; that is, the screen at position (0, 0).

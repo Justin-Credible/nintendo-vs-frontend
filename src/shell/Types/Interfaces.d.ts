@@ -78,6 +78,11 @@ declare namespace Interfaces {
         originMonitorSide: string;
         realTimeAttractMode: boolean;
         autoStart: AutoStartConfig;
+        sfxVolume: number;
+        scalingFactor: {
+            screenA: number;
+            screenB: number;
+        }
     }
 
     interface Bindings {
