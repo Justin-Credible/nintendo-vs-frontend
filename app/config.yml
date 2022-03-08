@@ -38,7 +38,7 @@ menu:
         sideBSpecIndex: 0
 
     # The UI was designed for 1280x1024. Recommended scaling values for smaller resolutions:
-    # Width   Height  Aspect  Ratio
+    # Width   Height  Aspect  Scaling Factor
     # 1280    1024    5:4     1.0
     # 1280    960     4:3     0.91
     # 1024    768     4:3     0.75

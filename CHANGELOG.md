@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 For packages corresponding to these changes, see the [releases page](https://github.com/Justin-Credible/nintendo-vs-frontend/releases).
 
 ## [v1.2.0]
-TBD - In Progress
+
 ### Changed
-- Added ability to scale the UI to smaller screens
+- Added ability to scale the UI to smaller screens; see `scalingFactor` in `config.yml`
 - Ability to change menu sound effects volume via `sfxVolume` in `config.yml`
 - Fix for UI freeze when launching PC game
 

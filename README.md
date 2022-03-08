@@ -82,9 +82,9 @@ The second patch `mame-single-channel-audio.patch` was written by myself for a s
 
 # Other Requirements
 
-Screen dependencies are currently hardcoded. There must be exactly two 1280x1024 displays connected. Windows should be set to "extended" display mode so that each screen has its own desktop. If there are not exactly two screens at 1280x1024, the frontend will launch in "development" mode instead of full screen mode.
+The frontend expects exactly two displays connected. Windows should be set to "extended" display mode so that each screen has its own desktop. The UI was built to display at 1280x1024. If your screens are running at different resolutions, you'll need to adjust the `scalingFactor` configuration parameter for each screen in order for the UI to fit on the screen. See `config.yml` for more details.
 
-If you are using a Mac for development, a seperate renderer window will open when you run the frontend. This window is used to emulate the input daemon which is only available for Windows. This window must be in focus when pressing keys so that the frontend can receive keyboard input.
+If you are using a non-Windows platform for development (or set `debug: true` in `config.yml`), a seperate renderer window will open when you run the frontend. This window is used to emulate the input daemon which is only available for Windows. This window must be in focus when pressing keys so that the frontend can receive keyboard input.
 
 [Borderless Gaming](https://github.com/Codeusa/Borderless-Gaming) must be installed (tested with version 8.4.33315.1328). Each game must be launched at least once from each side of the cabinet and added to the favorite list so MAME window will be forced to full screen during launch. A pre-built list is located in `assets/borderless-gaming`.
 
