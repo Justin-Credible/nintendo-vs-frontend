@@ -9,7 +9,7 @@ Each side can play its own game independently (two players on each side) or both
 
 This repository contains all of the software and docs you'll need to assemble a replica of my cabinet.
 
-You can read more about the cabinet [here](http://justin-credible.net/2016/10/21/nintendo-vs/)  or see a video of the frontend in action [here](https://youtu.be/zIqEkgNy3qg).
+You can read more about the cabinet [here](http://justin-credible.net/2016/10/21/nintendo-vs/)  or see a video of the frontend in action [here](https://www.youtube.com/watch?v=q1Z3KqxMIOY).
 
 Pre-built releases can be found on the [releases page](https://github.com/Justin-Credible/nintendo-vs-frontend/releases), and changes are documented in the [change log](CHANGELOG.md).
 
